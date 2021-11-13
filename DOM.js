@@ -5,12 +5,32 @@
  * @repository https://github.com/lenincompres/DOM.set
  */
 
+Element.prototype.get = function (station) {
+  if (['content', 'inner', 'innerhtml', 'html'].includes(station)) station = 'innerHTML';
+  if (['text'].includes(station)) station = 'innerText';
+  if (['outer', 'self'].includes(station)) station = 'outerHTML';
+  if (DOM.attributes.includes(station)) return this.getAttribute(station);
+  if (DOM.isStyle(station, this)) return this.style[station];
+  let output = station ? this[station] : this.value;
+  if (output !== undefined && output !== null) return output;
+  if (!station) return this.innerHTML;
+  output = [...this.querySelectorAll(':scope>' + station)];
+  if (output.length) return output.length < 2 ? output[0] : output;
+  output = [...this.querySelectorAll(station)];
+  if (output.length) return output;
+}
+
 Element.prototype.create = function (...args) {
   this.set(...args);
 };
 
 Element.prototype.set = function (model, ...args) {
   if ([null, undefined].includes(model)) return;
+  if (typeof model === 'string') {
+    let obj = {};
+    obj[model] = args.shift();
+    return this.set(obj, ...args);
+  };
   let contentType = DOM.type(model.content);
   if (contentType.p5Element || contentType.element) {
     let elt = contentType.element ? contentType.element : contentType.p5Element.elt;
@@ -248,6 +268,11 @@ class Binder {
 
 // global static methods to handle the DOM
 class DOM {
+  static get(station) {
+    let headTags = ['meta', 'link', 'title', 'font', 'icon', ...DOM.metaNames, ...DOM.htmlEquivs];
+    if (headTags.includes(station.toLowerCase())) return document.head.get(station);
+    document.body.get(station);
+  }
   static create(...args) {
     DOM.set(...args);
   }
