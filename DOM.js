@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.4
+ * @version 1.0.5
  * @repository https://github.com/lenincompres/DOM.set
  */
 
@@ -26,11 +26,6 @@ Element.prototype.create = function (...args) {
 
 Element.prototype.set = function (model, ...args) {
   if ([null, undefined].includes(model)) return;
-  if (typeof model === 'string') {
-    let obj = {};
-    obj[model] = args.shift();
-    return this.set(obj, ...args);
-  };
   let contentType = DOM.type(model.content);
   if (contentType.p5Element || contentType.element) {
     let elt = contentType.element ? contentType.element : contentType.p5Element.elt;
