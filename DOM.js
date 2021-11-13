@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @repository https://github.com/lenincompres/DOM.set
  */
 
