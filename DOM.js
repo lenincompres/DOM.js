@@ -1,8 +1,8 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.5
- * @repository https://github.com/lenincompres/DOM.set
+ * @version 1.0.6
+ * @repository https://github.com/lenincompres/DOM.js
  */
 
 Element.prototype.get = function (station) {
