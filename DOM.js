@@ -329,19 +329,25 @@ class DOM {
         a: {
           textDecoration: 'none',
           cursor: 'pointer',
-          color: 'blue',
+          color: '#0645AD',
         },
         'input, button, select': {
           padding: '0.25em',
           margin: '0.25em',
           borderRadius: '0.25em',
           border: 'solid 1px gray',
+          backgroundColor: 'white',
         },
-        'button, input[type= "button"]': {
+        'button, input[type= "button"], input[type= "submit"]': {
           cursor: 'pointer',
-          color: 'blue',
-          borderColor: 'blue',
-          minWidth: '4em'
+          borderColor: 'gray',
+          paddingLeft: '1em',
+          paddingRight: '1em',
+          backgroundColor: '#eee',
+          boxShadow: "1px 1px 1px black",
+        },
+        'button:active, input[type= "button"]:active, input[type= "submit"]:active': {
+          boxShadow: "none",
         }
       };
       const H = 6;
