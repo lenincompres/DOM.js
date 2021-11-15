@@ -1,4 +1,4 @@
-# DOM.set
+# DOM.js
 by Lenin Compres
 
 The following is all the HTML we are going to need for the entirety of this documentation. It is our *index.html* file. The rest of our code will be in javaScript (*main.js*). We will not need CSS either.
