@@ -354,7 +354,7 @@ class DOM {
       (new Array(H)).fill().forEach((_, i) => reset[`h${i + 1}`] = new Object({
         fontSize: `${Math.round(100 * (2 - i / H)) / 100}em`,
       }));
-      DOM.style(DOM.css(reset));
+      DOM.style('/* DOM.js CSS reset */' + DOM.css(reset));
     }
     if (!style) return;
     if (Array.isArray(style)) return style.forEach(s => DOM.style(s));
