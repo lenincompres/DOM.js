@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.6
+ * @version 1.0.7
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -400,8 +400,7 @@ class DOM {
       let subType = DOM.type(sub);
       if (subType.pseudoClass) xSel = `${sel}:${sub}`;
       else if (subType.pseudoElement) xSel = `${sel}::${sub}`;
-      else if (['_', '.'].some(s => key.startsWith(s))) xSel = `${sel}${sub}`;
-      else if (['_', '.'].some(s => key.endsWith(s)) || style.all) xSel = `${sel} ${sub.substring(0, sub.length-1)}`;
+      else if (['_', ' '].some(s => key.startsWith(s))) xSel = `${sel} ${sub.substring(1)}`;
       delete style.all;
       extra.push(DOM.css(xSel, style));
     }).join(' ');
