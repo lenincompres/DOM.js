@@ -381,6 +381,29 @@ mainArea.css({
 });
 ```
 
+Selector Notes:
+- Nested selectors assume an immediate child hierarchy in the DOM.
+- An undescore (\_) within the selector means a class. *a_warning* becomes *a.warning*.
+- A leading underscore means any child under the heirarchy, not just immediate ones.
+- Two leading underscore means any child of this class under the heirarchy.
+
+```javascript
+mainArea.css({
+  a: { // #mainArea>a
+    backgroundColor: 'gray'
+  },
+  a_primary: {    // #mainArea>a.primary
+    backgroundColor: 'gold',
+  },
+  _a: {   // #mainArea a
+    backgroundColor: 'silver',
+  },
+  __primary: {   // #mainArea .primary
+    backgroundColor: 'yellow',
+  };
+});
+```
+
 ---
 
 ## Binding
