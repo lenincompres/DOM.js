@@ -118,7 +118,7 @@ NOTE:
 
 ### Set the Head
 
-Just as any element, you may invoke the **set** method on the head element. Many of its properties can be set directly. I will even link fonts.
+Just as any element, you may invoke the **set** method on the head element. Many of its properties can be set directly. It will even link fonts and make them available as font-family styles.
 
 ```javascript
 document.head.set({
