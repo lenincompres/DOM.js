@@ -1,15 +1,16 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.7
+ * @version 1.0.8
  * @repository https://github.com/lenincompres/DOM.js
  */
 
 Element.prototype.get = function (station) {
-  if (['content', 'inner', 'innerhtml', 'html'].includes(station)) station = 'innerHTML';
+  if (!station || ['content', 'inner', 'innerhtml', 'html'].includes(station)) station = 'innerHTML';
   if (['text'].includes(station)) station = 'innerText';
   if (['outer', 'self'].includes(station)) station = 'outerHTML';
   if (DOM.attributes.includes(station)) return this.getAttribute(station);
+  //if (this.getAttribute(station)) return this.getAttribute(station);
   if (DOM.isStyle(station, this)) return this.style[station];
   let output = station ? this[station] : this.value;
   if (output !== undefined && output !== null) return output;
@@ -30,7 +31,7 @@ Element.prototype.set = function (model, ...args) {
   if (contentType.p5Element || contentType.element) {
     let elt = contentType.element ? contentType.element : contentType.p5Element.elt;
     this.set(elt, ...args);
-    return Object.keys(model).filter(k => k!=='content').forEach(k => elt.set(model[k], k, ...args));
+    return Object.keys(model).filter(k => k !== 'content').forEach(k => elt.set(model[k], k, ...args));
   }
   if (Array.isArray(model.content)) return model.content.forEach(item => {
     if ([null, undefined].includes(item)) return;
@@ -97,10 +98,16 @@ Element.prototype.set = function (model, ...args) {
     if (cls.length) elt.classList.add(...cls);
     return this[PREPEND ? 'prepend' : 'append'](elt);
   }
+  if (station === 'script' && IS_PRIMITIVE) return this.set({
+    script: {
+      src: model
+    }
+  });
   if (TAG === 'style' && !model.content && !IS_PRIMITIVE) model = DOM.css(model);
   if (IS_CONTENT && !model.binders) {
     if (CLEAR) this.innerHTML = '';
     if (IS_PRIMITIVE) return this.innerHTML = model;
+    if (Array.isArray(model)) return model.forEach(m => this.set(m));
     let keys = PREPEND ? Object.keys(model).reverse() : Object.keys(model);
     keys.forEach(key => this.set(model[key], key, p5Elem, PREPEND ? false : undefined));
     return this;
@@ -265,8 +272,7 @@ class Binder {
 class DOM {
   static get(station) {
     let headTags = ['meta', 'link', 'title', 'font', 'icon', ...DOM.metaNames, ...DOM.htmlEquivs];
-    if (headTags.includes(station.toLowerCase())) return document.head.get(station);
-    document.body.get(station);
+    return station && headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
   static create(...args) {
     DOM.set(...args);
@@ -315,6 +321,11 @@ class DOM {
           quotes: 'none',
           content: 'none',
           backgroundColor: 'transparent',
+          fontSize: '100%',
+          font: 'inherit'
+        },
+        'article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section': {
+          display: 'block',
         },
         body: {
           fontFamily: 'Arial, sans-serif',
@@ -329,7 +340,6 @@ class DOM {
         a: {
           textDecoration: 'none',
           cursor: 'pointer',
-          color: '#0645AD',
         },
         'input, button, select': {
           padding: '0.25em',
@@ -348,7 +358,23 @@ class DOM {
         },
         'button:active, input[type= "button"]:active, input[type= "submit"]:active': {
           boxShadow: "none",
-        }
+        },
+        'ol, ul': {
+          listStyle: 'none',
+        },
+        'blockquote, q': {
+          quotes: 'none',
+          before: {
+            content: '',
+          },
+          after: {
+            content: '',
+          }
+        },
+        table: {
+          borderCollapse: 'collapse',
+          borderSpacing: 0
+        },
       };
       const H = 6;
       (new Array(H)).fill().forEach((_, i) => reset[`h${i + 1}`] = new Object({
@@ -493,3 +519,5 @@ class DOM {
     ico: 'icon'
   })[str.split('.').pop()] : undefined;
 }
+
+DOM.style();
