@@ -500,7 +500,7 @@ myBinder.addListener(value => alert('The value was updated to: ' + value));
 
 ## DOM.set extra features
 
-The **create** method allows you to modify attributes, styles, event handlers, and content of your elements with just one call.
+The **set** method allows you to modify attributes, styles, event handlers, and content of your elements with just one call.
 
 ```javascript
 myElement.set({
@@ -512,16 +512,16 @@ myElement.set({
 
 ### DOM.get() and element.get()
 
-This method returns a value based on the *string* provided, it tries to match it to an attribute, style property, element tag (in the scope), or a query selector. If no station is given, it returns the value property or the innerHTML (in it's deffect).
+This method returns a value based on the *string* provided, it tries to match it to an attribute, style property, element tag (in the scope), or a query selector. If no station is given, it returns the value property or the innerHTML.
 
 ```javascript
 DOM.get('backgroundColor'); // returns the body's background color
 
 document.body.get('backgroundColor'); // same as before
 
-myElement.get('class');
+myElement.get('class');  // returns the class attribute of the element
 
-myElement.get(); // returns the value (if there is one) or the innerHTML
+myElement.get(); // returns the value (in the case of inputs) or the innerHTML
 
 myElement.get('text');  // returns the innerText
 
