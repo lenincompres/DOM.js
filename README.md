@@ -116,6 +116,16 @@ NOTE:
 * Giving an element an *id:* creates a global variable (with that name) holding that element.
 * Use *text:* or *innerText:*, *html:* or *innerHTML:*, or simply *content:* for the element's inner content.
 
+This also implies that the **set** method allows you to modify attributes, styles, event handlers, and content of existing elements with just one call.
+
+```javascript
+myElement.set({
+  padding: '0.5em 2em',
+  backgroundColor: 'lavender',
+  text: 'Some text'
+});
+```
+
 ### Set the Head
 
 Just as any element, you may invoke the **set** method on the head element. Many of its properties can be set directly. It will even link fonts and make them available as font-family styles.
@@ -498,19 +508,7 @@ myBinder.addListener(value => alert('The value was updated to: ' + value));
 
 ---
 
-## DOM.set extra features
-
-The **set** method allows you to modify attributes, styles, event handlers, and content of your elements with just one call.
-
-```javascript
-myElement.set({
-  padding: '0.5em 2em',
-  backgroundColor: 'lavender',
-  text: 'Some text'
-});
-```
-
-### DOM.get() and element.get()
+## DOM.get() and element.get()
 
 This method returns a value based on the *string* provided, it tries to match it to an attribute, style property, element tag (in the scope), or a query selector. If no station is given, it returns the value property or the innerHTML.
 
