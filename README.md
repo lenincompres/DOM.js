@@ -530,7 +530,7 @@ myElement.get('.nice'); // similar to querySelectorAll, but returns an array of 
 
 ---
 
-## DOM.set and P5.js
+## DOM.js and P5.js
 
 Yes, DOM.set works for P5.js elements. If you are not familiar with P5.js? [Remedy that](https://p5js.org/).
 
