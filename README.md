@@ -26,18 +26,18 @@ DOM.set({
   },
   main: {
     article: {
-      h2: 'Basic DOM created element',
+      h2: 'Basic DOM element',
       p: '<b>This</b> is a paragraph.'
     }
   },
   footer: {
-    p: 'Made with DOM.set'
+    p: 'Made with DOM.js'
   }
 });
 ```
 If called before the body is loaded, **DOM.set** waits for the window *load* event before executing.
 
-You may also invoke *create* directly on an element to model it.
+You may also invoke the *set* method directly on an element to model it.
 
 ```javascript
 someElement.set({
@@ -116,9 +116,9 @@ NOTE:
 * Giving an element an *id:* creates a global variable (with that name) holding that element.
 * Use *text:* or *innerText:*, *html:* or *innerHTML:*, or simply *content:* for the element's inner content.
 
-### Create the Head
+### Set the Head
 
-Just as any element, you may invoke **create** on the head element.
+Just as any element, you may invoke the **set** method on the head element.
 
 ```javascript
 document.head.set({
@@ -126,7 +126,7 @@ document.head.set({
   charset: 'UTF-8',
   icon: 'icon.ico',
   keywords: 'website,multiple,keywords',
-  description: 'Website created with DOM.set',
+  description: 'Website created with DOM.js',
   meta: {
     name: 'color-scheme',
     content: 'dark'
@@ -146,7 +146,7 @@ document.head.set({
 });
 ```
 
-Note how **create** recognizes common head information (icon, charset, keywords, description, etc).
+Note how **set** recognizes common head information (icon, charset, keywords, description, etc).
 In fact, the **DOM.set** method recognizes these as well, and adds them on the *document.head* instead of the *body*.
 
 ```javascript
@@ -161,7 +161,7 @@ DOM.set({
   },
   main: {
     article: {
-      h2: 'Basic DOM created element',
+      h2: 'Basic DOM element',
       p: '<b>This</b> is a paragraph.'
     }
   },
@@ -172,7 +172,7 @@ DOM.set({
 ```
 
 
-### Create an Array of Elements
+### Set an Array of Elements
 
 Use arrays to create multiple consecutive elements of the same kind.
 
@@ -282,8 +282,8 @@ document.body.set({
 });
 ```
 
-This method is discouraged, since it will affect all elements in the DOM not just the one invoking **create**.
-Instead, create global styles using **DOM.style**, which adds the CSS to the head, and can interpret structural objects into CSS—nesting and all.
+This method is discouraged, since it will affect all elements in the DOM not just the one invoking **set**.
+Instead, set global styles using **DOM.style**, which adds the CSS to the head, and can interpret structural objects into CSS—nesting and all.
 
 ```javascript
 DOM.style({
@@ -382,9 +382,8 @@ mainArea.css({
 ```
 
 Selector Notes:
-- Nested selectors assume an immediate child hierarchy in the DOM.
-- An undescore (\_) within the selector means a class. *a_warning* becomes *a.warning*.
-- A leading underscore means any child under the heirarchy, not just immediate ones.
+- Nested selectors are assumed as immediate children in the hierarchy of the DOM.
+- Usea a leading underscore (\_) to affect any child under the element, not just immediate ones.
 - Two leading underscore means any child of this class under the heirarchy.
 
 ```javascript
