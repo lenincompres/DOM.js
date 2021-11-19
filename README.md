@@ -525,9 +525,9 @@ myElement.get(); // returns the value (in the case of inputs) or the innerHTML
 
 myElement.get('text');  // returns the innerText
 
-myElement.get('article');  // returns the array of article tag elements within someElement's immediate scope (or the one article element when there's just one)
+myElement.get('article');  // returns the array of article tag elements within someElement's scope
 
-myElement.get('.nice'); // similar to myElement.querySelectorAll(), but returns an array of elements.
+myElement.get('.nice'); // similar to querySelectorAll, but returns an array of elements
 ```
 
 ---
