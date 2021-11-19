@@ -402,10 +402,7 @@ mainArea.css({
 });
 ```
 
-Selector Notes:
-- Nested selectors are assumed as immediate children in the hierarchy of the DOM.
-- Usea a leading underscore (\_) to affect any child under the element, not just immediate ones.
-- Two leading underscore means any child of this class under the heirarchy.
+Nested selectors are assumed as immediate children in the hierarchy of the DOM. Use a leading underscore (\_) to affect any child under the element, not just immediate ones. Two leading underscore means any child of this class under the heirarchy.
 
 ```javascript
 mainArea.css({
