@@ -246,7 +246,7 @@ In fact, if you give several elements the same *id*, DOM.set will group them in 
 
 ---
 
-## Styling Elements with DOM.set
+## Styling Elements with DOM.js
 
 ### Style Attribute
 Asign a string to the *style:* property to update the inline style of the element—replacing any previous value.
