@@ -150,14 +150,20 @@ document.head.set({
 });
 ```
 
-The *head* element also understand default values for elements like *link*, *tyle*, *font*, or *script*, and event accepts arrays.
+The *head* element also understands default values for properties of *link*, *tyle*, *font*, or *script* elements; and it even accept arrays of elements.
 
 ```javascript
 document.head.set({
   link : 'style.css', 
   style: 'body{ margin:0; backgroundColor: gray; }',
   script: ['main.js', 'lib/dependecies.js'],
-  font: 'fonts/myFont.ttf'
+  font: [
+    'fonts/myFont.ttf',
+    {
+      fontFamily: 'aFont',
+      src: 'fonts/anotherName.ott}
+    }
+  ]
 });
 ```
 
