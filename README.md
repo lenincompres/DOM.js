@@ -118,7 +118,7 @@ NOTE:
 
 ### Set the Head
 
-Just as any element, you may invoke the **set** method on the head element.
+Just as any element, you may invoke the **set** method on the head element. Many of its properties can be set directly. I will even link fonts.
 
 ```javascript
 document.head.set({
@@ -137,27 +137,27 @@ document.head.set({
   }, 
   style: {
     type: 'css',
-    content: 'body{ margin:0; backgroundColor: gray; }'
+    content: 'body{ margin:0; background-color:gray; }'
   },
   script: {
     type: 'module',
     src: 'main.js' 
+  },
+  font: {
+    fontFamily: 'myFont',
+    src: 'fonts/myFont.ttf'
   }
 });
 ```
 
-The *head* element also understand default values for elements like *link*, *tyle* or *script*, and event accepts arrays.
+The *head* element also understand default values for elements like *link*, *tyle*, *font*, or *script*, and event accepts arrays.
 
 ```javascript
 document.head.set({
   link : 'style.css', 
-  style: {
-    body{
-      margin: 0;
-      backgroundColor: gray;
-    }
-  },
-  script: ['main.js', 'lib/dependecies.js']
+  style: 'body{ margin:0; backgroundColor: gray; }',
+  script: ['main.js', 'lib/dependecies.js'],
+  font: 'fonts/myFont.ttf'
 });
 ```
 
