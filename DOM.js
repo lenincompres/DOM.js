@@ -45,7 +45,7 @@ Element.prototype.set = function (model, ...args) {
   const IS_HEAD = TAG === 'head';
   const CLEAR = argsType.boolean === true || argsType.string === 'content';
   let station = argsType.string; // original style|attr|tag|inner…|on…|name
-  if ([undefined, 'model', 'inner'].includes(station)) station = 'content';
+  if ([undefined, 'model', 'inner', 'set'].includes(station)) station = 'content';
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
   if (station === 'content' && TAG === 'meta') station = '*content'; // disambiguate
