@@ -37,7 +37,7 @@ DOM.set({
 ```
 If called before the body is loaded, **DOM.set** waits for the window *load* event before executing.
 
-You may also invoke the *set* method directly on an element to model it.
+You may also invoke the **set** method directly on an element to model it.
 
 ```javascript
 someElement.set({
