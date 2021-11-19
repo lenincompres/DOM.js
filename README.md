@@ -146,6 +146,21 @@ document.head.set({
 });
 ```
 
+The *head* element also understand default values for elements like *link*, *tyle* or *script*, and event accepts arrays.
+
+```javascript
+document.head.set({
+  link : 'style.css', 
+  style: {
+    body{
+      margin: 0;
+      backgroundColor: gray;
+    }
+  },
+  script: ['main.js', 'lib/dependecies.js']
+});
+```
+
 Note how **set** recognizes common head information (icon, charset, keywords, description, etc).
 In fact, the **DOM.set** method recognizes these as well, and adds them on the *document.head* instead of the *body*.
 
