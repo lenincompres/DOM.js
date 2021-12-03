@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.8
+ * @version 1.0.9
  * @repository https://github.com/lenincompres/DOM.js
  */
 
-Element.prototype.get = function (station) {
+ Element.prototype.get = function (station) {
   if (!station || ['content', 'inner', 'innerhtml', 'html'].includes(station)) station = 'innerHTML';
   if (['text'].includes(station)) station = 'innerText';
   if (['outer', 'self'].includes(station)) station = 'outerHTML';
@@ -139,6 +139,7 @@ Element.prototype.set = function (model, ...args) {
     if (IS_HEAD) {
       if (station === 'title') return this.innerHTML += `<title>${model}</title>`;
       if (station === 'icon') return this.innerHTML += `<link rel="icon" href="${model}">`;
+      if (station === 'image') return this.innerHTML += `<meta property="og:image" content="${model}">`;
       if (station === 'charset') return this.innerHTML += `<meta charset="${model}">`;
       if (DOM.metaNames.includes(station)) return this.innerHTML += `<meta name="${station}" content="${model}">`;
       if (DOM.htmlEquivs.includes(STATION)) return this.innerHTML += `<meta http-equiv="${DOM.unCamel(STATION)}" content="${model}">`;
@@ -271,8 +272,7 @@ class Binder {
 // global static methods to handle the DOM
 class DOM {
   static get(station) {
-    let headTags = ['meta', 'link', 'title', 'font', 'icon', ...DOM.metaNames, ...DOM.htmlEquivs];
-    return station && headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
+    return station && DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
   static create(...args) {
     DOM.set(...args);
@@ -282,9 +282,8 @@ class DOM {
     let elt = argsType.element ? argsType.element : argsType.p5Element;
     if (elt) return elt.set(model, ...args);
     let headModel = {};
-    let headTags = ['meta', 'link', 'title', 'font', 'icon', ...DOM.metaNames, ...DOM.htmlEquivs];
     Object.keys(model).forEach(key => {
-      if (headTags.includes(key.toLowerCase())) {
+      if (DOM.headTags.includes(key.toLowerCase())) {
         headModel[key] = model[key];
         delete model[key];
       }
@@ -504,10 +503,11 @@ class DOM {
   static isStyle = (str, elt) => ((elt ? elt : document.body ? document.body : document.createElement('div')).style)[str] !== undefined;
   static events = ['abort', 'afterprint', 'animationend', 'animationiteration', 'animationstart', 'beforeprint', 'beforeunload', 'blur', 'canplay', 'canplaythrough', 'change', 'click', 'contextmenu', 'copy', 'cut', 'dblclick', 'drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart', 'drop', 'durationchange', 'ended', 'error', 'focus', 'focusin', 'focusout', 'fullscreenchange', 'fullscreenerror', 'hashchange', 'input', 'invalid', 'keydown', 'keypress', 'keyup', 'load', 'loadeddata', 'loadedmetadata', 'loadstart', 'message', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup', 'offline', 'online', 'open', 'pagehide', 'pageshow', 'paste', 'pause', 'play', 'playing', 'progress', 'ratechange', 'resize', 'reset', 'scroll', 'search', 'seeked', 'seeking', 'select', 'show', 'stalled', 'submit', 'suspend', 'timeupdate', 'toggle', 'touchcancel', 'touchend', 'touchmove', 'touchstart', 'transitionend', 'unload', 'volumechange', 'waiting', 'wheel'];
   static attributes = ['accept', 'accept-charset', 'accesskey', 'action', 'align', 'alt', 'async', 'autocomplete', 'autofocus', 'autoplay', 'bgcolor', 'border', 'charset', 'checked', 'cite', 'class', 'color', 'cols', 'colspan', 'content', 'contenteditable', 'controls', 'coords', 'data', 'datetime', 'default', 'defer', 'dir', 'dirname', 'disabled', 'download', 'draggable', 'enctype', 'for', 'form', 'formaction', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'http-equiv', 'id', 'ismap', 'kind', 'lang', 'list', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'multiple', 'muted', 'name', 'novalidate', 'open', 'optimum', 'pattern', 'placeholder', 'poster', 'preload', 'readonly', 'rel', 'required', 'reversed', 'rows', 'rowspan', 'sandbox', 'scope', 'selected', 'shape', 'size', 'sizes', 'spellcheck', 'src', 'srcdoc', 'srclang', 'srcset', 'start', 'step', 'style', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'value', 'wrap', 'width'];
-  static pseudoClasses = ['active', 'checked', 'disabled', 'empty', 'enabled', 'first-child', 'first-of-type', 'focus', 'hover', 'in-range', 'invalid', 'last-of-type', 'link', 'only-of-type', 'only-child', 'optional', 'out-of-range', 'read-only', 'read-write', 'required', 'root', 'target', 'valid', 'visited', 'lang', 'not', 'nth-child', 'nth-last-child', 'nth-last-of-type', 'nth-of-type'];
+  static pseudoClasses = ['active', 'checked', 'disabled', 'empty', 'enabled', 'first-child', 'last-child', 'first-of-type', 'focus', 'hover', 'in-range', 'invalid', 'last-of-type', 'link', 'only-of-type', 'only-child', 'optional', 'out-of-range', 'read-only', 'read-write', 'required', 'root', 'target', 'valid', 'visited', 'lang', 'not', 'nth-child', 'nth-last-child', 'nth-last-of-type', 'nth-of-type'];
   static pseudoElements = ['after', 'before', 'first-letter', 'first-line', 'selection'];
   static metaNames = ['viewport', 'keywords', 'description', 'author', 'refresh', 'application-name', 'generator'];
   static htmlEquivs = ['contentSecurityPolicy', 'contentType', 'defaultStyle', 'content-security-policy', 'content-type', 'default-style', 'refresh'];
+  static headTags = ['meta', 'link', 'title', 'font', 'icon', 'image', ...DOM.metaNames, ...DOM.htmlEquivs];
   static reserveStations = ['tag', 'id', 'onready', 'ready', 'done', 'ondone'];
   static listeners = ['addevent', 'addeventlistener', 'eventlistener', 'listener', 'on'];
   static getDocumentType = str => typeof str === 'string' ? new Object({
