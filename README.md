@@ -48,8 +48,9 @@ someElement.set({
 });
 ```
 The new **h1** and **p** elements will be appended to the element.
-A *true* boolean may indicate that new content should **replace** any existing one.
-Conversely, *false* would **prepend**.
+
+A *true* boolean will make the new content **replace** any existing one.
+Conversely, *false* would **prepend** the content.
 
 ```javascript
 someElement.set({
