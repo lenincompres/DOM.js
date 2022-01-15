@@ -119,7 +119,7 @@ NOTE:
 * Providing and element with an *id:* will create a global variable (with that name) to hold that element.
 * Use *text:* or *innerText:*, *html:* or *innerHTML:*, or simply *content:* for the element's inner content.
 
-This also implies that the **set** method allows you to modify attributes, styles, event handlers, and content of existing elements with just one call.
+The **set** method allows you to modify attributes, styles, event handlers, and content of existing elements with just one call.
 
 ```javascript
 myElement.set({
