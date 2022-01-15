@@ -47,8 +47,8 @@ someElement.set({
   p: 'This is a <b>paragraph</b>.'
 });
 ```
-A *true* boolean may indicate that new content should **replace** any existing one.
-Conversely, *false* would **prepend**; and nothing is the default **append** mode
+The new **h1** and **p** elements will be appended to the element. A *true* boolean may indicate that new content should **replace** any existing one.
+Conversely, *false* would **prepend**.
 
 ```javascript
 someElement.set({
