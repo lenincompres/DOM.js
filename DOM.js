@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.9
+ * @version 1.0.10
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -146,7 +146,7 @@ Element.prototype.set = function (model, ...args) {
       if (station === 'font') return DOM.style({
         fontFace: {
           fontFamily: model.split('/').pop().split('.')[0],
-          src: `url(${model})`
+          src: model.startsWith('url') ? model : `url(${model})`
         }
       });
       const type = DOM.getDocumentType(model);
@@ -409,6 +409,7 @@ class DOM {
       cls = [];
     }
     if (sel.toLowerCase() === 'fontface') sel = '@font-face';
+    if(sel === 'src' && !model.startsWith('url')) model = `url(${model})`;
     if (DOM.type(model).primitive !== undefined) return `${DOM.unCamel(sel)}: ${model};\n`;
     //if (Array.isArray(model)) model = assignAll(model);
     if (Array.isArray(model)) return model.map(m => DOM.css(sel, m)).join(' ');
