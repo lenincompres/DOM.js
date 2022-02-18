@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.10
+ * @version 1.0.11
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -52,7 +52,7 @@ Element.prototype.set = function (model, ...args) {
   if (DOM.reserveStations.includes(station)) return;
   const IS_CONTENT = station === 'content';
   const IS_LISTENER = DOM.listeners.includes(station);
-  const PREPEND = argsType.boolean === false;
+  const NOT_APPEND = argsType.boolean === false;
   const p5Elem = argsType.p5Element;
   if (modelType.function) {
     if (DOM.type(STATION).event) return this.addEventListener(STATION, e => model(e, this));
@@ -96,7 +96,8 @@ Element.prototype.set = function (model, ...args) {
     else if (tag != elt.tagName.toLowerCase()) DOM.addID(tag, elt);
     if (CLEAR) this.innerHTML = '';
     if (cls.length) elt.classList.add(...cls);
-    return this[PREPEND ? 'prepend' : 'append'](elt);
+    if(NOT_APPEND) return elt;
+    return this.append(elt);
   }
   if (station === 'script' && IS_PRIMITIVE) return this.set({
     script: {
@@ -108,14 +109,13 @@ Element.prototype.set = function (model, ...args) {
     if (CLEAR) this.innerHTML = '';
     if (IS_PRIMITIVE) return this.innerHTML = model;
     if (Array.isArray(model)) return model.forEach(m => this.set(m));
-    let keys = PREPEND ? Object.keys(model).reverse() : Object.keys(model);
-    keys.forEach(key => this.set(model[key], key, p5Elem, PREPEND ? false : undefined));
+    Object.keys(model).forEach(key => this.set(model[key], key, p5Elem));
     return this;
   }
   if (modelType.array) {
     if (station === 'class') return model.forEach(c => c ? this.classList.add(c) : null);
     if (IS_LISTENER) return this.addEventListener(...model);
-    let map = model.map(m => this.set(m, [tag, ...cls].join('.'), p5Elem, PREPEND ? false : undefined));
+    let map = model.map(m => this.set(m, [tag, ...cls].join('.'), p5Elem, NOT_APPEND ? false : undefined));
     if (id) DOM.addID(id, map);
     return map;
   }
@@ -175,7 +175,7 @@ Element.prototype.set = function (model, ...args) {
   elt = p5Elem ? elem.elt : elem;
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute('id', id);
-  this[PREPEND ? 'prepend' : 'append'](elt);
+  this[NOT_APPEND ? 'prepend' : 'append'](elt);
   if (model.ready) model.ready(elem);
   if (model.onready) model.onready(elem);
   if (model.done) model.done(elem);
@@ -444,6 +444,11 @@ class DOM {
       }
     }, tag);
     return output;
+  }
+  // returns an element without adding it to the DOM
+  static element(model, tag){
+    if(!tag) tag = model.tag ? tag : 'div';
+    return DOM.set(model, tag, false);
   }
   // returns querystring as a structural object 
   static querystring() {
