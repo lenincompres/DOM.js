@@ -82,8 +82,27 @@ someElement.set({
 
   DOM.set is agnostic about the order of the arguments that follow the first (model structure):
   * An **element** is where the model should be created instead of *document.body*.
-  * A **boolean** is a *replace/prepend* flag.
+  * A **boolean** is a *replace* flag.
   * A **string** is a tag for a new element to be created.
+  
+  The following code creates and returns a main element, but does not add it to the dom. 
+
+  ```javascript
+  let mainElement = DOM.set({
+    h1: 'Hello world',
+    p: 'This is <b>a</b> paragraph.'
+  }, 'main', false);
+  ```
+  It can also be achieved this way:
+  
+  ```javascript
+  let mainElement = DOM.element({
+    h1: 'Hello world',
+    p: 'This is <b>a</b> paragraph.'
+  }, 'main');
+  ```
+  
+  The DOM.element method created an element and does not add it to the page. It requires a tag as a string argumnent. If it is not provided one, a *div* is created.
   
 </details>
 
