@@ -238,7 +238,7 @@ class Binder {
     let values = argsType.array;
     let listener = argsType.number;
     if(!onvalue && values){
-      if(values.length === 2) onvalue = v => v ? values[0] : values[1];
+      if(values.length === 2) onvalue = v => v ? values[1] : values[0];
       else if(values.length > 2) onvalue = v => values[v];
       else onvalue = v => v;
     }
