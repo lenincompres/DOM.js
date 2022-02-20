@@ -273,7 +273,7 @@ In fact, if you give several elements the same *id*, DOM.set will group them in 
 Asign a string to the *style:* property to update the inline style of the element—replacing any previous value.
 
 ```javascript
-document.body.set({
+DOM.set({
   main:{
     style: 'margin: 20px; font-family: Tahoma; background-color: gray;',
     content: 'The style is in the style attribute of the main element.'
@@ -285,7 +285,7 @@ document.body.set({
 Asign a structural object to the *style:* to update individual style properties—use names in camelCase.
 
 ```javascript
-document.body.set({
+DOM.set({
   main: {
     style: {
       margin: '20px',
@@ -305,7 +305,7 @@ This is equivalent to using the [style property of DOM elements](https://www.w3s
 NOTE: Styles may be assigned without an emcompasing *style:* object. The previous code could be written as follows.
 
 ```javascript
-document.body.set({
+DOM.set({
   main: {
     margin: '20px',
     fontFamily: 'Tahoma',
@@ -323,7 +323,7 @@ Yet, **DOM.set** interprets structural properties to match attributes, styles, e
 If *style:* has a *content:* property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
 
 ```javascript
-document.body.set({
+DOM.set({
   main: {
     style: {
       lang: 'scss',
@@ -367,7 +367,7 @@ Lastly,
 Use *css:* in your model structure to create styling rules that apply **only** to the current element and its children.
 
 ```javascript
-document.body.set({
+DOM.set({
   main: {
     css: {
       margin: '20px',
@@ -403,7 +403,7 @@ If the element doesn't have an *id*, a unique one is provided for it.
 Elements also have a **css** method you may use to asigned their style. So the previous code could also be written as:
 
 ```javascript
-document.body.set({
+DOM.set({
   main: {
     id: 'mainArea',
     nav: {
