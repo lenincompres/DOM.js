@@ -265,6 +265,30 @@ listedThings[1].style.backgroundColor = 'yellow';
 When an *id* is provided, a global variable holding the array of elements is created. 
 In fact, if you give several elements the same *id*, DOM.set will group them in one global array.
 
+Arrays can also be used to create consecutive element of different types. In this case, just indicate their *tag* as a property.
+
+```javascript
+DOM.set({
+  main: {
+    elements: [
+      {
+        tag: 'p',
+        text: 'this one is a paragraph.',
+      }, {
+        tag: 'img',
+        src: 'thesource.jpg',
+        alt: 'This one is an image',
+      }, {
+        tag: 'p',
+        text: 'another paragraph',
+      }
+    ]
+  }
+});
+```
+
+You can name this elements anything—in this case they were named *elements*—. Each will be assigned their specified tag. Just avoid using known property names like: *content*, *margin*, *text*, etc. Using a plural word for the property helps avoiding mistake.
+
 ---
 
 ## Styling Elements with DOM.js
