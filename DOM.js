@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.11
+ * @version 1.0.12
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -233,16 +233,22 @@ class Binder {
   bind(...args) {
     let argsType = DOM.type(...args);
     let target = argsType.element ? argsType.element : argsType.binder;
+    let station = argsType.string ? argsType.string : 'value';
     let onvalue = argsType.function;
-    let station = argsType.string;
+    let values = argsType.array;
     let listener = argsType.number;
-    if (!target) return DOM.bind(this, ...args, this.addListener(onvalue)); // bind() addListener if not in a model
+    if(!onvalue && values){
+      if(values.length === 2) onvalue = v => v ? values[0] : values[1];
+      else if(values.length > 2) onvalue = v => values[v];
+      else onvalue = v => v;
+    }
+    if (!target) return DOM.bind(this, onvalue, this.addListener(onvalue)); // bind() addListener if not in a model
     if (listener) this.removeListener(listener); // if in a model, this will remove the listener
     let bond = {
       binder: this,
       target: target,
-      station: station ? station : 'value',
-      onvalue: onvalue ? onvalue : v => v
+      station: station,
+      onvalue: onvalue,
     }
     this._bonds.push(bond);
     this.update(bond);
