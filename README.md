@@ -551,6 +551,22 @@ You may add listerner methods to be called when a binder updates.
 myBinder.addListener(value => alert('The value was updated to: ' + value));
 ```
 
+#### Binding array of values
+
+If instead of a function, the binding is given an array, it assumes these outcomes to be indexed bu the value of the binder. 
+
+```javascript
+DOM.set({
+  background: fieldEnabled.bind(['gray', 'green'])
+});
+
+myBinder.bind(someElement, 'text', ['field is disabled', 'field is enabled']);
+
+myBinder.bind(someOtherBinder, ['blue', 'red']);
+```
+
+Note that if the value is a boolean, *false* would be position 0, and *true* is position 1.
+
 ---
 
 ## DOM.get() and element.get()
