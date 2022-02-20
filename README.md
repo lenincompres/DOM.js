@@ -134,8 +134,8 @@ goBtn.click();
 ```
 
 NOTE:
-* Providing and element with an *id:* will create a global variable (with that name) to hold that element.
-* Use *text:* or *innerText:*, *html:* or *innerHTML:*, or simply *content:* for the element's inner content.
+* Providing and element with an *id* will create a global variable (with that name) to hold that element.
+* Use *text* or *innerText*, *html* or *innerHTML*, or simply *content* for the element's inner content.
 
 The **set** method allows you to modify attributes, styles, event handlers, and content of existing elements with just one call.
 
@@ -240,7 +240,7 @@ DOM.set({
 });
 ```
 
-Declaring the array inside a *content:* property allows you to set other properties for all the elements in the array.
+Declaring the array inside a *content* property allows you to set other properties for all the elements in the array.
 
 ```javascript
 DOM.set({
@@ -294,7 +294,7 @@ You can name this elements anything—in this case they were named *elements*—
 ## Styling Elements with DOM.js
 
 ### Style Attribute
-Asign a string to the *style:* property to update the inline style of the element—replacing any previous value.
+Asign a string to the *style* property to update the inline style of the element—replacing any previous value.
 
 ```javascript
 DOM.set({
@@ -306,7 +306,7 @@ DOM.set({
 ```
 
 ### Style Properties
-Asign a structural object to the *style:* to update individual style properties—use names in camelCase.
+Asign a structural object to the *style* to update individual style properties—use names in camelCase.
 
 ```javascript
 DOM.set({
@@ -326,7 +326,7 @@ DOM.set({
 
 This is equivalent to using the [style property of DOM elements](https://www.w3schools.com/jsref/prop_html_style.asp). 
 
-NOTE: Styles may be assigned without an emcompasing *style:* object. The previous code could be written as follows.
+NOTE: Styles may be assigned without an emcompasing *style* object. The previous code could be written as follows.
 
 ```javascript
 DOM.set({
@@ -340,11 +340,11 @@ DOM.set({
 });
 ```
 
-The *style:* and *content:* properties are useful for organizing the model structure. 
+The *style* and *content* properties are useful for organizing the model structure. 
 Yet, **DOM.set** interprets structural properties to match attributes, styles, event handlers and element tags.
 
 ### Style Element
-If *style:* has a *content:* property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
+If *style* has a *content* property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
 
 ```javascript
 DOM.set({
@@ -383,7 +383,7 @@ DOM.style({
 ```
 
 **DOM.style** even recognizes pseudo-elements and pseudo-classes when converting CSS.
-And selectors containing underscores (\_) are interpreted as periods (.); so, *button_warning:* becomes *button.warning*.
+And selectors containing underscores (\_) are interpreted as periods (.); so, *button_warning* becomes *button.warning*.
 
 Lastly,
 
