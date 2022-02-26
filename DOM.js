@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.12
+ * @version 1.0.13
  * @repository https://github.com/lenincompres/DOM.js
  */
 
- Element.prototype.get = function (station) {
+Element.prototype.get = function (station) {
   if (!station || ['content', 'inner', 'innerhtml', 'html'].includes(station)) station = 'innerHTML';
   if (['text'].includes(station)) station = 'innerText';
   if (['outer', 'self'].includes(station)) station = 'outerHTML';
@@ -39,12 +39,12 @@ Element.prototype.set = function (model, ...args) {
     individual.content = item;
     this.set(individual, ...args);
   });
-  let argsType = DOM.type(...args);
   let modelType = DOM.type(model);
   const TAG = this.tagName.toLowerCase();
   const IS_HEAD = TAG === 'head';
-  const CLEAR = argsType.boolean === true || argsType.string === 'content';
+  let argsType = DOM.type(...args);
   let station = argsType.string; // original style|attr|tag|inner…|on…|name
+  const CLEAR = argsType.boolean === true || argsType.string === 'content';
   if ([undefined, 'model', 'inner', 'set'].includes(station)) station = 'content';
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
@@ -96,8 +96,7 @@ Element.prototype.set = function (model, ...args) {
     else if (tag != elt.tagName.toLowerCase()) DOM.addID(tag, elt);
     if (CLEAR) this.innerHTML = '';
     if (cls.length) elt.classList.add(...cls);
-    if(NOT_APPEND) return elt;
-    return this.append(elt);
+    return NOT_APPEND ? elt : this.append(elt);
   }
   if (station === 'script' && IS_PRIMITIVE) return this.set({
     script: {
@@ -108,7 +107,7 @@ Element.prototype.set = function (model, ...args) {
   if (IS_CONTENT && !model.binders) {
     if (CLEAR) this.innerHTML = '';
     if (IS_PRIMITIVE) return this.innerHTML = model;
-    if (Array.isArray(model)) return model.forEach(m => this.set(m));
+    if (Array.isArray(model)) return model.forEach(m => this.set(m, 'div'));
     Object.keys(model).forEach(key => this.set(model[key], key, p5Elem));
     return this;
   }
@@ -234,13 +233,12 @@ class Binder {
     let argsType = DOM.type(...args);
     let target = argsType.element ? argsType.element : argsType.binder;
     let station = argsType.string ? argsType.string : 'value';
-    let onvalue = argsType.function;
+    let onvalue = argsType.function ? argsType.function : v => v;
     let values = argsType.array;
     let listener = argsType.number;
-    if(!onvalue && values){
-      if(values.length === 2) onvalue = v => v ? values[1] : values[0];
-      else if(values.length > 2) onvalue = v => values[v];
-      else onvalue = v => v;
+    if (values && values.length) {
+      if (values.length === 2) onvalue = v => v ? values[1] : values[0];
+      else onvalue = v => values[v];
     }
     if (!target) return DOM.bind(this, onvalue, this.addListener(onvalue)); // bind() addListener if not in a model
     if (listener) this.removeListener(listener); // if in a model, this will remove the listener
@@ -415,7 +413,7 @@ class DOM {
       cls = [];
     }
     if (sel.toLowerCase() === 'fontface') sel = '@font-face';
-    if(sel === 'src' && !model.startsWith('url')) model = `url(${model})`;
+    if (sel === 'src' && !model.startsWith('url')) model = `url(${model})`;
     if (DOM.type(model).primitive !== undefined) return `${DOM.unCamel(sel)}: ${model};\n`;
     //if (Array.isArray(model)) model = assignAll(model);
     if (Array.isArray(model)) return model.map(m => DOM.css(sel, m)).join(' ');
@@ -452,8 +450,8 @@ class DOM {
     return output;
   }
   // returns an element without adding it to the DOM
-  static element(model, tag){
-    if(!tag) tag = model.tag ? tag : 'div';
+  static element(model, tag) {
+    if (!tag) tag = model.tag ? model.tag : 'div';
     return DOM.set(model, tag, false);
   }
   // returns querystring as a structural object 
