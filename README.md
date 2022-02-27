@@ -519,7 +519,7 @@ Any element's property (attribute, content, style, content or event handler) can
 When the *value* property of this object changes, it automatically updates all element properties' bound to it.
 
 ```javascript
-let myBinder = new Binder('Default value');
+let myBinder = DOM.binder('Default value');
 
 DOM.set({
   input: {
@@ -540,16 +540,41 @@ DOM.set({
 You may provide a function that returns the correct value to assign to the element's property based on the value of the binder.
 
 ```javascript
-let fieldEnabled = new Binder(false);
+let fieldEnabled = DOM.binder(false);
 
 DOM.set({
   div: {
     style: {
-      background: fieldEnabled.bind(value => value === true ? 'green': 'gray')
+      background: fieldEnabled.bind(value => value ? 'green': 'gray')
     },
     input: {
       enabled: fieldEnabled,
-      value: fieldEnabled.bind(value => value ? 'The field is enabled.' : 'The field is disabled.')
+      value: fieldEnabled.bind(value => `The field is: ${value}.`)
+    },
+    button : {
+      text: 'toggle',
+      onclick: () => fieldEnabled.value = !fieldEnabled.value
+    }
+  }
+});
+```
+
+You can also provide an object model to map the values to.
+
+```javascript
+let fieldEnabled = DOM.binder(false);
+
+DOM.set({
+  div: {
+    style: {
+      background: fieldEnabled.bind({
+        true: 'green',
+        false: 'gray',
+      })
+    },
+    input: {
+      enabled: fieldEnabled,
+      value: fieldEnabled.bind(value => `The field is: ${value}.`)
     },
     button : {
       text: 'toggle',
@@ -564,11 +589,17 @@ DOM.set({
 You may call the *bind* method of a binder and provide the element and property to be bound to it.
 
 ```javascript
-myBinder.bind(someElement, 'text', value => value ? 'field is enabled' : 'field is disabled');
+myBinder.bind(someElement, 'text', value => `The field is: ${value}.`);
 ```
 
 The *bind* method is agnostic about the order of the arguments provided. 
 An *element* is the target, a *string* the property to bind, and a *function* will return the appropriate value to update the element.
+
+The DOM.binder function may also be invoked with initial binding settings. The first argument will be the value of the binder.
+
+```javascript
+let myBinder = DOM.binder(true, someElement, 'text', value => `The field is: ${value}.`);
+```
 
 #### Binding binders
 
@@ -588,7 +619,7 @@ myBinder.addListener(value => alert('The value was updated to: ' + value));
 
 #### Binding array of values
 
-If instead of a function, the binding is given an array, it assumes these outcomes to be indexed bu the value of the binder. 
+If instead of a function or an object model, the binding is given an array, it assumes these outcomes to be indexed by the value of the binder. 
 
 ```javascript
 DOM.set({
