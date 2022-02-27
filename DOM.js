@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.14
+ * @version 1.0.15
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -234,12 +234,14 @@ class Binder {
     let target = argsType.element ? argsType.element : argsType.binder;
     let station = argsType.string ? argsType.string : 'value';
     let onvalue = argsType.function ? argsType.function : v => v;
-    let values = argsType.array;
     let listener = argsType.number;
+    let values = argsType.array;
+    let model = argsType.object;
     if (values && values.length) {
       if (values.length === 2) onvalue = v => v ? values[1] : values[0];
       else onvalue = v => values[v];
     }
+    else if (model && model !== target) onvalue = v => model[v];
     if (!target) return DOM.bind(this, onvalue, this.addListener(onvalue)); // bind() addListener if not in a model
     if (listener) this.removeListener(listener); // if in a model, this will remove the listener
     let bond = {
@@ -455,10 +457,10 @@ class DOM {
     return DOM.set(model, tag, false);
   }
   // returns a new binder
-  static binder(val, ...args){
-    let b = new Binder(val);
-    if(args.length) b.bind(...args);
-    return b;
+  static binder(value, ...args){
+    let binder = new Binder(value);
+    if(args.length) binder.bind(...args);
+    return binder;
   }
   // returns querystring as a structural object 
   static querystring() {
