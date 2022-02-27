@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.13
+ * @version 1.0.14
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -106,7 +106,7 @@ Element.prototype.set = function (model, ...args) {
   if (TAG === 'style' && !model.content && !IS_PRIMITIVE) model = DOM.css(model);
   if (IS_CONTENT && !model.binders) {
     if (CLEAR) this.innerHTML = '';
-    if (IS_PRIMITIVE) return this.innerHTML = model;
+    if (IS_PRIMITIVE) return this.innerHTML += model;
     if (Array.isArray(model)) return model.forEach(m => this.set(m, 'div'));
     Object.keys(model).forEach(key => this.set(model[key], key, p5Elem));
     return this;
@@ -453,6 +453,12 @@ class DOM {
   static element(model, tag) {
     if (!tag) tag = model.tag ? model.tag : 'div';
     return DOM.set(model, tag, false);
+  }
+  // returns a new binder
+  static binder(val, ...args){
+    let b = new Binder(val);
+    if(args.length) b.bind(...args);
+    return b;
   }
   // returns querystring as a structural object 
   static querystring() {
