@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.15
+ * @version 1.0.16
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -239,9 +239,9 @@ class Binder {
     let model = argsType.object;
     if (values && values.length) {
       if (values.length === 2) onvalue = v => v ? values[1] : values[0];
-      else onvalue = v => values[v];
+      else onvalue = v => values[v] !== undefined ? values[v] : '';
     }
-    else if (model && model !== target) onvalue = v => model[v];
+    else if (model && model !== target) onvalue = v => model[v] !== undefined ? model[v] : '';
     if (!target) return DOM.bind(this, onvalue, this.addListener(onvalue)); // bind() addListener if not in a model
     if (listener) this.removeListener(listener); // if in a model, this will remove the listener
     let bond = {
