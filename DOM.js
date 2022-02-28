@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.17
+ * @version 1.0.18
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -175,6 +175,7 @@ Element.prototype.set = function (model, ...args) {
   if (id) elt.setAttribute('id', id);
   this.append(elt);
   ['ready', 'onready', 'done', 'ondone'].forEach(r => model[r] ? model[r](elem) : null);
+  if(argsType.function) argsType.function(elem);
   return elem;
 };
 
@@ -290,17 +291,13 @@ class DOM {
       }
     });
     document.head.set(headModel);
-    if (DOM.type(model).primitive !== undefined) {
-      model = {
-        content: model
-      };
-      if (!argsType.string) args.push('div');
-    }
+    let tag = argsType.string;
+    if (DOM.type(model).primitive !== undefined && !tag) args.push('div');
     if (argsType.boolean) document.body.innerHTML = '';
-    else if (argsType.boolean === false) model.onready = elt => {
-      if (model.onready) model.onready(elt);
-      elt.remove();
-    };
+    else if (argsType.boolean === false) {
+      if (!tag) args.push('div');
+      args.push(elt => elt.remove());
+    }
     if (document.body) return document.body.set(model, ...args);
     window.addEventListener('load', _ => document.body.set(model, ...args));
   }
