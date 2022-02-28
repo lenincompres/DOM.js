@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.16
+ * @version 1.0.17
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -21,8 +21,8 @@ Element.prototype.get = function (station) {
   if (output.length) return output;
 }
 
-Element.prototype.create = function (...args) {
-  this.set(...args);
+Element.prototype.make = function (...args) {
+  return this.set(...args);
 };
 
 Element.prototype.set = function (model, ...args) {
@@ -52,7 +52,6 @@ Element.prototype.set = function (model, ...args) {
   if (DOM.reserveStations.includes(station)) return;
   const IS_CONTENT = station === 'content';
   const IS_LISTENER = DOM.listeners.includes(station);
-  const NOT_APPEND = argsType.boolean === false;
   const p5Elem = argsType.p5Element;
   if (modelType.function) {
     if (DOM.type(STATION).event) return this.addEventListener(STATION, e => model(e, this));
@@ -96,7 +95,7 @@ Element.prototype.set = function (model, ...args) {
     else if (tag != elt.tagName.toLowerCase()) DOM.addID(tag, elt);
     if (CLEAR) this.innerHTML = '';
     if (cls.length) elt.classList.add(...cls);
-    return NOT_APPEND ? elt : this.append(elt);
+    return this.append(elt);
   }
   if (station === 'script' && IS_PRIMITIVE) return this.set({
     script: {
@@ -114,7 +113,7 @@ Element.prototype.set = function (model, ...args) {
   if (modelType.array) {
     if (station === 'class') return model.forEach(c => c ? this.classList.add(c) : null);
     if (IS_LISTENER) return this.addEventListener(...model);
-    let map = model.map(m => this.set(m, [tag, ...cls].join('.'), p5Elem, NOT_APPEND ? false : undefined));
+    let map = model.map(m => this.set(m, [tag, ...cls].join('.'), p5Elem));
     if (id) DOM.addID(id, map);
     return map;
   }
@@ -174,11 +173,8 @@ Element.prototype.set = function (model, ...args) {
   elt = p5Elem ? elem.elt : elem;
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute('id', id);
-  this[NOT_APPEND ? 'prepend' : 'append'](elt);
-  if (model.ready) model.ready(elem);
-  if (model.onready) model.onready(elem);
-  if (model.done) model.done(elem);
-  if (model.ondone) model.ondone(elem);
+  this.append(elt);
+  ['ready', 'onready', 'done', 'ondone'].forEach(r => model[r] ? model[r](elem) : null);
   return elem;
 };
 
@@ -240,8 +236,7 @@ class Binder {
     if (values && values.length) {
       if (values.length === 2) onvalue = v => v ? values[1] : values[0];
       else onvalue = v => values[v] !== undefined ? values[v] : '';
-    }
-    else if (model && model !== target) onvalue = v => model[v] !== undefined ? model[v] : '';
+    } else if (model && model !== target) onvalue = v => model[v] !== undefined ? model[v] : '';
     if (!target) return DOM.bind(this, onvalue, this.addListener(onvalue)); // bind() addListener if not in a model
     if (listener) this.removeListener(listener); // if in a model, this will remove the listener
     let bond = {
@@ -280,8 +275,8 @@ class DOM {
   static get(station) {
     return station && DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
-  static create(...args) {
-    DOM.set(...args);
+  static make(...args) {
+    return DOM.set(...args);
   }
   static set(model, ...args) {
     let argsType = DOM.type(...args);
@@ -295,6 +290,17 @@ class DOM {
       }
     });
     document.head.set(headModel);
+    if (DOM.type(model).primitive !== undefined) {
+      model = {
+        content: model
+      };
+      if (!argsType.string) args.push('div');
+    }
+    if (argsType.boolean) document.body.innerHTML = '';
+    else if (argsType.boolean === false) model.onready = elt => {
+      if (model.onready) model.onready(elt);
+      elt.remove();
+    };
     if (document.body) return document.body.set(model, ...args);
     window.addEventListener('load', _ => document.body.set(model, ...args));
   }
@@ -451,15 +457,10 @@ class DOM {
     }, tag);
     return output;
   }
-  // returns an element without adding it to the DOM
-  static element(model, tag) {
-    if (!tag) tag = model.tag ? model.tag : 'div';
-    return DOM.set(model, tag, false);
-  }
   // returns a new binder
-  static binder(value, ...args){
+  static binder(value, ...args) {
     let binder = new Binder(value);
-    if(args.length) binder.bind(...args);
+    if (args.length) binder.bind(...args);
     return binder;
   }
   // returns querystring as a structural object 
