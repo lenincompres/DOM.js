@@ -49,7 +49,7 @@ someElement.set({
 ```
 The new **h1** and **p** elements will be appended to the element.
 
-A *true* boolean will make the new content **replace** any existing one.
+A *true* boolean will make the new content **replace** any existing one instead of appending it.
 
 ```javascript
 someElement.set({
@@ -93,16 +93,8 @@ someElement.set({
     p: 'This is <b>a</b> paragraph.'
   }, 'main', false);
   ```
-  It can also be achieved this way:
   
-  ```javascript
-  let mainElement = DOM.element({
-    h1: 'Hello world',
-    p: 'This is <b>a</b> paragraph.'
-  }, 'main');
-  ```
-  
-  The DOM.element method created an element and does not add it to the page. It requires a tag as a string argumnent. If it is not provided one, a *div* is created.
+  Invoking the method with a *false* boolean, expects a tag (string argumnent). If it is not provided, a *div* is created.
   
 </details>
 
