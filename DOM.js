@@ -1,16 +1,16 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.18
+ * @version 1.0.20
  * @repository https://github.com/lenincompres/DOM.js
  */
 
 Element.prototype.get = function (station) {
-  if (!station || ['content', 'inner', 'innerhtml', 'html'].includes(station)) station = 'innerHTML';
-  if (['text'].includes(station)) station = 'innerText';
-  if (['outer', 'self'].includes(station)) station = 'outerHTML';
+  if (!station && this.tagName.toLocaleLowerCase() === 'input') return this.value;
+  if (!station || ['content', 'inner', 'innerhtml', 'html'].includes(station)) return this.innerHTML;
+  if (['text'].includes(station)) return this.innerText;
+  if (['outer', 'self'].includes(station)) return this.outerHTML;
   if (DOM.attributes.includes(station)) return this.getAttribute(station);
-  //if (this.getAttribute(station)) return this.getAttribute(station);
   if (DOM.isStyle(station, this)) return this.style[station];
   let output = station ? this[station] : this.value;
   if (output !== undefined && output !== null) return output;
@@ -20,10 +20,6 @@ Element.prototype.get = function (station) {
   output = [...this.querySelectorAll(station)];
   if (output.length) return output;
 }
-
-Element.prototype.make = function (...args) {
-  return this.set(...args);
-};
 
 Element.prototype.set = function (model, ...args) {
   if ([null, undefined].includes(model)) return;
@@ -72,7 +68,7 @@ Element.prototype.set = function (model, ...args) {
     if (station === 'viewport' && modelType.object) model = Object.entries(model).map(([key, value]) => `${DOM.unCamel(key)}=${value}`).join(',');
     modelType = DOM.type(model);
   }
-  const IS_PRIMITIVE = modelType.primitive !== undefined;
+  const IS_PRIMITIVE = modelType.isPrimitive;
   let [tag, ...cls] = STATION.split('_');
   if (STATION.includes('.')) {
     cls = STATION.split('.');
@@ -175,7 +171,7 @@ Element.prototype.set = function (model, ...args) {
   if (id) elt.setAttribute('id', id);
   this.append(elt);
   ['ready', 'onready', 'done', 'ondone'].forEach(r => model[r] ? model[r](elem) : null);
-  if(argsType.function) argsType.function(elem);
+  if (argsType.function) argsType.function(elem);
   return elem;
 };
 
@@ -249,7 +245,7 @@ class Binder {
     this._bonds.push(bond);
     this.update(bond);
   }
-  flash(values, delay = 1000, revert = true) { //changes value for a time and returns to the old value or iterates through an array of values
+  flash(values, delay = 1000, revert = true) { //iterates through values for a time and reverts to the intital value
     if (!Array.isArray(values)) values = [values];
     if (!Array.isArray(delay)) delay = new Array(values.length).fill(delay);
     let oldValue = this.value;
@@ -276,9 +272,6 @@ class DOM {
   static get(station) {
     return station && DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
-  static make(...args) {
-    return DOM.set(...args);
-  }
   static set(model, ...args) {
     let argsType = DOM.type(...args);
     let elt = argsType.element ? argsType.element : argsType.p5Element;
@@ -292,7 +285,7 @@ class DOM {
     });
     document.head.set(headModel);
     let tag = argsType.string;
-    if (DOM.type(model).primitive !== undefined && !tag) args.push('div');
+    if (DOM.type(model).isPrimitive && !tag) args.push('div');
     if (argsType.boolean) document.body.innerHTML = '';
     else if (argsType.boolean === false) {
       if (!tag) args.push('div');
@@ -300,6 +293,17 @@ class DOM {
     }
     if (document.body) return document.body.set(model, ...args);
     window.addEventListener('load', _ => document.body.set(model, ...args));
+  }
+  // returns a new element without appending it to the DOM
+  static element(model, tag) {
+    if (!tag) tag = model.tag ? tag : 'div';
+    return DOM.set(model, tag, false);
+  }
+  // returns a new binder
+  static binder(value, ...args) {
+    let binder = new Binder(value);
+    if (args.length) binder.bind(...args);
+    return binder;
   }
   // returns a bind for element's props to use ONLY in a set() model
   static bind(binders, onvalue = v => v, listener) {
@@ -419,8 +423,7 @@ class DOM {
     }
     if (sel.toLowerCase() === 'fontface') sel = '@font-face';
     if (sel === 'src' && !model.startsWith('url')) model = `url(${model})`;
-    if (DOM.type(model).primitive !== undefined) return `${DOM.unCamel(sel)}: ${model};\n`;
-    //if (Array.isArray(model)) model = assignAll(model);
+    if (DOM.type(model).isPrimitive) return `${DOM.unCamel(sel)}: ${model};\n`;
     if (Array.isArray(model)) return model.map(m => DOM.css(sel, m)).join(' ');
     if (model.class) cls.push(...model.class.split(' '));
     if (model.id) sel += '#' + model.id;
@@ -429,13 +432,17 @@ class DOM {
     if (cls.length) sel += '.' + cls.join('.');
     let css = Object.entries(model).map(([key, style]) => {
       if (style === undefined || style === null) return;
-      if (DOM.type(style).primitive !== undefined) return DOM.css(key, style);
+      if (DOM.type(style).isPrimitive) return DOM.css(key, style);
       let sub = DOM.unCamel(key.split('(')[0]);
-      let xSel = `${sel}>${key}`;
+      let xSel = `${sel} ${key}`;
       let subType = DOM.type(sub);
       if (subType.pseudoClass) xSel = `${sel}:${sub}`;
       else if (subType.pseudoElement) xSel = `${sel}::${sub}`;
-      else if (['_', ' '].some(s => key.startsWith(s))) xSel = `${sel} ${sub.substring(1)}`;
+      else {
+        if (key.startsWith('__')) xSel = `${sel}${sub.substring(1)}`;
+        else if (key.startsWith('>')) xSel = `${sel}>${sub.substring(1)}`;
+        else if (key.endsWith('_')) xSel = `${sel}>${sub.substring(0,sub.length-1)}`;
+      }
       delete style.all;
       extra.push(DOM.css(xSel, style));
     }).join(' ');
@@ -454,12 +461,6 @@ class DOM {
     }, tag);
     return output;
   }
-  // returns a new binder
-  static binder(value, ...args) {
-    let binder = new Binder(value);
-    if (args.length) binder.bind(...args);
-    return binder;
-  }
   // returns querystring as a structural object 
   static querystring() {
     var qs = location.search.substring(1);
@@ -473,6 +474,7 @@ class DOM {
     if (Array.isArray(window[id])) return window[id].push(elt);
     window[id] = [window[id], elt];
   };
+  // returns an objects with all value types in found in it 
   static type = (...args) => {
     if (args === undefined) return;
     let output = {};
@@ -498,6 +500,7 @@ class DOM {
         if (item._bonds) return output.binders ? output.binders.push(item) : output.binders = [item];
       }
     });
+    output.isPrimitive = !!output.primitives;
     if (output.strings) output.string = output.strings[0];
     if (output.numbers) output.number = output.numbers[0];
     if (output.booleans) output.boolean = output.booleans[0];
