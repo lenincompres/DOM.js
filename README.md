@@ -484,22 +484,34 @@ mainArea.css({
 });
 ```
 
-Nested selectors are assumed as immediate children in the hierarchy of the DOM. Use a leading underscore (\_) to affect any child under the element, not just immediate ones. Two leading underscore means any child of this class under the heirarchy.
+Nested selectors affect all children in the hierarchy of the DOM. 
+- (tag_) Use a trailing underscore (\_) to affect only immediate children of the element.
+- (tag_class) Other underscores in the selector are turned into (.) to indicate classes.
+- (\__class) Two leading underscores means the class is applied to the parent selector.
 
 ```javascript
 mainArea.css({
-  a: { // #mainArea>a
-    backgroundColor: 'gray'
+  a: {    // #mainArea a
+    backgroundColor: 'gray',
+    __primary: {   // #mainArea a.primary
+      backgroundColor: 'gold',
+    },
   },
-  a_primary: {    // #mainArea>a.primary
+  a_: {   // #mainArea>a
+    backgroundColor: 'silver',
+    __primary: {    // #mainArea>a.primary
+      backgroundColor: 'red',
+    },
+  },
+  a_primary: {    // #mainArea a.primary
     backgroundColor: 'gold',
   },
-  _a: {   // #mainArea a
-    backgroundColor: 'silver',
+  _primary: {   // #mainArea .primary
+    backgroundColor: 'green',
   },
-  __primary: {   // #mainArea .primary
-    backgroundColor: 'yellow',
-  };
+  a_primary_: {    // #mainArea>a.primary
+    backgroundColor: 'red',
+  },
 });
 ```
 
