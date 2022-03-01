@@ -303,24 +303,6 @@ DOM.set([
 ]);
 ```
 
-or
-
-```javascript
-someElement.set([
-  {
-    tag: 'p',
-    text: 'this one is a paragraph.',
-  }, {
-    tag: 'img',
-    src: 'thesource.jpg',
-    alt: 'This one is an image',
-  }, {
-    tag: 'p',
-    text: 'another paragraph',
-  }
-]);
-```
-
 ---
 
 ## Styling Elements with DOM.js
