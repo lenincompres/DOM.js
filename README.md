@@ -478,25 +478,25 @@ Nested selectors affect all children in the hierarchy of the DOM.
 
 ```javascript
 mainArea.css({
-  a: {    // #mainArea a
+  a: {                              // #mainArea a
     backgroundColor: 'gray',
-    __primary: {   // #mainArea a.primary
+    __primary: {                   // #mainArea a.primary
       backgroundColor: 'gold',
     },
   },
-  a_: {   // #mainArea>a
+  a_: {                            // #mainArea>a
     backgroundColor: 'silver',
-    __primary: {    // #mainArea>a.primary
+    __primary: {                  // #mainArea>a.primary
       backgroundColor: 'red',
     },
   },
-  a_primary: {    // #mainArea a.primary
+  a_primary: {                    // #mainArea a.primary
     backgroundColor: 'gold',
   },
-  _primary: {   // #mainArea .primary
+  _primary: {                    // #mainArea .primary
     backgroundColor: 'green',
   },
-  a_primary_: {    // #mainArea>a.primary
+  a_primary_: {                 // #mainArea>a.primary
     backgroundColor: 'red',
   },
 });
