@@ -528,29 +528,7 @@ DOM.set({
 
 ### Binding Functions
 
-You may provide a function that returns the correct value to assign to the element's property based on the value of the binder.
-
-```javascript
-let fieldEnabled = DOM.binder(false);
-
-DOM.set({
-  div: {
-    style: {
-      background: fieldEnabled.bind(value => value ? 'green': 'gray')
-    },
-    input: {
-      enabled: fieldEnabled,
-      value: fieldEnabled.bind(value => `The field is: ${value}.`)
-    },
-    button : {
-      text: 'toggle',
-      onclick: () => fieldEnabled.value = !fieldEnabled.value
-    }
-  }
-});
-```
-
-You can also provide an object model to map the values to.
+You may provide a function that returns the correct value to assign to the element's property based on the value of the binder. Or provide an object model to map the values to.
 
 ```javascript
 let fieldEnabled = DOM.binder(false);
