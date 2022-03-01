@@ -151,6 +151,10 @@ document.head.set({
   icon: 'icon.ico',
   keywords: 'website,multiple,keywords',
   description: 'Website created with DOM.js',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+  },
   meta: {
     name: 'color-scheme',
     content: 'dark'
