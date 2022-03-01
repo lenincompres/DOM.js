@@ -485,9 +485,9 @@ mainArea.css({
 ```
 
 Nested selectors affect all children in the hierarchy of the DOM. 
-- (tag_) Use a trailing underscore (\_) to affect only immediate children of the element.
-- (tag_class) Other underscores in the selector are turned into (.) to indicate classes.
-- (\__class) Two leading underscores means the class is applied to the parent selector.
+- **tag_**: Use a trailing underscore (\_) to affect only immediate children of the element.
+- **tag_class**: Other underscores in the selector are turned into (.) to indicate classes.
+- **\_\_class**: Two leading underscores means the class is applied to the parent selector.
 
 ```javascript
 mainArea.css({
