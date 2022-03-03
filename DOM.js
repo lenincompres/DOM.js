@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.21
+ * @version 1.0.22
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -107,7 +107,10 @@ Element.prototype.set = function (model, ...args) {
     return this;
   }
   if (modelType.array) {
-    if (station === "class") return model.forEach(c => c ? this.classList.add(c) : null);
+    if (station === "class") return model.forEach(c => {
+      if (!c) return;
+      this.classList.add(c);
+    });
     if (IS_LISTENER) return this.addEventListener(...model);
     let map = model.map(m => this.set(m, [tag, ...cls].join("."), p5Elem));
     if (id) DOM.addID(id, map);
@@ -170,7 +173,10 @@ Element.prototype.set = function (model, ...args) {
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute("id", id);
   this.append(elt);
-  ["ready", "onready", "done", "ondone"].forEach(r => model[r] ? model[r](elem) : null);
+  ["ready", "onready", "done", "ondone"].forEach(f => {
+    if (!model[f]) return;
+    model[f](elem);
+  });
   if (argsType.function) argsType.function(elem);
   return elem;
 };
@@ -186,8 +192,7 @@ if (typeof p5 !== "undefined") {
 // Adds css to the head under the element"s ID
 Element.prototype.css = function (style) {
   if (this === document.head) return DOM.style(style);
-  let thisStyle = {};
-  if(this === document.body) DOM.style(style);
+  if (this === document.body) return DOM.style(style);
   let id = this.id;
   if (!id) {
     if (!window.domids) window.domids = [];
@@ -195,8 +200,9 @@ Element.prototype.css = function (style) {
     this.setAttribute("id", id);
     window.domids.push(id);
   }
-  thisStyle[`#${id}`] = style;
-  DOM.style(thisStyle);
+  DOM.style({
+    [`#${id}`]: style,
+  });
 }
 
 // Update props of bound element when its value changes. Can also update other binders.
@@ -258,7 +264,10 @@ class Binder {
   }
   set value(val) {
     this._value = val;
-    this._bonds.forEach(bond => bond.target !== this.setter ? this.update(bond) : null);
+    this._bonds.forEach(bond => {
+      if(bond.target === this.setter) return;
+      this.update(bond);
+    });
     this.onvalue(val);
     Object.values(this._listeners).forEach(func => func(val));
     this.setter = undefined;
@@ -270,36 +279,41 @@ class Binder {
 
 // global static methods to handle the DOM
 class DOM {
-  static get(station) {
-    return station && DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
+  // returns value based on 
+  static get(station, ...args) {
+    // checks if meant to get from an element
+    let argsType = DOM.typify(...args);
+    let elt = argsType.element ? argsType.element : argsType.p5Element;
+    if (elt) return elt.get(model);
+    // checks if the station belongs to the head
+    DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
+  // create elements based on an object model
   static set(model, ...args) {
+    // checks if the model is meant for an element
     let argsType = DOM.typify(...args);
     let elt = argsType.element ? argsType.element : argsType.p5Element;
     if (elt) return elt.set(model, ...args);
+    // checks if the model is meant for the head
     let headModel = {};
     Object.keys(model).forEach(key => {
-      if (DOM.headTags.includes(key.toLowerCase())) {
-        headModel[key] = model[key];
-        delete model[key];
-      }
+      if (!DOM.headTags.includes(key.toLowerCase())) return;
+      headModel[key] = model[key];
+      delete model[key];
     });
     document.head.set(headModel);
-    let tag = argsType.string;
-    if (DOM.typify(model).isPrimitive && !tag) args.push("div");
+    // checks if the model requires a new element
+    if (DOM.typify(model).isPrimitive && !argsType.string) args.push("div");
+    if (model.tag) args.push(model.tag);
+    // checks if the model should replace the DOM
     if (argsType.boolean) document.body.innerHTML = "";
-    else if (argsType.boolean === false) {
-      if (!tag) args.push("div");
-      args.push(elt => elt.remove());
-    }
+    // checks if the body is loaded
     if (document.body) return document.body.set(model, ...args);
+    // waits for the body to load
     window.addEventListener("load", _ => document.body.set(model, ...args));
   }
   // returns a new element without appending it to the DOM
-  static element(model, tag) {
-    if (!tag) tag = model.tag ? tag : "div";
-    return DOM.set(model, tag, false);
-  }
+  static element = (model, tag = "div") => DOM.set(model, tag, elt => elt.remove());
   // returns a new binder
   static binder(value, ...args) {
     let binder = new Binder(value);
@@ -316,8 +330,147 @@ class DOM {
       onvalue: _ => onvalue(...binders.map(binder => binder.value))
     }
   }
-  // CSS reset for DOM projects
-  static CSSReset = {
+  // adds styles to the head as global CSS
+  static style(style) {
+    if (!style) return;
+    if (Array.isArray(style)) return style.forEach(s => DOM.style(s));
+    if (typeof style === "string") return document.head.set({
+      content: style
+    }, "style");
+    DOM.style(DOM.css(style));
+  }
+  // converts JSON to CSS. Supports nesting. Turns "_" in selectors into ".". Preceding "__" assumes class on previous selector. Trailing "_" assumes immediate children (>).
+  static css(sel, model) {
+    const assignAll = (arr = [], dest = {}) => {
+      arr.forEach(prop => Object.assign(dest, prop));
+      return dest;
+    }
+    if (typeof sel !== "string") {
+      if (!sel) return;
+      if (Array.isArray(sel)) sel = assignAll(sel);
+      if (sel.tag || sel.id || sel.class) return DOM.css(sel.tag ? sel.tag : "", sel);
+      return Object.entries(sel).map(([key, value]) => DOM.css(key, value)).join(" ");
+    }
+    let extra = [];
+    let cls = sel.split("_");
+    sel = cls.shift();
+    if (sel === "h") {
+      cls = cls.length ? ("." + cls.join(".")) : "";
+      sel = Array(6).fill().map((_, i) => "h" + (i + 1) + cls).join(", ");
+      cls = [];
+    }
+    if (sel.toLowerCase() === "fontface") sel = "@font-face";
+    if (sel === "src" && !model.startsWith("url")) model = `url(${model})`;
+    if (DOM.typify(model).isPrimitive) return `${DOM.unCamelize(sel)}: ${model};\n`;
+    if (Array.isArray(model)) return model.map(m => DOM.css(sel, m)).join(" ");
+    if (model.class) cls.push(...model.class.split(" "));
+    if (model.id) sel += "#" + model.id;
+    delete model.class;
+    delete model.id;
+    if (cls.length) sel += "." + cls.join(".");
+    let css = Object.entries(model).map(([key, style]) => {
+      if (style === undefined || style === null) return;
+      if (DOM.typify(style).isPrimitive) return DOM.css(key, style);
+      let sub = DOM.unCamelize(key.split("(")[0]);
+      let xSel = `${sel} ${key}`;
+      let subType = DOM.typify(sub);
+      if (subType.pseudoClass) xSel = `${sel}:${sub}`;
+      else if (subType.pseudoElement) xSel = `${sel}::${sub}`;
+      else {
+        if (key.startsWith("__")) xSel = `${sel}${sub.substring(1)}`;
+        else if (key.startsWith(">")) xSel = `${sel}>${sub.substring(1)}`;
+        else if (key.endsWith("_")) xSel = `${sel}>${sub.substring(0,sub.length-1)}`;
+      }
+      delete style.all;
+      extra.push(DOM.css(xSel, style));
+    }).join(" ");
+    return (css ? `\n${sel} {\n ${css}}` : "") + extra.join(" ");
+  }
+  // returns html based on a model
+  static html = (model, tag = "div") => !model ? null : (model.tagName ? model : DOM.element(model, tag)).outerHTML;
+  // returns querystring as a structural object 
+  static querystring = () => {
+    var qs = location.search.substring(1);
+    if (!qs) return Object();
+    if (qs.includes("=")) return JSON.parse("{\"" + decodeURI(location.search.substring(1)).replace(/"/g, "\\\"").replace(/&/g, "", "").replace(/=/g, "\":\"") + "\"}");
+    return qs.split("/");
+  }
+  static addID = (id, elt) => {
+    if (Array.isArray(elt)) return elt.forEach(e => DOM.addID(id, e));
+    if (!window[id]) return window[id] = elt;
+    if (Array.isArray(window[id])) return window[id].push(elt);
+    window[id] = [window[id], elt];
+  };
+  // returns objects with all value types
+  static typify = (...args) => {
+    if (args === undefined) return;
+    let output = {};
+    args.forEach(item => {
+      let type = typeof item;
+      if (type === "string") {
+        output.strings ? output.strings.push(item) : output.strings = [item];
+        if (DOM.events.includes(item)) output.events ? output.events.push(item) : output.events = [item];
+        if (DOM.attributes.includes(item)) output.attributes ? output.attributes.push(item) : output.attributes = [item];
+        if (DOM.pseudoClasses.includes(item)) output.pseudoClasses ? output.pseudoClasses.push(item) : output.pseudoClasses = [item];
+        if (DOM.pseudoElements.includes(item)) output.pseudoElements ? output.pseudoElements.push(item) : output.pseudoElements = [item];
+        if (DOM.isStyle(item)) output.styles ? output.styles.push(item) : output.styles = [item];
+      }
+      if (type === "number") output.numbers ? output.numbers.push(item) : output.numbers = [item];
+      if (type === "boolean") output.booleans ? output.booleans.push(item) : output.booleans = [item];
+      if (["boolean", "number", "string"].includes(type)) return output.primitives ? output.primitives.push(item) : output.primitives = [item];
+      if (type === "function") return output.functions ? output.functions.push(item) : output.functions = [item];
+      if (Array.isArray(item)) return output.arrays ? output.arrays.push(item) : output.arrays = [item];
+      if (item) {
+        output.objects ? output.objects.push(item) : output.objects = [item];
+        if (item.tagName) return output.elements ? output.elements.push(item) : output.elements = [item];
+        if (item.elt) return output.p5Elements ? output.p5Elements.push(item) : output.p5Elements = [item];
+        if (item._bonds) return output.binders ? output.binders.push(item) : output.binders = [item];
+      }
+    });
+    output.isPrimitive = !!output.primitives;
+    if (output.strings) output.string = output.strings[0];
+    if (output.numbers) output.number = output.numbers[0];
+    if (output.booleans) output.boolean = output.booleans[0];
+    if (output.primitives) output.primitive = output.primitives[0];
+    if (output.arrays) output.array = output.arrays[0];
+    if (output.functions) output.function = output.functions[0];
+    if (output.objects) output.object = output.objects[0];
+    if (output.elements) output.element = output.elements[0];
+    if (output.p5Elements) output.p5Element = output.p5Elements[0];
+    if (output.binders) output.binder = output.binders[0];
+    if (output.events) output.event = output.events[0];
+    if (output.attributes) output.attribute = output.attributes[0];
+    if (output.pseudoClasses) output.pseudoClass = output.pseudoClasses[0];
+    if (output.pseudoElements) output.pseudoElement = output.pseudoElements[0];
+    if (output.styles) output.style = output.styles[0];
+    return output;
+  };
+  static camelize = str => str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+    return index === 0 ? word.toLowerCase() : word.toUpperCase();
+  }).replace(/\s+/g, '');
+  static unCamelize = (str, char = "-") => str.replace(/([A-Z])/g, char + "$1").toLowerCase();
+  static isStyle = (str, elt) => ((elt ? elt : document.body ? document.body : document.createElement("div")).style)[str] !== undefined;
+  static events = ["abort", "afterprint", "animationend", "animationiteration", "animationstart", "beforeprint", "beforeunload", "blur", "canplay", "canplaythrough", "change", "click", "contextmenu", "copy", "cut", "dblclick", "drag", "dragend", "dragenter", "dragleave", "dragover", "dragstart", "drop", "durationchange", "ended", "error", "focus", "focusin", "focusout", "fullscreenchange", "fullscreenerror", "hashchange", "input", "invalid", "keydown", "keypress", "keyup", "load", "loadeddata", "loadedmetadata", "loadstart", "message", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseover", "mouseout", "mouseup", "offline", "online", "open", "pagehide", "pageshow", "paste", "pause", "play", "playing", "progress", "ratechange", "resize", "reset", "scroll", "search", "seeked", "seeking", "select", "show", "stalled", "submit", "suspend", "timeupdate", "toggle", "touchcancel", "touchend", "touchmove", "touchstart", "transitionend", "unload", "volumechange", "waiting", "wheel"];
+  static attributes = ["accept", "accept-charset", "accesskey", "action", "align", "alt", "async", "autocomplete", "autofocus", "autoplay", "bgcolor", "border", "charset", "checked", "cite", "class", "color", "cols", "colspan", "content", "contenteditable", "controls", "coords", "data", "datetime", "default", "defer", "dir", "dirname", "disabled", "download", "draggable", "enctype", "for", "form", "formaction", "headers", "height", "hidden", "high", "href", "hreflang", "http-equiv", "id", "ismap", "kind", "lang", "list", "loop", "low", "max", "maxlength", "media", "method", "min", "multiple", "muted", "name", "novalidate", "open", "optimum", "pattern", "placeholder", "poster", "preload", "readonly", "rel", "required", "reversed", "rows", "rowspan", "sandbox", "scope", "selected", "shape", "size", "sizes", "spellcheck", "src", "srcdoc", "srclang", "srcset", "start", "step", "style", "tabindex", "target", "title", "translate", "type", "usemap", "value", "wrap", "width"];
+  static pseudoClasses = ["active", "checked", "disabled", "empty", "enabled", "first-child", "last-child", "first-of-type", "focus", "hover", "in-range", "invalid", "last-of-type", "link", "only-of-type", "only-child", "optional", "out-of-range", "read-only", "read-write", "required", "root", "target", "valid", "visited", "lang", "not", "nth-child", "nth-last-child", "nth-last-of-type", "nth-of-type"];
+  static pseudoElements = ["after", "before", "first-letter", "first-line", "selection"];
+  static metaNames = ["viewport", "keywords", "description", "author", "refresh", "application-name", "generator"];
+  static htmlEquivs = ["contentSecurityPolicy", "contentType", "defaultStyle", "content-security-policy", "content-type", "default-style", "refresh"];
+  static headTags = ["meta", "link", "title", "font", "icon", "image", ...DOM.metaNames, ...DOM.htmlEquivs];
+  static reserveStations = ["tag", "id", "onready", "ready", "done", "ondone"];
+  static listeners = ["addevent", "addeventlistener", "eventlistener", "listener", "on"];
+  static getDocType = str => typeof str === "string" ? new Object({
+    css: "stylesheet",
+    sass: "stylesheet/sass",
+    scss: "stylesheet/scss",
+    less: "stylesheet/less",
+    js: "text/javascript",
+    ico: "icon"
+  })[str.split(".").pop()] : undefined;
+}
+
+// resets the CSS
+DOM.style({
     "*": {
       boxSizing: "border-box",
       verticalAlign: "baseline",
@@ -389,163 +542,18 @@ class DOM {
       fontSize: "2em",
     },
     h2: {
-      fontSize: (1 + 5 / 6) + "em",
+      fontSize: "1.82em",
     },
     h3: {
-      fontSize: (1 + 4 / 6) + "em",
+      fontSize: "1.67em",
     },
     h4: {
-      fontSize: (1 + 3 / 6) + "em",
+      fontSize: "1.5em",
     },
     h5: {
-      fontSize: (1 + 2 / 6) + "em",
+      fontSize: "1.33em",
     },
     h6: {
-      fontSize: (1 + 1 / 6) + "em",
+      fontSize: "1.17em",
     }
-  };
-  // adds styles to the head as global CSS
-  static style(style) {
-    if (!style) return;
-    if (Array.isArray(style)) return style.forEach(s => DOM.style(s));
-    if (typeof style === "string") return document.head.set({
-      content: style
-    }, "style");
-    DOM.style(DOM.css(style));
-  }
-  /* converts JSON to CSS. Supports nesting. Models can have id: & class: properties to be added to the selector. "_" in selectors are turned into ".". Preceding "__" assumes class on previuos selector. Trailing "_" indicates immediate children (>).*/
-  static css(sel, model) {
-    const assignAll = (arr = [], dest = {}) => {
-      arr.forEach(prop => Object.assign(dest, prop));
-      return dest;
-    }
-    if (typeof sel !== "string") {
-      if (!sel) return;
-      if (Array.isArray(sel)) sel = assignAll(sel);
-      if (sel.tag || sel.id || sel.class) return DOM.css(sel.tag ? sel.tag : "", sel);
-      return Object.entries(sel).map(([key, value]) => DOM.css(key, value)).join(" ");
-    }
-    let extra = [];
-    let cls = sel.split("_");
-    sel = cls.shift();
-    if (sel === "h") {
-      cls = cls.length ? ("." + cls.join(".")) : "";
-      sel = Array(6).fill().map((_, i) => "h" + (i + 1) + cls).join(", ");
-      cls = [];
-    }
-    if (sel.toLowerCase() === "fontface") sel = "@font-face";
-    if (sel === "src" && !model.startsWith("url")) model = `url(${model})`;
-    if (DOM.typify(model).isPrimitive) return `${DOM.unCamelize(sel)}: ${model};\n`;
-    if (Array.isArray(model)) return model.map(m => DOM.css(sel, m)).join(" ");
-    if (model.class) cls.push(...model.class.split(" "));
-    if (model.id) sel += "#" + model.id;
-    delete model.class;
-    delete model.id;
-    if (cls.length) sel += "." + cls.join(".");
-    let css = Object.entries(model).map(([key, style]) => {
-      if (style === undefined || style === null) return;
-      if (DOM.typify(style).isPrimitive) return DOM.css(key, style);
-      let sub = DOM.unCamelize(key.split("(")[0]);
-      let xSel = `${sel} ${key}`;
-      let subType = DOM.typify(sub);
-      if (subType.pseudoClass) xSel = `${sel}:${sub}`;
-      else if (subType.pseudoElement) xSel = `${sel}::${sub}`;
-      else {
-        if (key.startsWith("__")) xSel = `${sel}${sub.substring(1)}`;
-        else if (key.startsWith(">")) xSel = `${sel}>${sub.substring(1)}`;
-        else if (key.endsWith("_")) xSel = `${sel}>${sub.substring(0,sub.length-1)}`;
-      }
-      delete style.all;
-      extra.push(DOM.css(xSel, style));
-    }).join(" ");
-    return (css ? `\n${sel} {\n ${css}}` : "") + extra.join(" ");
-  }
-  // auxiliary methods
-  // returns html based on model without adding it to the document
-  static html(model, tag = "div") {
-    if(!model) return;
-    if(model.tagName) return model.outerHTML;
-    return DOM.set(model, tag, false).outerHTML;
-  }
-  // returns querystring as a structural object 
-  static querystring() {
-    var qs = location.search.substring(1);
-    if (!qs) return Object();
-    if (qs.includes("=")) return JSON.parse("{\"" + decodeURI(location.search.substring(1)).replace(/"/g, "\\\"").replace(/&/g, "", "").replace(/=/g, "\":\"") + "\"}");
-    return qs.split("/");
-  }
-  static addID = (id, elt) => {
-    if (Array.isArray(elt)) return elt.forEach(e => DOM.addID(id, e));
-    if (!window[id]) return window[id] = elt;
-    if (Array.isArray(window[id])) return window[id].push(elt);
-    window[id] = [window[id], elt];
-  };
-  // returns an objects with all value types in found in it 
-  static typify = (...args) => {
-    if (args === undefined) return;
-    let output = {};
-    args.forEach(item => {
-      let type = typeof item;
-      if (type === "string") {
-        output.strings ? output.strings.push(item) : output.strings = [item];
-        if (DOM.events.includes(item)) output.events ? output.events.push(item) : output.events = [item];
-        if (DOM.attributes.includes(item)) output.attributes ? output.attributes.push(item) : output.attributes = [item];
-        if (DOM.pseudoClasses.includes(item)) output.pseudoClasses ? output.pseudoClasses.push(item) : output.pseudoClasses = [item];
-        if (DOM.pseudoElements.includes(item)) output.pseudoElements ? output.pseudoElements.push(item) : output.pseudoElements = [item];
-        if (DOM.isStyle(item)) output.styles ? output.styles.push(item) : output.styles = [item];
-      }
-      if (type === "number") output.numbers ? output.numbers.push(item) : output.numbers = [item];
-      if (type === "boolean") output.booleans ? output.booleans.push(item) : output.booleans = [item];
-      if (["boolean", "number", "string"].includes(type)) return output.primitives ? output.primitives.push(item) : output.primitives = [item];
-      if (type === "function") return output.functions ? output.functions.push(item) : output.functions = [item];
-      if (Array.isArray(item)) return output.arrays ? output.arrays.push(item) : output.arrays = [item];
-      if (item) {
-        output.objects ? output.objects.push(item) : output.objects = [item];
-        if (item.tagName) return output.elements ? output.elements.push(item) : output.elements = [item];
-        if (item.elt) return output.p5Elements ? output.p5Elements.push(item) : output.p5Elements = [item];
-        if (item._bonds) return output.binders ? output.binders.push(item) : output.binders = [item];
-      }
-    });
-    output.isPrimitive = !!output.primitives;
-    if (output.strings) output.string = output.strings[0];
-    if (output.numbers) output.number = output.numbers[0];
-    if (output.booleans) output.boolean = output.booleans[0];
-    if (output.primitives) output.primitive = output.primitives[0];
-    if (output.arrays) output.array = output.arrays[0];
-    if (output.functions) output.function = output.functions[0];
-    if (output.objects) output.object = output.objects[0];
-    if (output.elements) output.element = output.elements[0];
-    if (output.p5Elements) output.p5Element = output.p5Elements[0];
-    if (output.binders) output.binder = output.binders[0];
-    if (output.events) output.event = output.events[0];
-    if (output.attributes) output.attribute = output.attributes[0];
-    if (output.pseudoClasses) output.pseudoClass = output.pseudoClasses[0];
-    if (output.pseudoElements) output.pseudoElement = output.pseudoElements[0];
-    if (output.styles) output.style = output.styles[0];
-    return output;
-  };
-  static camelize = str => str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
-    return index === 0 ? word.toLowerCase() : word.toUpperCase();
-  }).replace(/\s+/g, '');
-  static unCamelize = (str, char = "-") => str.replace(/([A-Z])/g, char + "$1").toLowerCase();
-  static isStyle = (str, elt) => ((elt ? elt : document.body ? document.body : document.createElement("div")).style)[str] !== undefined;
-  static events = ["abort", "afterprint", "animationend", "animationiteration", "animationstart", "beforeprint", "beforeunload", "blur", "canplay", "canplaythrough", "change", "click", "contextmenu", "copy", "cut", "dblclick", "drag", "dragend", "dragenter", "dragleave", "dragover", "dragstart", "drop", "durationchange", "ended", "error", "focus", "focusin", "focusout", "fullscreenchange", "fullscreenerror", "hashchange", "input", "invalid", "keydown", "keypress", "keyup", "load", "loadeddata", "loadedmetadata", "loadstart", "message", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseover", "mouseout", "mouseup", "offline", "online", "open", "pagehide", "pageshow", "paste", "pause", "play", "playing", "progress", "ratechange", "resize", "reset", "scroll", "search", "seeked", "seeking", "select", "show", "stalled", "submit", "suspend", "timeupdate", "toggle", "touchcancel", "touchend", "touchmove", "touchstart", "transitionend", "unload", "volumechange", "waiting", "wheel"];
-  static attributes = ["accept", "accept-charset", "accesskey", "action", "align", "alt", "async", "autocomplete", "autofocus", "autoplay", "bgcolor", "border", "charset", "checked", "cite", "class", "color", "cols", "colspan", "content", "contenteditable", "controls", "coords", "data", "datetime", "default", "defer", "dir", "dirname", "disabled", "download", "draggable", "enctype", "for", "form", "formaction", "headers", "height", "hidden", "high", "href", "hreflang", "http-equiv", "id", "ismap", "kind", "lang", "list", "loop", "low", "max", "maxlength", "media", "method", "min", "multiple", "muted", "name", "novalidate", "open", "optimum", "pattern", "placeholder", "poster", "preload", "readonly", "rel", "required", "reversed", "rows", "rowspan", "sandbox", "scope", "selected", "shape", "size", "sizes", "spellcheck", "src", "srcdoc", "srclang", "srcset", "start", "step", "style", "tabindex", "target", "title", "translate", "type", "usemap", "value", "wrap", "width"];
-  static pseudoClasses = ["active", "checked", "disabled", "empty", "enabled", "first-child", "last-child", "first-of-type", "focus", "hover", "in-range", "invalid", "last-of-type", "link", "only-of-type", "only-child", "optional", "out-of-range", "read-only", "read-write", "required", "root", "target", "valid", "visited", "lang", "not", "nth-child", "nth-last-child", "nth-last-of-type", "nth-of-type"];
-  static pseudoElements = ["after", "before", "first-letter", "first-line", "selection"];
-  static metaNames = ["viewport", "keywords", "description", "author", "refresh", "application-name", "generator"];
-  static htmlEquivs = ["contentSecurityPolicy", "contentType", "defaultStyle", "content-security-policy", "content-type", "default-style", "refresh"];
-  static headTags = ["meta", "link", "title", "font", "icon", "image", ...DOM.metaNames, ...DOM.htmlEquivs];
-  static reserveStations = ["tag", "id", "onready", "ready", "done", "ondone"];
-  static listeners = ["addevent", "addeventlistener", "eventlistener", "listener", "on"];
-  static getDocType = str => typeof str === "string" ? new Object({
-    css: "stylesheet",
-    sass: "stylesheet/sass",
-    scss: "stylesheet/scss",
-    less: "stylesheet/less",
-    js: "text/javascript",
-    ico: "icon"
-  })[str.split(".").pop()] : undefined;
-}
-
-DOM.style("/* DOM.js CSS reset */" + DOM.css(DOM.CSSReset));
+  });
