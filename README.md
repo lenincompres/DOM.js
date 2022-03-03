@@ -24,16 +24,16 @@ Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/W
 ```javascript
 DOM.set({
   header: {
-    h1: 'Page built with DOM.set'
+    h1: "Page built with DOM.set",
   },
   main: {
     article: {
-      h2: 'Basic DOM element',
-      p: '<b>This</b> is a paragraph.'
+      h2: "Basic DOM element",
+      p: "<b>This</b> is a paragraph.",
     }
   },
   footer: {
-    p: 'Made with DOM.js'
+    p: "Made with DOM.js",
   }
 });
 ```
@@ -43,8 +43,8 @@ You may also invoke the **set** method directly on an element to model it.
 
 ```javascript
 someElement.set({
-  h1: 'Hello world',
-  p: 'This is a <b>paragraph</b>.'
+  h1: "Hello world",
+  p: "This is a <b>paragraph</b>.",
 });
 ```
 The new **h1** and **p** elements will be appended to the element.
@@ -53,7 +53,7 @@ A *true* boolean will make the new content **replace** any existing one instead 
 
 ```javascript
 someElement.set({
-  p: 'This is a <b>paragraph</b>.'
+  p: "This is a <b>paragraph</b>.",
 }, true);
 ```
 ---
@@ -65,8 +65,8 @@ someElement.set({
 
   ```javascript
   DOM.set({
-    h1: 'Hello world',
-    p: 'This <b>is</b> a paragraph.'
+    h1: "Hello world",
+    p: "This <b>is</b> a paragraph.",
   }, someElement, true);
   ```
 
@@ -75,9 +75,9 @@ someElement.set({
 
   ```javascript
   DOM.set({
-    h1: 'Hello world',
-    p: 'This is <b>a</b> paragraph.'
-  }, 'main', someElement);
+    h1: "Hello world",
+    p: "This is <b>a</b> paragraph.";
+  }, "main", someElement);
   ```
 
   DOM.set is agnostic about the order of the arguments that follow the first (model structure):
@@ -85,13 +85,13 @@ someElement.set({
   * A **boolean** is a *replace* flag.
   * A **string** is a tag for a new element to be created.
   
-  The following code creates and returns a main element, but does not add it to the dom. 
+  The following code creates and returns a main element, and does not add it to the dom. 
 
   ```javascript
   let mainElement = DOM.set({
-    h1: 'Hello world',
-    p: 'This is <b>a</b> paragraph.'
-  }, 'main', false);
+    h1: "Hello world",
+    p: "This is <b>a</b> paragraph.",
+  }, "main", false);
   ```
   
   Invoking the method with a *false* boolean, expects a tag (string argumnent). If it is not provided, a *div* is created.
@@ -107,22 +107,22 @@ DOM.set recognizes **properties** in the model structure, such as attributes or 
 ```javascript
 DOM.set({
   input: {
-    id: 'myInput',
-    placeholder: 'Type value here',
+    id: "myInput",
+    placeholder: "Type value here",
     onchange: (event) => alert(myInput.value),
-    click: (event) => alert("It recognized event types to add listeners; as well as event methods.")
+    click: (event) => alert("It recognized event types to add listeners; as well as event methods."),
   },
   button: {
-    id: 'goBtn',
-    innerText : 'Go',
+    id: "goBtn",
+    innerText : "Go",
     addEventListener: {
       type: 'click', 
-      listerner: (event) => myInput.value = 'Button pressed'
+      listerner: (event) => myInput.value = "Button pressed",
     }
   }
 });
 
-myInput.style.border = 'none';
+myInput.style.border = "none";
 goBtn.click();
 ```
 
@@ -134,9 +134,9 @@ The **set** method allows you to modify attributes, styles, event handlers, and 
 
 ```javascript
 myElement.set({
-  padding: '0.5em 2em',
-  backgroundColor: 'lavender',
-  text: 'Some text'
+  padding: "0.5em 2em",
+  backgroundColor: "lavender",
+  text: "Some text",
 });
 ```
 
@@ -146,34 +146,34 @@ Just as any element, you may invoke the **set** method on the head element. Many
 
 ```javascript
 document.head.set({
-  title: 'Title of the webpage',
-  charset: 'UTF-8',
-  icon: 'icon.ico',
-  keywords: 'website,multiple,keywords',
-  description: 'Website created with DOM.js',
+  title: "Title of the webpage",
+  charset: "UTF-8",
+  icon: "icon.ico",
+  keywords: "website,multiple,keywords",
+  description: "Website created with DOM.js",
   viewport: {
-    width: 'device-width',
+    width: "device-width",
     initialScale: 1,
   },
   meta: {
-    name: 'color-scheme',
-    content: 'dark'
+    name: "color-scheme",
+    content: "dark",
   },
   link : {
-    rel: 'style',
-    href: 'style.css'
+    rel: "style",
+    href: "style.css",
   }, 
   style: {
-    type: 'css',
-    content: 'body{ margin:0; background-color:gray; }'
+    type: "css",
+    content: "body{ margin:0; background-color:gray; }"
   },
   script: {
-    type: 'module',
-    src: 'main.js' 
+    type: "module",
+    src: "main.js", 
   },
   font: {
-    fontFamily: 'myFont',
-    src: 'fonts/myFont.ttf'
+    fontFamily: "myFont",
+    src: "fonts/myFont.ttf",
   }
 });
 ```
@@ -182,14 +182,14 @@ The *head* element also understands default values for properties of *link*, *st
 
 ```javascript
 document.head.set({
-  link : 'style.css', 
-  style: 'body{ margin:0; backgroundColor: gray; }',
-  script: ['main.js', 'lib/dependecies.js'],
+  link : "style.css", 
+  style: "body{ margin:0; backgroundColor: gray; }",
+  script: ["main.js", "lib/dependecies.js"],
   font: [
-    'fonts/myFont.ttf',
+    "fonts/myFont.ttf",
     {
-      fontFamily: 'aFont',
-      src: 'fonts/anotherName.ott}
+      fontFamily: "aFont",
+      src: "fonts/anotherName.ott",
     }
   ]
 });
@@ -200,22 +200,22 @@ In fact, the **DOM.set** method recognizes these as well, and adds them on the *
 
 ```javascript
 DOM.set({
-  title: 'Title of the webpage',
-  charset: 'UTF-8',
-  icon: 'icon.ico',
-  keywords: 'website,multiple,keywords',
-  description: 'Website created with DOM.set',
+  title: "Title of the webpage",
+  charset: "UTF-8",
+  icon: "icon.ico",
+  keywords: "website,multiple,keywords",
+  description: "Website created with DOM.set",
   header: {
-    h1: 'Page built with DOM.set'
+    h1: "Page built with DOM.set",
   },
   main: {
     article: {
-      h2: 'Basic DOM element',
-      p: '<b>This</b> is a paragraph.'
+      h2: "Basic DOM element",
+      p: "<b>This</b> is a paragraph.",
     }
   },
   footer: {
-    p: 'Made with DOM.set'
+    p: "Made with DOM.set",
   }
 });
 ```
@@ -229,9 +229,9 @@ Use arrays to create multiple consecutive elements of the same kind.
 DOM.set({
   ul: {
     li: [
-      'First item',
-      'Second item',
-      'A third one, for good meassure'
+      "First item",
+      "Second item",
+      "A third one, for good meassure",
     ]
   }
 });
@@ -243,20 +243,20 @@ Declaring the array inside a *content* property allows you to set other properti
 DOM.set({
   ul: {
     li: {
-      id: 'listedThings',
-      style: 'font-weight:bold',
-      height: '20px',
+      id: "listedThings",
+      style: "font-weight:bold",
+      height: "20px ",
       content : [
-        'first item',
-        'second item',
-        'a third for good meassure'
+        "first item",
+        "second item",
+        "a third for good meassure",
       ]
     }
   }
 });
 
 // Makes the second element yellow
-listedThings[1].style.backgroundColor = 'yellow';
+listedThings[1].style.backgroundColor = "yellow";
 ```
 When an *id* is provided, a global variable holding the array of elements is created. 
 In fact, if you give several elements the same *id*, DOM.set will group them in one global array.
@@ -268,15 +268,15 @@ DOM.set({
   main: {
     elements: [
       {
-        tag: 'p',
-        text: 'this one is a paragraph.',
+        tag: "p",
+        text: "this one is a paragraph.",
       }, {
-        tag: 'img',
-        src: 'thesource.jpg',
-        alt: 'This one is an image',
+        tag: "img",
+        src: "thesource.jpg",
+        alt: "This one is an image",
       }, {
-        tag: 'p',
-        text: 'another paragraph',
+        tag: "p",
+        text: "another paragraph",
       }
     ]
   }
@@ -290,15 +290,15 @@ Similarly, if you give DOM.set an array, it assumes it is an array of elements, 
 ```javascript
 DOM.set([
   {
-    tag: 'p',
-    text: 'this one is a paragraph.',
+    tag: "p",
+    text: "this one is a paragraph.",
   }, {
-    tag: 'img',
-    src: 'thesource.jpg',
-    alt: 'This one is an image',
+    tag: "img",
+    src: "thesource.jpg",
+    alt: "This one is an image",
   }, {
-    tag: 'p',
-    text: 'another paragraph',
+    tag: "p",
+    text: "another paragraph",
   }
 ]);
 ```
@@ -313,8 +313,8 @@ Asign a string to the *style* property to update the inline style of the element
 ```javascript
 DOM.set({
   main:{
-    style: 'margin: 20px; font-family: Tahoma; background-color: gray;',
-    content: 'The style is in the style attribute of the main element.'
+    style: "margin: 20px; font-family: Tahoma; background-color: gray;",
+    content: "The style is in the style attribute of the main element.",
   }
 });
 ```
@@ -326,13 +326,13 @@ Asign a structural object to the *style* to update individual style propertiesâ€
 DOM.set({
   main: {
     style: {
-      margin: '20px',
-      fontFamily: 'Tahoma',
-      backgroundColor: 'gray'
+      margin: "20px",
+      fontFamily: "Tahoma",
+      backgroundColor: "gray",
     },
     content: {
-      h1: 'Styled Main Element',
-      p: 'This manages the style values individually.'
+      h1: "Styled Main Element",
+      p: "This manages the style values individually.",
      }
   }
 });
@@ -345,11 +345,11 @@ NOTE: Styles may be assigned without an emcompasing *style* object. The previous
 ```javascript
 DOM.set({
   main: {
-    margin: '20px',
-    fontFamily: 'Tahoma',
-    backgroundColor: 'gray',
-    h1: 'Styled Main Element',
-    p: 'This manages the style values individually.'
+    margin: "20px",
+    fontFamily: "Tahoma",
+    backgroundColor: "gray",
+    h1: "Styled Main Element",
+    p: "This manages the style values individually.",
   }
 });
 ```
@@ -364,10 +364,10 @@ If *style* has a *content* property, an element with a style tag and CSS content
 DOM.set({
   main: {
     style: {
-      lang: 'scss',
-      content: 'main { margin: 20px; font-family: Tahoma; color: gray; }';
+      lang: "scss",
+      content: "main { margin: 20px; font-family: Tahoma; color: gray; }",
     },
-    content: 'This style is applied to all MAIN elements in the page.'
+    content: "This style is applied to all MAIN elements in the page.",
   }
 });
 ```
@@ -378,18 +378,18 @@ Instead, set global styles using **DOM.style**, which adds the CSS to the head, 
 ```javascript
 DOM.style({
   main: { 
-    margin: '20px',
-    fontFamily: 'Tahoma',
-    color: 'gray'
+    margin: "20px",
+    fontFamily: "Tahoma",
+    color: "gray",
   },
   'p, article>*': {
-    margin: '2em'
+    margin: "2em",
   },
   nav: {
     a: {
-      backgroundColor: 'silver',
+      backgroundColor: "silver",
       hover: {
-        backgroundColor: 'gold'
+        backgroundColor: "gold",
       }
     }
   }
@@ -408,14 +408,14 @@ Use *css:* in your model structure to create styling rules that apply **only** t
 DOM.set({
   main: {
     css: {
-      margin: '20px',
-      fontFamily: 'Tahoma',
-      backgroundColor: 'gray',
+      margin: "20px",
+      fontFamily: "Tahoma",
+      backgroundColor: "gray",
       nav: {
         a: {
-          backgroundColor: 'silver',
+          backgroundColor: "silver",
           hover: {
-            backgroundColor: 'gold'
+            backgroundColor: "gold",
           }
         }
       }
@@ -423,11 +423,11 @@ DOM.set({
     nav: {
       a: [
         {
-          href: 'home.html',
-          content: 'HOME'
+          href: "home.html",
+          content: "HOME",
         }, {
-          href: 'gallery.html',
-          content: 'GALLERY'
+          href: "gallery.html",
+          content: "GALLERY",
         }
       ]
     }
@@ -443,15 +443,15 @@ Elements also have a **css** method you may use to asigned their style. So the p
 ```javascript
 DOM.set({
   main: {
-    id: 'mainArea',
+    id: "mainArea",
     nav: {
       a: [
         {
-          href: 'home.html',
-          content: 'HOME'
+          href: "home.html",
+          content: "HOME",
         }, {
-          href: 'gallery.html',
-          content: 'GALLERY'
+          href: "gallery.html",
+          content: "GALLERY",
         }
       ]
     }
@@ -459,13 +459,13 @@ DOM.set({
 });
 
 mainArea.css({
-  margin: '20px',
-  fontFamily: 'Tahoma',
-  backgroundColor: 'gray',
+  margin: "20px",
+  fontFamily: "Tahoma",
+  backgroundColor: "gray",
   a: {
-    backgroundColor: 'silver',
+    backgroundColor: "silver",
     hover: {
-      backgroundColor: 'gold'
+      backgroundColor: "gold",
     }
   }
 });
@@ -479,25 +479,25 @@ Nested selectors affect all children in the hierarchy of the DOM.
 ```javascript
 mainArea.css({
   a: {                              // #mainArea a
-    backgroundColor: 'gray',
+    backgroundColor: "gray",
     __primary: {                   // #mainArea a.primary
-      backgroundColor: 'gold',
+      backgroundColor: "gold",
     },
   },
   a_: {                            // #mainArea>a
-    backgroundColor: 'silver',
+    backgroundColor: "silver",
     __primary: {                  // #mainArea>a.primary
-      backgroundColor: 'red',
+      backgroundColor: "red",
     },
   },
   a_primary: {                    // #mainArea a.primary
-    backgroundColor: 'gold',
+    backgroundColor: "gold",
   },
   _primary: {                    // #mainArea .primary
-    backgroundColor: 'green',
+    backgroundColor: "green",
   },
   a_primary_: {                 // #mainArea>a.primary
-    backgroundColor: 'red',
+    backgroundColor: "red",
   },
 });
 ```
@@ -510,7 +510,7 @@ Any element's property (attribute, content, style, content or event handler) can
 When the *value* property of this object changes, it automatically updates all element properties' bound to it.
 
 ```javascript
-let myBinder = DOM.binder('Default value');
+let myBinder = DOM.binder("Default value");
 
 DOM.set({
   input: {
@@ -520,8 +520,8 @@ DOM.set({
     text: myBinder,
   },
   button: {
-    text : 'Go',
-    onclick: (event) => myBinder.value = 'Go was clicked.'
+    text : "Go",
+    onclick: (event) => myBinder.value = "Go was clicked.",
   }
 });
 ```
@@ -537,17 +537,17 @@ DOM.set({
   div: {
     style: {
       background: fieldEnabled.bind({
-        true: 'green',
-        false: 'gray',
+        true: "green",
+        false: "gray",
       })
     },
     input: {
       enabled: fieldEnabled,
-      value: fieldEnabled.bind(value => `The field is: ${value}.`)
+      value: fieldEnabled.bind(value => "The field is: ${value}."),
     },
     button : {
       text: 'toggle',
-      onclick: () => fieldEnabled.value = !fieldEnabled.value
+      onclick: () => fieldEnabled.value = !fieldEnabled.value,
     }
   }
 });
@@ -558,7 +558,7 @@ DOM.set({
 You may call the *bind* method of a binder and provide the element and property to be bound to it.
 
 ```javascript
-myBinder.bind(someElement, 'text', value => `The field is: ${value}.`);
+myBinder.bind(someElement, "text", value => `The field is: ${value}.`);
 ```
 
 The *bind* method is agnostic about the order of the arguments provided. 
@@ -567,7 +567,7 @@ An *element* is the target, a *string* the property to bind, and a *function* wi
 The DOM.binder function may also be invoked with initial binding settings. The first argument will be the value of the binder.
 
 ```javascript
-let myBinder = DOM.binder(true, someElement, 'text', value => `The field is: ${value}.`);
+let myBinder = DOM.binder(true, someElement, "text", value => `The field is: ${value}.`);
 ```
 
 #### Binding binders
@@ -575,7 +575,7 @@ let myBinder = DOM.binder(true, someElement, 'text', value => `The field is: ${v
 You may update the value of other binders by binding them.
 
 ```javascript
-myBinder.bind(someOtherBinder, value => value ? 'red' : 'blue');
+myBinder.bind(someOtherBinder, value => value ? "red" : "blue");
 ```
 
 #### Listening to binders
@@ -583,7 +583,7 @@ myBinder.bind(someOtherBinder, value => value ? 'red' : 'blue');
 You may add listerner methods to be called when a binder updates.
 
 ```javascript
-myBinder.addListener(value => alert('The value was updated to: ' + value));
+myBinder.addListener(value => alert("The value was updated to: " + value));
 ```
 
 #### Binding array of values
@@ -592,12 +592,12 @@ If instead of a function or an object model, the binding is given an array, it a
 
 ```javascript
 DOM.set({
-  background: fieldEnabled.bind(['gray', 'green'])
+  background: fieldEnabled.bind(["gray", "green"])
 });
 
-myBinder.bind(someElement, 'text', ['field is disabled', 'field is enabled']);
+myBinder.bind(someElement, "text", ["field is disabled", "field is enabled"]);
 
-myBinder.bind(someOtherBinder, ['blue', 'red']);
+myBinder.bind(someOtherBinder, ["blue", "red"]);
 ```
 
 Note that if the value is a boolean, *false* would be position 0, and *true* is position 1.
@@ -609,19 +609,19 @@ Note that if the value is a boolean, *false* would be position 0, and *true* is 
 This method returns a value based on the *string* provided, it tries to match it to an attribute, style property, element tag (in the scope), or a query selector. If no station is given, it returns the value property or the innerHTML.
 
 ```javascript
-DOM.get('backgroundColor'); // returns the body's background color
+DOM.get("backgroundColor"); // returns the body's background color
 
-document.body.get('backgroundColor'); // same as before
+document.body.get("backgroundColor"); // same as before
 
-myElement.get('class');  // returns the class attribute of the element
+myElement.get("class");  // returns the class attribute of the element
 
 myElement.get(); // returns the value (in the case of inputs) or the innerHTML
 
-myElement.get('text');  // returns the innerText
+myElement.get("text");  // returns the innerText
 
-myElement.get('article');  // returns the array of article tag elements within someElement's scope
+myElement.get("article");  // returns the array of article tag elements within someElement's scope
 
-myElement.get('.nice'); // similar to querySelectorAll, but returns an array of elements
+myElement.get(".nice"); // similar to querySelectorAll, but returns an array of elements
 ```
 
 ---
@@ -632,8 +632,8 @@ Yes, DOM.set works for P5.js elements. If you are not familiar with P5.js? [Reme
 
 ```javascript
 p5.set({
-  h1: 'Hello world',
-  p: 'This is a paragraph.'
+  h1: "Hello world",
+  p: "This is a paragraph.",
 });
 ```
 
@@ -641,17 +641,17 @@ When called from p5 or a p5 element, all elements given an id are created as p5 
 
 ```javascript
 someP5Element.set({
-  h1: 'Hello world',
+  h1: "Hello world",
   button: {
-    id: 'goBtn',
-    text: 'Go',
-    mouseClicked: e => alert('Go was clicked.')
+    id: "goBtn",
+    text: "Go",
+    mouseClicked: e => alert("Go was clicked."),
   }
 );
 
 /* goBtn is a p5 Element. */
 
-goBtn.addClass('nice-button');
+goBtn.addClass("nice-button");
 ```
 
 ## Have fun!
