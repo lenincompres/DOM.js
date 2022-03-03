@@ -43,7 +43,6 @@ You may also invoke the **set** method directly on an element to model it.
 
 ```javascript
 someElement.set({
-  h1: "Hello world",
   p: "This is a <b>paragraph</b>.",
 });
 ```
