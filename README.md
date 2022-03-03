@@ -43,6 +43,7 @@ You may also invoke the **set** method directly on an element to model it.
 
 ```javascript
 someElement.set({
+  h1: "Hello world",
   p: "This is a <b>paragraph</b>.",
 });
 ```
@@ -52,6 +53,7 @@ A *true* boolean will make the new content **replace** any existing one instead 
 
 ```javascript
 someElement.set({
+  h1: "Hello world",
   p: "This is a <b>paragraph</b>.",
 }, true);
 ```
