@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.22
+ * @version 1.0.23
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -240,7 +240,7 @@ class Binder {
     if (values && values.length) {
       if (values.length === 2) onvalue = v => v ? values[1] : values[0];
       else onvalue = v => values[v] !== undefined ? values[v] : "";
-    } else if (model && model !== target) onvalue = v => model[v] !== undefined ? model[v] : "";
+    } else if (model && model !== target) onvalue = v => model[v] !== undefined ? model[v] : model.default !== undefined ? model.default : model.false;
     if (!target) return DOM.bind(this, onvalue, this.addListener(onvalue)); // bind() addListener if not in a model
     if (listener) this.removeListener(listener); // if in a model, removes the listener
     let bond = {
@@ -265,7 +265,7 @@ class Binder {
   set value(val) {
     this._value = val;
     this._bonds.forEach(bond => {
-      if(bond.target === this.setter) return;
+      if (bond.target === this.setter) return;
       this.update(bond);
     });
     this.onvalue(val);
@@ -471,89 +471,89 @@ class DOM {
 
 // resets the CSS
 DOM.style({
-    "*": {
-      boxSizing: "border-box",
-      verticalAlign: "baseline",
-      lineHeight: "1.25em",
-      margin: 0,
-      padding: 0,
-      border: 0,
-      borderSpacing: 0,
-      borderCollapse: "collapse",
-      listStyle: "none",
-      quotes: "none",
-      content: "none",
-      backgroundColor: "transparent",
-      fontSize: "100%",
-      font: "inherit"
+  "*": {
+    boxSizing: "border-box",
+    verticalAlign: "baseline",
+    lineHeight: "1.25em",
+    margin: 0,
+    padding: 0,
+    border: 0,
+    borderSpacing: 0,
+    borderCollapse: "collapse",
+    listStyle: "none",
+    quotes: "none",
+    content: "none",
+    backgroundColor: "transparent",
+    fontSize: "100%",
+    font: "inherit"
+  },
+  "article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section": {
+    display: "block",
+  },
+  body: {
+    fontFamily: "Arial, sans-serif",
+    fontSize: "14px",
+  },
+  "b, strong": {
+    fontWeight: "bold",
+  },
+  "i, em": {
+    fontStyle: "italic",
+  },
+  a: {
+    textDecoration: "none",
+    cursor: "pointer",
+  },
+  "input, button, select": {
+    padding: "0.25em",
+    margin: "0.25em",
+    borderRadius: "0.25em",
+    border: "solid 1px gray",
+    backgroundColor: "white",
+  },
+  "button, input[type=\"button\"], input[type=\"submit\"]": {
+    cursor: "pointer",
+    borderColor: "gray",
+    paddingLeft: "1em",
+    paddingRight: "1em",
+    backgroundColor: "#eee",
+    boxShadow: "1px 1px 1px black",
+  },
+  "button:active, input[type=\"button\"]:active, input[type=\"submit\"]:active": {
+    boxShadow: "none",
+  },
+  "ol, ul": {
+    listStyle: "none",
+  },
+  "blockquote, q": {
+    quotes: "none",
+    before: {
+      content: "",
     },
-    "article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section": {
-      display: "block",
-    },
-    body: {
-      fontFamily: "Arial, sans-serif",
-      fontSize: "14px",
-    },
-    "b, strong": {
-      fontWeight: "bold",
-    },
-    "i, em": {
-      fontStyle: "italic",
-    },
-    a: {
-      textDecoration: "none",
-      cursor: "pointer",
-    },
-    "input, button, select": {
-      padding: "0.25em",
-      margin: "0.25em",
-      borderRadius: "0.25em",
-      border: "solid 1px gray",
-      backgroundColor: "white",
-    },
-    "button, input[type=\"button\"], input[type=\"submit\"]": {
-      cursor: "pointer",
-      borderColor: "gray",
-      paddingLeft: "1em",
-      paddingRight: "1em",
-      backgroundColor: "#eee",
-      boxShadow: "1px 1px 1px black",
-    },
-    "button:active, input[type=\"button\"]:active, input[type=\"submit\"]:active": {
-      boxShadow: "none",
-    },
-    "ol, ul": {
-      listStyle: "none",
-    },
-    "blockquote, q": {
-      quotes: "none",
-      before: {
-        content: "",
-      },
-      after: {
-        content: "",
-      }
-    },
-    table: {
-      borderCollapse: "collapse",
-      borderSpacing: 0,
-    },
-    h1: {
-      fontSize: "2em",
-    },
-    h2: {
-      fontSize: "1.82em",
-    },
-    h3: {
-      fontSize: "1.67em",
-    },
-    h4: {
-      fontSize: "1.5em",
-    },
-    h5: {
-      fontSize: "1.33em",
-    },
-    h6: {
-      fontSize: "1.17em",
+    after: {
+      content: "",
     }
-  });
+  },
+  table: {
+    borderCollapse: "collapse",
+    borderSpacing: 0,
+  },
+  h1: {
+    fontSize: "2em",
+  },
+  h2: {
+    fontSize: "1.82em",
+  },
+  h3: {
+    fontSize: "1.67em",
+  },
+  h4: {
+    fontSize: "1.5em",
+  },
+  h5: {
+    fontSize: "1.33em",
+  },
+  h6: {
+    fontSize: "1.17em",
+  }
+});
