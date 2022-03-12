@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.24
+ * @version 1.0.25
  * @repository https://github.com/lenincompres/DOM.js
  */
 
- Element.prototype.get = function (station) {
+Element.prototype.get = function (station) {
   if (!station && this.tagName.toLocaleLowerCase() === "input") return this.value;
   if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) return this.innerHTML;
   if (["text"].includes(station)) return this.innerText;
@@ -41,7 +41,7 @@ Element.prototype.set = function (model, ...args) {
   let argsType = DOM.typify(...args);
   let station = argsType.string; // original style|attr|tag|inner…|on…|name
   const CLEAR = argsType.boolean === true || argsType.string === "content";
-  if ([undefined, "model", "inner", "set"].includes(station)) station = "content";
+  if ([undefined, "create", "assign", "model", "inner", "set"].includes(station)) station = "content";
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
   if (station === "content" && TAG === "meta") station = "*content"; // disambiguate
@@ -56,14 +56,29 @@ Element.prototype.set = function (model, ...args) {
   }
   if (model._bonds) model = model.bind();
   if (model.binders) return model.binders.forEach(binder => binder.bind(this, STATION, model.onvalue, model.listener));
-  if (station === "css") return this.css(model);
+  if (station === "css") {
+    const getID = elt => {
+      if (elt.id) return elt.id;
+      if (!window.domids) window.domids = [];
+      let id = "domid" + window.domids.length;
+      elt.setAttribute("id", id);
+      window.domids.push(id);
+      return id;
+    };
+    if (![document.head, document.body].includes(this)) model = {
+      [`#${getID(this)}`]: model,
+    };
+    return document.head.set(typeof model === "string" ? model : DOM.css(model), "style");
+  }
   if (["text", "innertext"].includes(station)) return this.innerText = model;
   if (["html", "innerhtml"].includes(station)) return this.innerHTML = model;
   if (IS_HEAD) {
-    if (station === "font" && modelType.object) return DOM.style({
+    if (station === "font" && modelType.object) return DOM.set({
       fontFace: model
-    });
-    if (station === "style" && !model.content) return DOM.style(model);
+    }, "css");
+    if (station === "style" && !model.content) return this.set({
+      content: typeof model === "string" ? model : DOM.css(style)
+    }, station);
     if (station === "keywords" && Array.isArray(model)) model = model.join(",");
     if (station === "viewport" && modelType.object) model = Object.entries(model).map(([key, value]) => `${DOM.unCamelize(key)}=${value}`).join(",");
     modelType = DOM.typify(model);
@@ -102,7 +117,7 @@ Element.prototype.set = function (model, ...args) {
   if (IS_CONTENT && !model.binders) {
     if (CLEAR) this.innerHTML = "";
     if (IS_PRIMITIVE) return TAG === "input" ? this.value = model : this.innerHTML += model;
-    if (Array.isArray(model)) return model.forEach(m => this.set(m, "section"));
+    if (Array.isArray(model)) return model.forEach(m => this.set(m));
     Object.keys(model).forEach(key => this.set(model[key], key, p5Elem));
     return this;
   }
@@ -140,12 +155,12 @@ Element.prototype.set = function (model, ...args) {
       if (station === "charset") return this.innerHTML += `<meta charset="${model}">`;
       if (DOM.metaNames.includes(station)) return this.innerHTML += `<meta name="${station}" content="${model}">`;
       if (DOM.htmlEquivs.includes(STATION)) return this.innerHTML += `<meta http-equiv="${DOM.unCamelize(STATION)}" content="${model}">`;
-      if (station === "font") return DOM.style({
+      if (station === "font") return DOM.set({
         fontFace: {
           fontFamily: model.split("/").pop().split(".")[0],
           src: model.startsWith("url") ? model : `url(${model})`
         }
-      });
+      }, "css");
       const type = DOM.getDocType(model);
       if (station === "link") return this.set({
         rel: type,
@@ -176,7 +191,7 @@ Element.prototype.set = function (model, ...args) {
     if (!model[f]) return;
     model[f](elem);
   });
-  if (argsType.function) argsType.function(elem);
+  if (argsType.functions) argsType.functions.forEach(f => f(elem));
   return elem;
 };
 
@@ -190,8 +205,9 @@ if (typeof p5 !== "undefined") {
 
 // Adds css to the head under the element"s ID
 Element.prototype.css = function (style) {
-  if (this === document.head) return DOM.style(style);
-  if (this === document.body) return DOM.style(style);
+  if ([document.head, document.body].includes(this)) return typeof style === "string" ? document.head.set({
+    content: style
+  }, "style") : DOM.set(DOM.css(style), "css");
   let id = this.id;
   if (!id) {
     if (!window.domids) window.domids = [];
@@ -199,9 +215,9 @@ Element.prototype.css = function (style) {
     this.setAttribute("id", id);
     window.domids.push(id);
   }
-  DOM.style({
+  DOM.set({
     [`#${id}`]: style,
-  });
+  }, "css");
 }
 
 // Update props of bound element when its value changes. Can also update other binders.
@@ -293,6 +309,13 @@ class DOM {
     let argsType = DOM.typify(...args);
     let elt = argsType.element ? argsType.element : argsType.p5Element;
     if (elt) return elt.set(model, ...args);
+    // hidden models with css for a split second 
+    if (model.css) {
+      DOM.set(model.css, "css");
+      delete model.css;
+      model.visibility = "hidden";
+      setTimeout(() => DOM.set("visible", "visibility"), 600);
+    }
     // checks if the model is meant for the head
     let headModel = {};
     Object.keys(model).forEach(key => {
@@ -330,16 +353,10 @@ class DOM {
     }
   }
   // adds styles to the head as global CSS
-  static style(style) {
-    if (!style) return;
-    if (Array.isArray(style)) return style.forEach(s => DOM.style(s));
-    if (typeof style === "string") return document.head.set({
-      content: style
-    }, "style");
-    DOM.style(DOM.css(style));
-  }
+  static style = model => DOM.set(model, "css");
   // converts JSON to CSS. Supports nesting. Turns "_" in selectors into ".". Preceding "__" assumes class on previous selector. Trailing "_" assumes immediate children (>).
   static css(sel, model) {
+    if (!sel) return;
     const assignAll = (arr = [], dest = {}) => {
       arr.forEach(prop => Object.assign(dest, prop));
       return dest;
@@ -469,7 +486,7 @@ class DOM {
 }
 
 // resets the CSS
-DOM.style({
+DOM.set({
   "*": {
     boxSizing: "border-box",
     verticalAlign: "baseline",
@@ -555,4 +572,4 @@ DOM.style({
   h6: {
     fontSize: "1.17em",
   }
-});
+}, "css");
