@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.25
+ * @version 1.0.26
  * @repository https://github.com/lenincompres/DOM.js
  */
 
-Element.prototype.get = function (station) {
+ Element.prototype.get = function (station) {
   if (!station && this.tagName.toLocaleLowerCase() === "input") return this.value;
   if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) return this.innerHTML;
   if (["text"].includes(station)) return this.innerText;
@@ -39,8 +39,9 @@ Element.prototype.set = function (model, ...args) {
   const TAG = this.tagName.toLowerCase();
   const IS_HEAD = TAG === "head";
   let argsType = DOM.typify(...args);
+  const IS_PRIMITIVE = modelType.isPrimitive;
   let station = argsType.string; // original style|attr|tag|inner…|on…|name
-  const CLEAR = argsType.boolean === true || argsType.string === "content";
+  const CLEAR = argsType.boolean === true || !station && IS_PRIMITIVE || station === "content";
   if ([undefined, "create", "assign", "model", "inner", "set"].includes(station)) station = "content";
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
@@ -83,7 +84,6 @@ Element.prototype.set = function (model, ...args) {
     if (station === "viewport" && modelType.object) model = Object.entries(model).map(([key, value]) => `${DOM.unCamelize(key)}=${value}`).join(",");
     modelType = DOM.typify(model);
   }
-  const IS_PRIMITIVE = modelType.isPrimitive;
   let [tag, ...cls] = STATION.split("_");
   if (STATION.includes(".")) {
     cls = STATION.split(".");
@@ -304,7 +304,7 @@ class DOM {
     DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
   // create elements based on an object model
-  static set(model, ...args) {
+  static set(model = "", ...args) {
     // checks if the model is meant for an element
     let argsType = DOM.typify(...args);
     let elt = argsType.element ? argsType.element : argsType.p5Element;
@@ -325,7 +325,7 @@ class DOM {
     });
     document.head.set(headModel);
     // checks if the model requires a new element
-    if (DOM.typify(model).isPrimitive && !argsType.string) args.push("section");
+    if (DOM.typify(model).isPrimitive || Array.isArray(model) && !argsType.string) args.push("section");
     if (model.tag) args.push(model.tag);
     // checks if the model should replace the DOM
     if (argsType.boolean) document.body.innerHTML = "";
@@ -352,8 +352,6 @@ class DOM {
       onvalue: _ => onvalue(...binders.map(binder => binder.value))
     }
   }
-  // adds styles to the head as global CSS
-  static style = model => DOM.set(model, "css");
   // converts JSON to CSS. Supports nesting. Turns "_" in selectors into ".". Preceding "__" assumes class on previous selector. Trailing "_" assumes immediate children (>).
   static css(sel, model) {
     if (!sel) return;
@@ -402,6 +400,8 @@ class DOM {
     }).join(" ");
     return (css ? `\n${sel} {\n ${css}}` : "") + extra.join(" ");
   }
+  // adds styles to the head as global CSS
+  static style = model => DOM.set(model, "css");
   // returns html based on a model
   static html = (model, tag = "section") => !model ? null : (model.tagName ? model : DOM.element(model, tag)).outerHTML;
   // returns querystring as a structural object 
@@ -521,8 +521,7 @@ DOM.set({
     cursor: "pointer",
   },
   "input, button, select": {
-    padding: "0.25em",
-    margin: "0.25em",
+    padding: "0.2em",
     borderRadius: "0.25em",
     border: "solid 1px gray",
     backgroundColor: "white",
@@ -533,7 +532,7 @@ DOM.set({
     paddingLeft: "1em",
     paddingRight: "1em",
     backgroundColor: "#eee",
-    boxShadow: "1px 1px 1px black",
+    boxShadow: "0.5px 0.5px 1px black",
   },
   "button:active, input[type=\"button\"]:active, input[type=\"submit\"]:active": {
     boxShadow: "none",
