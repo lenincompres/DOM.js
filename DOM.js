@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.28
+ * @version 1.0.29
  * @repository https://github.com/lenincompres/DOM.js
  */
 
- Element.prototype.get = function (station) {
+Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -78,7 +78,7 @@ Element.prototype.set = function (model, ...args) {
       fontFace: model
     }, "css");
     if (station === "style" && !model.content) return this.set({
-      content: typeof model === "string" ? model : DOM.css(style)
+      content: typeof model === "string" ? model : DOM.css(model)
     }, station);
     if (station === "keywords" && Array.isArray(model)) model = model.join(",");
     if (station === "viewport" && modelType.object) model = Object.entries(model).map(([key, value]) => `${DOM.unCamelize(key)}=${value}`).join(",");
@@ -186,7 +186,7 @@ Element.prototype.set = function (model, ...args) {
   elt = p5Elem ? elem.elt : elem;
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute("id", id);
-  if(!argsType.boolean) this.append(elt);
+  if (!argsType.boolean) this.append(elt);
   ["ready", "onready", "done", "ondone"].forEach(f => {
     if (!model[f]) return;
     model[f](elem);
@@ -303,6 +303,7 @@ class DOM {
     // checks if the station belongs to the head
     DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
+  static create = (...args) => DOM.set(...args);
   // create elements based on an object model
   static set(model = "", ...args) {
     // checks if the model is meant for an element
@@ -313,8 +314,10 @@ class DOM {
     if (model.css) {
       DOM.set(model.css, "css");
       delete model.css;
-      model.visibility = "hidden";
-      setTimeout(() => DOM.set("visible", "visibility"), 600);
+      if (document.body) {
+        model.visibility = "hidden";
+        setTimeout(() => DOM.set("visible", "visibility"), 600);
+      }
     }
     // checks if the model is meant for the head
     let headModel = {};
@@ -324,7 +327,7 @@ class DOM {
       delete model[key];
     });
     document.head.set(headModel);
-    if(Array.isArray(model)) return model.map(m => DOM.set(m, ...args));
+    if (Array.isArray(model)) return model.map(m => DOM.set(m, ...args));
     // checks if the model requires a new element
     if (model.tag) args.push(model.tag);
     else if (DOM.typify(model).isPrimitive) args.push("section");
@@ -501,8 +504,8 @@ DOM.set({
     quotes: "none",
     content: "none",
     backgroundColor: "transparent",
-    fontSize: "100%",
-    font: "inherit"
+    //fontSize: "100%",
+    //font: "inherit"
   },
   "article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section": {
     display: "block",
