@@ -49,13 +49,11 @@ someElement.set({
 ```
 The new **h1** and **p** elements will be appended to the element.
 
-A *true* boolean will make the new content **replace** any existing one instead of appending it.
-
 ```javascript
 someElement.set({
   h1: "Hello world",
   p: "This is a <b>paragraph</b>.",
-}, true);
+});
 ```
 ---
 
@@ -68,7 +66,7 @@ someElement.set({
   DOM.set({
     h1: "Hello world",
     p: "This <b>is</b> a paragraph.",
-  }, someElement, true);
+  }, someElement);
   ```
 
   You may also provide a *string* to indicate the tag for a new element where the DOM structure will be created.
@@ -83,7 +81,6 @@ someElement.set({
 
   DOM.set is agnostic about the order of the arguments that follow the first (model structure):
   * An **element** is where the model should be created instead of *document.body*.
-  * A **boolean** is a *replace* flag.
   * A **string** is a tag for a new element to be created.
   
   The following code creates and returns a main element, and does not add it to the dom. 
@@ -92,7 +89,7 @@ someElement.set({
   let mainElement = DOM.set({
     h1: "Hello world",
     p: "This is <b>a</b> paragraph.",
-  }, "main", false);
+  }, "main");
   ```
   
   Invoking the method with a *false* boolean, expects a tag (string argumnent). If it is not provided, a *div* is created.
@@ -139,6 +136,18 @@ myElement.set({
   backgroundColor: "lavender",
   text: "Some text",
 });
+```
+
+### DOM.element
+
+Similar to DOM.set(), this method returns a new element and does not append it to the DOM. The following returns a paragraph. By default, DOM.element creates a *section* element.
+
+```javascript
+let myParagraph = DOM.element({
+  padding: "0.5em 2em",
+  backgroundColor: "lavender",
+  text: "Some text",
+}, "p");
 ```
 
 ### Set the Head
