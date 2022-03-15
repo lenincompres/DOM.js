@@ -1,20 +1,20 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.26
+ * @version 1.0.28
  * @repository https://github.com/lenincompres/DOM.js
  */
 
  Element.prototype.get = function (station) {
-  if (!station && this.tagName.toLocaleLowerCase() === "input") return this.value;
-  if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) return this.innerHTML;
-  if (["text"].includes(station)) return this.innerText;
-  if (["outer", "self"].includes(station)) return this.outerHTML;
-  if (DOM.attributes.includes(station)) return this.getAttribute(station);
-  if (DOM.isStyle(station, this)) return this.style[station];
-  let output = station ? this[station] : this.value;
-  if (output !== undefined && output !== null) return output;
-  if (!station) return this.innerHTML;
+  let output;
+  if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
+  else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
+  else if (["text"].includes(station)) output = this.innerText;
+  else if (["outer", "self"].includes(station)) output = this.outerHTML;
+  else if (DOM.attributes.includes(station)) output = this.getAttribute(station);
+  else if (DOM.isStyle(station, this)) output = this.style[station];
+  else output = station ? this[station] : this.value;
+  if (output !== undefined && output !== null) return isNaN(output) ? output : parseFloat(output);
   output = [...this.querySelectorAll(":scope>" + station)];
   if (output.length) return output.length < 2 ? output[0] : output;
   output = [...this.querySelectorAll(station)];
@@ -41,7 +41,7 @@ Element.prototype.set = function (model, ...args) {
   let argsType = DOM.typify(...args);
   const IS_PRIMITIVE = modelType.isPrimitive;
   let station = argsType.string; // original style|attr|tag|inner…|on…|name
-  const CLEAR = argsType.boolean === true || !station && IS_PRIMITIVE || station === "content";
+  const CLEAR = !station && IS_PRIMITIVE || station === "content";
   if ([undefined, "create", "assign", "model", "inner", "set"].includes(station)) station = "content";
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
@@ -186,7 +186,7 @@ Element.prototype.set = function (model, ...args) {
   elt = p5Elem ? elem.elt : elem;
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute("id", id);
-  this.append(elt);
+  if(!argsType.boolean) this.append(elt);
   ["ready", "onready", "done", "ondone"].forEach(f => {
     if (!model[f]) return;
     model[f](elem);
@@ -324,9 +324,10 @@ class DOM {
       delete model[key];
     });
     document.head.set(headModel);
+    if(Array.isArray(model)) return model.map(m => DOM.set(m, ...args));
     // checks if the model requires a new element
-    if (DOM.typify(model).isPrimitive || Array.isArray(model) && !argsType.string) args.push("section");
     if (model.tag) args.push(model.tag);
+    else if (DOM.typify(model).isPrimitive) args.push("section");
     // checks if the model should replace the DOM
     if (argsType.boolean) document.body.innerHTML = "";
     // checks if the body is loaded
@@ -335,7 +336,7 @@ class DOM {
     window.addEventListener("load", _ => document.body.set(model, ...args));
   }
   // returns a new element without appending it to the DOM
-  static element = (model, tag = "section") => DOM.set(model, tag, elt => elt.remove());
+  static element = (model, tag = "section") => DOM.set(model, tag, true);
   // returns a new binder
   static binder(value, ...args) {
     let binder = new Binder(value);
