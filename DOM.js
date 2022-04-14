@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.29
+ * @version 1.0.30
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -158,7 +158,7 @@ Element.prototype.set = function (model, ...args) {
       if (station === "font") return DOM.set({
         fontFace: {
           fontFamily: model.split("/").pop().split(".")[0],
-          src: model.startsWith("url") ? model : `url(${model})`
+          src: model.startsWith("url") ? model : `url("${model}")`
         }
       }, "css");
       const type = DOM.getDocType(model);
@@ -267,15 +267,25 @@ class Binder {
     this._bonds.push(bond);
     this.update(bond);
   }
-  flash(values, delay = 1000, revert = true) { //Iterates through values. Reverts to the intital
+  flash(values, delay = 1000, revert, callback) { //Iterates through values. Reverts to the intital
     if (!Array.isArray(values)) values = [values];
     if (!Array.isArray(delay)) delay = new Array(values.length).fill(delay);
     let oldValue = this.value;
     this.value = values.shift();
+    if (revert === false) {
+      values.push(oldValue);
+      delay.push(delay[0]);
+    }
     setTimeout(_ => {
-      if (values.length) return this.flash(values, delay, false);
+      if (values.length) return this.flash(values, delay, revert);
       if (revert === true) return this.value = oldValue;
+      if (callback) callback();
     }, delay.shift());
+  }
+  loop(values, delay) {
+    if(!Array.isArray(values)) return;
+    this.value = values.shift();
+    setTimeout(() => this.flash(values, delay, false), delay);
   }
   set value(val) {
     this._value = val;
@@ -378,7 +388,7 @@ class DOM {
       cls = [];
     }
     if (sel.toLowerCase() === "fontface") sel = "@font-face";
-    if (sel === "src" && !model.startsWith("url")) model = `url(${model})`;
+    if (sel === "src" && !model.startsWith("url")) model = `url("${model}")`;
     if (DOM.typify(model).isPrimitive) return `${DOM.unCamelize(sel)}: ${model};\n`;
     if (Array.isArray(model)) return model.map(m => DOM.css(sel, m)).join(" ");
     if (model.class) cls.push(...model.class.split(" "));
