@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.30
+ * @version 1.0.31
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -283,7 +283,7 @@ class Binder {
     }, delay.shift());
   }
   loop(values, delay) {
-    if(!Array.isArray(values)) return;
+    if (!Array.isArray(values)) return;
     this.value = values.shift();
     setTimeout(() => this.flash(values, delay, false), delay);
   }
@@ -316,6 +316,10 @@ class DOM {
   static create = (...args) => DOM.set(...args);
   // create elements based on an object model
   static set(model = "", ...args) {
+    if (!args.includes("css") && !window.DOM_RESETTED) {
+      DOM.set(DOM.RESET, "css");
+      window.DOM_RESETTED = true;
+    }
     // checks if the model is meant for an element
     let argsType = DOM.typify(...args);
     let elt = argsType.element ? argsType.element : argsType.p5Element;
@@ -497,92 +501,90 @@ class DOM {
     js: "text/javascript",
     ico: "icon"
   })[str.split(".").pop()] : undefined;
-}
-
-// resets the CSS
-DOM.set({
-  "*": {
-    boxSizing: "border-box",
-    verticalAlign: "baseline",
-    lineHeight: "1.25em",
-    margin: 0,
-    padding: 0,
-    border: 0,
-    borderSpacing: 0,
-    borderCollapse: "collapse",
-    listStyle: "none",
-    quotes: "none",
-    content: "none",
-    backgroundColor: "transparent",
-    //fontSize: "100%",
-    //font: "inherit"
-  },
-  "article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section": {
-    display: "block",
-  },
-  body: {
-    fontFamily: "Arial, sans-serif",
-    fontSize: "14px",
-  },
-  "b, strong": {
-    fontWeight: "bold",
-  },
-  "i, em": {
-    fontStyle: "italic",
-  },
-  a: {
-    textDecoration: "none",
-    cursor: "pointer",
-  },
-  "input, button, select": {
-    padding: "0.2em",
-    borderRadius: "0.25em",
-    border: "solid 1px gray",
-    backgroundColor: "white",
-  },
-  "button, input[type=\"button\"], input[type=\"submit\"]": {
-    cursor: "pointer",
-    borderColor: "gray",
-    paddingLeft: "1em",
-    paddingRight: "1em",
-    backgroundColor: "#eee",
-    boxShadow: "0.5px 0.5px 1px black",
-  },
-  "button:active, input[type=\"button\"]:active, input[type=\"submit\"]:active": {
-    boxShadow: "none",
-  },
-  "ol, ul": {
-    listStyle: "none",
-  },
-  "blockquote, q": {
-    quotes: "none",
-    before: {
-      content: "",
+  static RESET = {
+    "*": {
+      boxSizing: "border-box",
+      verticalAlign: "baseline",
+      lineHeight: "1.25em",
+      margin: 0,
+      padding: 0,
+      border: 0,
+      borderSpacing: 0,
+      borderCollapse: "collapse",
+      listStyle: "none",
+      quotes: "none",
+      content: "none",
+      backgroundColor: "transparent",
+      //fontSize: "100%",
+      //font: "inherit"
     },
-    after: {
-      content: "",
+    "article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section": {
+      display: "block",
+    },
+    body: {
+      fontFamily: "Arial, sans-serif",
+      fontSize: "14px",
+    },
+    "b, strong": {
+      fontWeight: "bold",
+    },
+    "i, em": {
+      fontStyle: "italic",
+    },
+    a: {
+      textDecoration: "none",
+      cursor: "pointer",
+    },
+    "input, button, select": {
+      padding: "0.2em",
+      borderRadius: "0.25em",
+      border: "solid 1px gray",
+      backgroundColor: "white",
+    },
+    "button, input[type=\"button\"], input[type=\"submit\"]": {
+      cursor: "pointer",
+      borderColor: "gray",
+      paddingLeft: "1em",
+      paddingRight: "1em",
+      backgroundColor: "#eee",
+      boxShadow: "0.5px 0.5px 1px black",
+    },
+    "button:active, input[type=\"button\"]:active, input[type=\"submit\"]:active": {
+      boxShadow: "none",
+    },
+    "ol, ul": {
+      listStyle: "none",
+    },
+    "blockquote, q": {
+      quotes: "none",
+      before: {
+        content: "",
+      },
+      after: {
+        content: "",
+      }
+    },
+    table: {
+      borderCollapse: "collapse",
+      borderSpacing: 0,
+    },
+    h1: {
+      fontSize: "2em",
+    },
+    h2: {
+      fontSize: "1.82em",
+    },
+    h3: {
+      fontSize: "1.67em",
+    },
+    h4: {
+      fontSize: "1.5em",
+    },
+    h5: {
+      fontSize: "1.33em",
+    },
+    h6: {
+      fontSize: "1.17em",
     }
-  },
-  table: {
-    borderCollapse: "collapse",
-    borderSpacing: 0,
-  },
-  h1: {
-    fontSize: "2em",
-  },
-  h2: {
-    fontSize: "1.82em",
-  },
-  h3: {
-    fontSize: "1.67em",
-  },
-  h4: {
-    fontSize: "1.5em",
-  },
-  h5: {
-    fontSize: "1.33em",
-  },
-  h6: {
-    fontSize: "1.17em",
   }
-}, "css");
+}
