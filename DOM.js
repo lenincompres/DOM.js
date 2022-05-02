@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.31
+ * @version 1.0.32
  * @repository https://github.com/lenincompres/DOM.js
  */
 
-Element.prototype.get = function (station) {
+ Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -80,9 +80,8 @@ Element.prototype.set = function (model, ...args) {
     if (station === "style" && !model.content) return this.set({
       content: typeof model === "string" ? model : DOM.css(model)
     }, station);
-    if (station === "keywords" && Array.isArray(model)) model = model.join(",");
-    if (station === "viewport" && modelType.object) model = Object.entries(model).map(([key, value]) => `${DOM.unCamelize(key)}=${value}`).join(",");
-    modelType = DOM.typify(model);
+    if (station === "keywords" && Array.isArray(model)) return this.set(model.join(","), ...args);
+    if (station === "viewport" && modelType.object) return this.set(Object.entries(model).map(([key, value]) => `${DOM.unCamelize(key)}=${value}`).join(","), ...args);
   }
   let [tag, ...cls] = STATION.split("_");
   if (STATION.includes(".")) {
