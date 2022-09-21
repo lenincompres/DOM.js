@@ -49,12 +49,6 @@ someElement.set({
 ```
 The new **h1** and **p** elements will be appended to the element.
 
-```javascript
-someElement.set({
-  h1: "Hello world",
-  p: "This is a <b>paragraph</b>.",
-});
-```
 ---
 
 <details>
