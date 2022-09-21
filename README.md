@@ -265,7 +265,7 @@ listedThings[1].style.backgroundColor = "yellow";
 When an *id* is provided, a global variable holding the array of elements is created. 
 In fact, if you give several elements the same *id*, DOM.set will group them in one global array.
 
-Arrays can also be used to create consecutive element of different types. In this case, just indicate their *tag* as a property.
+Arrays can be used to create consecutive element of different types; just indicate their *tag* as a property.
 
 ```javascript
 DOM.set({
@@ -287,9 +287,9 @@ DOM.set({
 });
 ```
 
-You can name this elements anything—in this case they were named *elements*—. Each will be assigned their specified tag. Just avoid using known property names like: *content*, *margin*, *text*, etc. Using a plural word for the property helps avoiding mistake.
+You can name this elements anything—in this case they were named *elements*—. Each will be assigned their specified tag. Just avoid using known property names like: *content*, *margin*, *text*, etc. Using a plural word for the property helps avoiding this mistake.
 
-Similarly, if you give DOM.set an array, it assumes it is an array of elements, and will create them as *div*s, or any tap property they possess.
+Similarly, if you give DOM.set an array, it assumes it is an array of elements, and will create them as *div*s, or any tag property they possess.
 
 ```javascript
 DOM.set([
@@ -337,14 +337,14 @@ DOM.set({
     content: {
       h1: "Styled Main Element",
       p: "This manages the style values individually.",
-     }
+    }
   }
 });
 ```
 
 This is equivalent to using the [style property of DOM elements](https://www.w3schools.com/jsref/prop_html_style.asp). 
 
-NOTE: Styles may be assigned without an emcompasing *style* object. The previous code could be written as follows.
+Styles may be assigned without an emcompasing *style* property. The previous code could be written as follows.
 
 ```javascript
 DOM.set({
