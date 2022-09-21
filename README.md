@@ -182,7 +182,7 @@ document.head.set({
 });
 ```
 
-The *head* element also understands default values for properties of *link*, *style*, *font*, or *script* elements; and it even accept arrays of elements.
+The method also understands default values for properties like *link*, *style*, *font*, or *script* elements; and accepts arrays of elements for them.
 
 ```javascript
 document.head.set({
