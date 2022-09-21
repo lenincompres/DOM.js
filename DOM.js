@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.32
+ * @version 1.0.33
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -286,6 +286,9 @@ class Binder {
     this.value = values.shift();
     setTimeout(() => this.flash(values, delay, false), delay);
   }
+  apply(val) {
+    this.value = val;
+  }
   set value(val) {
     this._value = val;
     this._bonds.forEach(bond => {
@@ -504,7 +507,7 @@ class DOM {
     "*": {
       boxSizing: "border-box",
       verticalAlign: "baseline",
-      lineHeight: "1.25em",
+      lineHeight: "inherit",
       margin: 0,
       padding: 0,
       border: 0,
