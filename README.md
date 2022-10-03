@@ -638,7 +638,7 @@ class MyElement extends HTMLElement{
   }
   
   set value(val){
-  	this.valueBinder.value = val;
+    this.valueBinder.value = val;
   }
   
   get value(){
@@ -646,7 +646,7 @@ class MyElement extends HTMLElement{
   }
   
   toggle(){
-  	this.value = !this.value;
+    this.value = !this.value;
   }
   
 }
