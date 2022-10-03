@@ -617,9 +617,11 @@ To create custom HTML elements using a DOM.js approach, we can extend Javascript
 class MyElement extends HTMLElement{
   constructor(startVal){
     super();
-  	this.valueBinder = new Binder(startVal); 
+    
+    this.valueBinder = new Binder(startVal);
+    
     this.set({
-    	width: "fit-content",
+      width: "fit-content",
       padding: "2em",
       margin: "0 auto",
       display: "block",
