@@ -658,8 +658,8 @@ customElements.define("my-element", MyElement);
 let myElement = new MyElement(true);
 
 DOM.set({
-  h1: "test",
-  Cmpt: myElement,
+  h1: "Extended HTML element",
+  MyElement: myElement,
 });
 ```
 
