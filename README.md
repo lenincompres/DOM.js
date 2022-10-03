@@ -615,7 +615,7 @@ To create custom HTML elements using a DOM.js approach, we can extend Javascript
 ```javascript
 // declares the class
 class MyElement extends HTMLElement{
-	constructor(startVal){
+  constructor(startVal){
     super();
   	this.valueBinder = new Binder(startVal); 
     this.set({
@@ -656,7 +656,7 @@ customElements.define("my-element", MyElement);
 let myElement = new MyElement(true);
 
 DOM.set({
-	h1: "test",
+  h1: "test",
   Cmpt: myElement,
 });
 ```
