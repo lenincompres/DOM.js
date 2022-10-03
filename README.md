@@ -608,6 +608,61 @@ Note that if the value is a boolean, *false* would be position 0, and *true* is 
 
 ---
 
+## Extending HTML elements
+
+To create custom HTML elements using a DOM.js approach, we can extend Javascript's HTMLElement class 
+
+```javascript
+// declares the class
+class MyElement extends HTMLElement{
+	constructor(startVal){
+    super();
+  	this.valueBinder = new Binder(startVal); 
+    this.set({
+    	width: "fit-content",
+      padding: "2em",
+      margin: "0 auto",
+      display: "block",
+      textAlign: "center",
+      backgroundColor: this.valueBinder.bind(v => v ? "green" : "red"),
+      p: {
+        text: this.valueBinder,
+      },
+      button: {
+        text: "toggle",
+        onclick: e => this.toggle()
+      }
+    });
+  }
+  
+  set value(val){
+  	this.valueBinder.value = val;
+  }
+  
+  get value(){
+    return this.valueBinder.value;
+  }
+  
+  toggle(){
+  	this.value = !this.value;
+  }
+  
+}
+customElements.define("my-element", MyElement);
+
+
+// instantiate the element
+
+let myElement = new MyElement(true);
+
+DOM.set({
+	h1: "test",
+  Cmpt: myElement,
+});
+```
+
+---
+
 ## DOM.get() and element.get()
 
 This method returns a value based on the *string* provided, it tries to match it to an attribute, style property, element tag (in the scope), or a query selector. If no station is given, it returns the value property or the innerHTML.
