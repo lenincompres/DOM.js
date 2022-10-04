@@ -142,6 +142,16 @@ let myParagraph = DOM.element({
   backgroundColor: "lavender",
   text: "Some text",
 }, "p");
+
+DOM.set({
+  header: {
+    h1: "loading an element",
+    p: "The element was create before the DOM is set.",
+  },
+  main: {
+    p: myParagraph,
+  }
+});
 ```
 
 ### Set the Head
@@ -203,6 +213,17 @@ Note how **set** recognizes common head information (icon, charset, keywords, de
 In fact, the **DOM.set** method recognizes these as well, and adds them on the *document.head* instead of the *body*.
 
 ```javascript
+const myMain = DOM.element({
+  article: {
+    h2: "Basic DOM element",
+    p: "<b>This</b> is a paragraph.",
+  }
+});
+
+const myFooter = DOM.element( {
+  p: "Made with DOM.set",
+});
+
 DOM.set({
   title: "Title of the webpage",
   charset: "UTF-8",
@@ -212,15 +233,8 @@ DOM.set({
   header: {
     h1: "Page built with DOM.set",
   },
-  main: {
-    article: {
-      h2: "Basic DOM element",
-      p: "<b>This</b> is a paragraph.",
-    }
-  },
-  footer: {
-    p: "Made with DOM.set",
-  }
+  main: myMain,
+  footer: myFooter,
 });
 ```
 
