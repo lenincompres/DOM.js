@@ -329,11 +329,17 @@ DOM.set([
 Asign a string to the *style* property to update the inline style of the element—replacing any previous value.
 
 ```javascript
+const myMain = DOM.element({
+  style: "margin: 20px; font-family: Tahoma; background-color: gray;",
+  content: "The style is in the style attribute of the main element.",
+}, "main");
+
 DOM.set({
-  main:{
-    style: "margin: 20px; font-family: Tahoma; background-color: gray;",
-    content: "The style is in the style attribute of the main element.",
-  }
+  header: {
+    h1: "Example of styling"
+  },
+  main: myMain,
+  footer: "the footer"
 });
 ```
 
@@ -341,18 +347,24 @@ DOM.set({
 Asign a structural object to the *style* to update individual style properties—use names in camelCase.
 
 ```javascript
-DOM.set({
-  main: {
-    style: {
-      margin: "20px",
-      fontFamily: "Tahoma",
-      backgroundColor: "gray",
-    },
-    content: {
-      h1: "Styled Main Element",
-      p: "This manages the style values individually.",
-    }
+const myMain = DOM.element({
+  style: {
+    margin: "20px",
+    fontFamily: "Tahoma",
+    backgroundColor: "gray",
+  },
+  content: {
+    h1: "Styled Main Element",
+    p: "This manages the style values individually.",
   }
+}, "main");
+
+DOM.set({
+  header: {
+    h1: "Example of styling"
+  },
+  main: myMain,
+  footer: "the footer"
 });
 ```
 
@@ -361,14 +373,20 @@ This is equivalent to using the [style property of DOM elements](https://www.w3s
 Styles may be assigned without an emcompasing *style* property. The previous code could be written as follows.
 
 ```javascript
+const myMain = DOM.element({
+  margin: "20px",
+  fontFamily: "Tahoma",
+  backgroundColor: "gray",
+  h1: "Styled Main Element",
+  p: "This manages the style values individually.",
+}, "main");
+
 DOM.set({
-  main: {
-    margin: "20px",
-    fontFamily: "Tahoma",
-    backgroundColor: "gray",
-    h1: "Styled Main Element",
-    p: "This manages the style values individually.",
-  }
+  header: {
+    h1: "Example of styling"
+  },
+  main: myMain,
+  footer: "the footer"
 });
 ```
 
@@ -379,14 +397,20 @@ Yet, **DOM.set** interprets structural properties to match attributes, styles, e
 If *style* has a *content* property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
 
 ```javascript
+const myMain = DOM.element({
+  style: {
+    lang: "scss",
+    content: "main { margin: 20px; font-family: Tahoma; color: gray; }",
+  },
+  content: "This style is applied to all MAIN elements in the page.",
+}, "main");
+
 DOM.set({
-  main: {
-    style: {
-      lang: "scss",
-      content: "main { margin: 20px; font-family: Tahoma; color: gray; }",
-    },
-    content: "This style is applied to all MAIN elements in the page.",
-  }
+  header: {
+    h1: "Example of styling"
+  },
+  main: myMain,
+  footer: "the footer"
 });
 ```
 
@@ -545,7 +569,7 @@ const myMain = DOM.element({
 
 DOM.set({
   header: {
-    h1: ""
+    h1: "Example of binding"
   },
   main: myMain,
   footer: "the footer"
@@ -580,7 +604,7 @@ const myMain = DOM.element({
 
 DOM.set({
   header: {
-    h1: ""
+    h1: "Example of binding"
   },
   main: myMain,
   footer: "the footer"
