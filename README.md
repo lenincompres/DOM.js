@@ -449,33 +449,39 @@ Lastly,
 Use *css:* in your model structure to create styling rules that apply **only** to the current element and its children.
 
 ```javascript
-DOM.set({
-  main: {
-    css: {
-      margin: "20px",
-      fontFamily: "Tahoma",
-      backgroundColor: "gray",
-      nav: {
-        a: {
-          backgroundColor: "silver",
-          hover: {
-            backgroundColor: "gold",
-          }
+const myMain = DOM.element({
+  css: {
+    margin: "20px",
+    fontFamily: "Tahoma",
+    backgroundColor: "gray",
+    nav: {
+      a: {
+        backgroundColor: "silver",
+        hover: {
+          backgroundColor: "gold",
         }
       }
-    },
-    nav: {
-      a: [
-        {
-          href: "home.html",
-          content: "HOME",
-        }, {
-          href: "gallery.html",
-          content: "GALLERY",
-        }
-      ]
     }
+  },
+  nav: {
+    a: [
+      {
+        href: "home.html",
+        content: "HOME",
+      }, {
+        href: "gallery.html",
+        content: "GALLERY",
+      }
+    ]
   }
+}, "main");
+
+DOM.set({
+  header: {
+    h1: "Example of styling"
+  },
+  main: myMain,
+  footer: "the footer"
 });
 ```
 
