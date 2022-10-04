@@ -528,9 +528,9 @@ Any element's property (attribute, content, style, content or event handler) can
 When the *value* property of this object changes, it automatically updates all element properties' bound to it.
 
 ```javascript
-let myBinder = DOM.binder("Default value");
+const myBinder = DOM.binder("Default value");
 
-DOM.set({
+const myMain = DOM.element({
   input: {
     value: myBinder,
   },
@@ -541,6 +541,14 @@ DOM.set({
     text : "Go",
     onclick: (event) => myBinder.value = "Go was clicked.",
   }
+}, "main");
+
+DOM.set({
+  header: {
+    h1: ""
+  },
+  main: myMain,
+  footer: "the footer"
 });
 ```
 
@@ -549,9 +557,9 @@ DOM.set({
 You may provide a function that returns the correct value to assign to the element's property based on the value of the binder. Or provide an object model to map the values to.
 
 ```javascript
-let fieldEnabled = DOM.binder(false);
+const fieldEnabled = DOM.binder(false);
 
-DOM.set({
+const myMain = DOM.element({
   div: {
     style: {
       background: fieldEnabled.bind({
@@ -568,6 +576,14 @@ DOM.set({
       onclick: () => fieldEnabled.value = !fieldEnabled.value,
     }
   }
+}, "main");
+
+DOM.set({
+  header: {
+    h1: ""
+  },
+  main: myMain,
+  footer: "the footer"
 });
 ```
 
@@ -622,7 +638,7 @@ Note that if the value is a boolean, *false* would be position 0, and *true* is 
 
 ---
 
-## Extending HTML elements
+## Extending the HTMLElement class
 
 To create custom HTML elements using a DOM.js approach, we can extend Javascript's HTMLElement class 
 
