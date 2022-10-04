@@ -137,7 +137,7 @@ myElement.set({
 Similar to DOM.set(), this method returns a new element and does not append it to the DOM. The following returns a paragraph. By default, DOM.element creates a *section* element.
 
 ```javascript
-let myParagraph = DOM.element({
+const myParagraph = DOM.element({
   padding: "0.5em 2em",
   backgroundColor: "lavender",
   text: "Some text",
@@ -213,6 +213,10 @@ Note how **set** recognizes common head information (icon, charset, keywords, de
 In fact, the **DOM.set** method recognizes these as well, and adds them on the *document.head* instead of the *body*.
 
 ```javascript
+const myHeader = DOM.element( {
+  h1: "Page built with DOM.set",
+}, "header");
+
 const myMain = DOM.element({
   article: {
     h2: "Basic DOM element",
@@ -222,7 +226,7 @@ const myMain = DOM.element({
 
 const myFooter = DOM.element( {
   p: "Made with DOM.set",
-});
+}, "footer");
 
 DOM.set({
   title: "Title of the webpage",
@@ -230,9 +234,7 @@ DOM.set({
   icon: "icon.ico",
   keywords: "website,multiple,keywords",
   description: "Website created with DOM.set",
-  header: {
-    h1: "Page built with DOM.set",
-  },
+  header: myHeader,
   main: myMain,
   footer: myFooter,
 });
