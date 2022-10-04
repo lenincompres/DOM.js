@@ -222,7 +222,7 @@ const myMain = DOM.element({
     h2: "Basic DOM element",
     p: "<b>This</b> is a paragraph.",
   }
-});
+}, "main");
 
 const myFooter = DOM.element( {
   p: "Made with DOM.set",
