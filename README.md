@@ -119,7 +119,7 @@ goBtn.click();
 ```
 
 NOTE:
-* Providing and element with an *id* will create a global variable (with that name) to hold that element.
+* Providing an element with an *id* will create a global variable (with that name) to hold that element.
 * Use *text* or *innerText*, *html* or *innerHTML*, or simply *content* for the element's inner content.
 
 The **set** method allows you to modify attributes, styles, event handlers, and content of existing elements with just one call.
