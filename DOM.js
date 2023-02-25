@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.33
+ * @version 1.0.34
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -388,9 +388,9 @@ class DOM {
     let extra = [];
     let cls = sel.split("_");
     sel = cls.shift();
-    if (sel === "h") {
+    if (sel === "h" || sel.endsWith(" h")) {
       cls = cls.length ? ("." + cls.join(".")) : "";
-      sel = Array(6).fill().map((_, i) => "h" + (i + 1) + cls).join(", ");
+      sel = Array(6).fill().map((_, i) => sel + (i + 1) + cls).join(", ");
       cls = [];
     }
     if (sel.toLowerCase() === "fontface") sel = "@font-face";
