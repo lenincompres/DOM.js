@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.36
+ * @version 1.0.37
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -41,11 +41,16 @@ Element.prototype.set = function (model, ...args) {
   let argsType = DOM.typify(...args);
   const IS_PRIMITIVE = modelType.isPrimitive;
   let station = argsType.string; // original style|attr|tag|inner…|on…|name
-  if (station === "id") return DOM.addID(model, this);
   const CLEAR = !station && IS_PRIMITIVE || station === "content";
   if ([undefined, "create", "assign", "model", "inner", "set"].includes(station)) station = "content";
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
+  // css exceptions
+  if (STATION === "fontFace") return document.body.set({css: {[station] : model}});
+  let uncamel = DOM.unCamelize(STATION);
+  if(DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel)) return this.set({css:{[uncamel] : model}});
+  // element exceptions
+  if (station === "id") return DOM.addID(model, this);
   if (station === "content" && TAG === "meta") station = "*content"; // disambiguate
   if (DOM.reserveStations.includes(station)) return;
   const IS_CONTENT = station === "content";
