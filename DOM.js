@@ -48,7 +48,8 @@ Element.prototype.set = function (model, ...args) {
   // css exceptions
   if (STATION === "fontFace") return document.body.set({css: {[station] : model}});
   let uncamel = DOM.unCamelize(STATION);
-  if(DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel)) return this.set({css:{[uncamel] : model}});
+  // needs dissambiguation for head link and pseaudoclass
+  if(station !== "link" && (DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel))) return this.set({css:{[uncamel] : model}});
   // element exceptions
   if (station === "id") return DOM.addID(model, this);
   if (station === "content" && TAG === "meta") station = "*content"; // disambiguate
