@@ -273,11 +273,10 @@ class Binder {
     let model = argsType.object;
     if (values && values.length) {
       let test = onvalue;
-      onvalue = v => {
-        v = test(v);
-        if (typeof test(v) === "boolean")
-          v = v ? 1 : 0;
-        return values[v];
+      onvalue = val => {
+        val = test(val);
+        if (typeof test(val) === "boolean") val = val ? 1 : 0;
+        return values[val];
       };
     } else if (model && model !== target) {
       onvalue = val => [model[val], model.default, model.false].filter(v => v !== undefined)[0];
