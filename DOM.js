@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.37
+ * @version 1.0.38
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -46,10 +46,18 @@ Element.prototype.set = function (model, ...args) {
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
   // css exceptions
-  if (STATION === "fontFace") return document.body.set({css: {[station] : model}});
+  if (STATION === "fontFace") return document.body.set({
+    css: {
+      [station]: model
+    }
+  });
   let uncamel = DOM.unCamelize(STATION);
   // needs dissambiguation for head link and pseaudoclass
-  if(station !== "link" && (DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel))) return this.set({css:{[uncamel] : model}});
+  if (station !== "link" && (DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel))) return this.set({
+    css: {
+      [uncamel]: model
+    }
+  });
   // element exceptions
   if (station === "id") return DOM.addID(model, this);
   if (station === "content" && TAG === "meta") station = "*content"; // disambiguate
@@ -251,7 +259,9 @@ class Binder {
     delete this._listeners[countIndex];
   }
   as(...args) {
-    return typeof args[0] === "function" ? this.bind(args.shift(), args) : this.bind(args);
+    if(args.length === 1) return this.bind(args[0]);
+    if (typeof args[0] === "function") return this.bind(args.shift(), args);
+    return this.bind(args);
   }
   bind(...args) {
     let argsType = DOM.typify(...args);
@@ -265,10 +275,13 @@ class Binder {
       let test = onvalue;
       onvalue = v => {
         v = test(v);
-        if(typeof test(v) === "boolean") v = v ? 1 : 0;
+        if (typeof test(v) === "boolean")
+          v = v ? 1 : 0;
         return values[v];
       };
-    } else if (model && model !== target) onvalue = v => model[v] !== undefined ? model[v] : model.default !== undefined ? model.default : model.false;
+    } else if (model && model !== target) {
+      onvalue = val => [model[val], model.default, model.false].filter(v => v !== undefined)[0];
+    }
     if (!target) return DOM.bind(this, onvalue, this.addListener(onvalue)); // bind() addListener if not in a model
     if (listener) this.removeListener(listener); // if in a model, removes the listener
     let bond = {
@@ -280,7 +293,8 @@ class Binder {
     this._bonds.push(bond);
     this.update(bond);
   }
-  flash(values, delay = 1000, revert, callback) { //Iterates through values. Reverts to the intital
+  //Iterates through values. Reverts to the intital
+  flash(values, delay = 1000, revert, callback) {
     if (!Array.isArray(values)) values = [values];
     if (!Array.isArray(delay)) delay = new Array(values.length).fill(delay);
     let oldValue = this.value;
@@ -295,6 +309,7 @@ class Binder {
       if (callback) callback();
     }, delay.shift());
   }
+  //Iterates through values in a loop
   loop(values, delay) {
     if (!Array.isArray(values)) return;
     this.value = values.shift();
@@ -316,6 +331,10 @@ class Binder {
   get value() {
     return this._value;
   }
+}
+
+function bind(...args) {
+  return DOM.bind(...args);
 }
 
 // global static methods to handle the DOM
@@ -350,6 +369,10 @@ class DOM {
       }
     }
     // checks if the model is meant for the head
+    if (model.head) {
+      document.head.set(model.head);
+      delete model.head;
+    }
     let headModel = {};
     Object.keys(model).forEach(key => {
       if (!DOM.headTags.includes(key.toLowerCase())) return;
@@ -446,7 +469,7 @@ class DOM {
     return qs.split("/");
   }
   static addID = (id, elt) => {
-    elt.setAttribute("id", id);
+    if (elt.tagName) elt.setAttribute("id", id);
     if (Array.isArray(elt)) return elt.forEach(e => DOM.addID(id, e));
     if (!window[id]) return window[id] = elt;
     if (Array.isArray(window[id])) return window[id].push(elt);
