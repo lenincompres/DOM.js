@@ -594,14 +594,14 @@ const fieldEnabled = DOM.binder(false);
 const myMain = DOM.element({
   div: {
     style: {
-      background: fieldEnabled.bind({
+      background: fieldEnabled.as({
         true: "green",
         false: "gray",
       })
     },
     input: {
       enabled: fieldEnabled,
-      value: fieldEnabled.bind(value => "The field is: ${value}."),
+      value: fieldEnabled.as(value => `The field is: ${value}.`),
     },
     button : {
       text: 'toggle',
@@ -658,7 +658,7 @@ If instead of a function or an object model, the binding is given an array, it a
 
 ```javascript
 DOM.set({
-  background: fieldEnabled.bind(["gray", "green"])
+  background: fieldEnabled.as(["gray", "green"])
 });
 
 myBinder.bind(someElement, "text", ["field is disabled", "field is enabled"]);
@@ -688,7 +688,7 @@ class MyElement extends HTMLElement{
       margin: "0 auto",
       display: "block",
       textAlign: "center",
-      backgroundColor: this.valueBinder.bind(v => v ? "green" : "red"),
+      backgroundColor: this.valueBinder.as(v => v ? "green" : "red"),
       p: {
         text: this.valueBinder,
       },
