@@ -86,8 +86,6 @@ The new **h1** and **p** elements will be appended to the element.
   }, "main");
   ```
   
-  Invoking the method with a *false* boolean, expects a tag (string argumnent). If it is not provided, a *div* is created.
-  
 </details>
 
 ---
