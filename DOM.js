@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.39
+ * @version 1.0.40
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -71,7 +71,7 @@ Element.prototype.set = function (model, ...args) {
     else return this[STATION] = e => model(e, this);
   }
   if (model._bonds) model = model.bind();
-  if (model.binders) return model.binders.forEach(binder => binder.bind(this, STATION, model.onvalue, model.listener));
+  if (model.binders) return model.binders.forEach(binder => binder.bind(this, STATION, model.onvalue, model.listener, ["attribute", "style", "attributes"].includes(station) ? station : undefined));
   if (station === "css") {
     const getID = elt => {
       if (elt.id) return elt.id;
@@ -88,6 +88,10 @@ Element.prototype.set = function (model, ...args) {
   }
   if (["text", "innertext"].includes(station)) return this.innerText = model;
   if (["html", "innerhtml"].includes(station)) return this.innerHTML = model;
+  if(["attribute", "attributes"].includes(station)) return Object.entries(model).map(([key, value]) => {
+    if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.onvalue, value.listener, "attribute"));
+    this.setAttribute(key, value);
+  });
   if (IS_HEAD) {
     if (station === "font" && modelType.object) return DOM.set({
       fontFace: model
@@ -245,7 +249,14 @@ class Binder {
     this.update = bond => {
       if (!bond.target) return;
       let theirValue = bond.onvalue(this._value);
-      if (bond.target.tagName) return bond.target.set(theirValue, bond.station);
+      if (bond.target.tagName) {
+        if(!bond.type) return bond.target.set(theirValue, bond.station);
+        return bond.target.set({
+          [bond.type]: {
+            [bond.station]: theirValue,
+          }
+        });
+      }
       if (bond.target._bonds) bond.target.setter = this; // knowing the setter prevents co-binder"s loop
       bond.target[bond.station] = theirValue;
     }
@@ -260,7 +271,10 @@ class Binder {
   }
   as(...args) {
     if (args.length === 1) return this.bind(args[0]);
-    if (typeof args[0] === "function") return this.bind(args.shift(), args);
+    if (typeof args[0] === "function") {
+      if (args.length === 2) return this.bind(...args);
+      return this.bind(args.shift(), args);
+    }
     return this.bind(args);
   }
   bind(...args) {
@@ -271,6 +285,8 @@ class Binder {
     let listener = argsType.number;
     let values = argsType.array;
     let model = argsType.object;
+    let type = argsType.strings ? argsType.strings[1] : undefined;
+    console.log("type:", type);
     if (values && values.length) {
       let test = onvalue;
       onvalue = val => {
@@ -279,7 +295,11 @@ class Binder {
         return values[val];
       };
     } else if (model && model !== target) {
-      onvalue = val => [model[val], model.default, model.false].filter(v => v !== undefined)[0];
+      let test = onvalue;
+      onvalue = val => {
+        val = test(val);
+        return [model[val], model.default, model.false].filter(v => v !== undefined)[0];
+      }
     }
     if (!target) return DOM.bind(this, onvalue, this.addListener(onvalue)); // bind() addListener if not in a model
     if (listener) this.removeListener(listener); // if in a model, removes the listener
@@ -288,6 +308,7 @@ class Binder {
       target: target,
       station: station,
       onvalue: onvalue,
+      type: type,
     }
     this._bonds.push(bond);
     this.update(bond);
@@ -614,7 +635,7 @@ class DOM {
       fontSize: "2em",
     },
     h2: {
-      fontSize: "1.82em",
+      fontSize: "1.85em",
     },
     h3: {
       fontSize: "1.67em",
@@ -626,7 +647,7 @@ class DOM {
       fontSize: "1.33em",
     },
     h6: {
-      fontSize: "1.17em",
+      fontSize: "1.15em",
     }
   }
 }
