@@ -286,7 +286,6 @@ class Binder {
     let values = argsType.array;
     let model = argsType.object;
     let type = argsType.strings ? argsType.strings[1] : undefined;
-    console.log("type:", type);
     if (values && values.length) {
       let test = onvalue;
       onvalue = val => {
