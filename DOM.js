@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.40
+ * @version 1.0.41
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -171,6 +171,7 @@ Element.prototype.set = function (model, ...args) {
       if (station === "icon") return this.innerHTML += `<link rel="icon" href="${model}">`;
       if (station === "image") return this.innerHTML += `<meta property="og:image" content="${model}">`;
       if (station === "charset") return this.innerHTML += `<meta charset="${model}">`;
+      if (station.startsWith("og:")) return this.innerHTML += `<meta property="${station}" content="${model}">`;
       if (DOM.metaNames.includes(station)) return this.innerHTML += `<meta name="${station}" content="${model}">`;
       if (DOM.htmlEquivs.includes(STATION)) return this.innerHTML += `<meta http-equiv="${DOM.unCamelize(STATION)}" content="${model}">`;
       if (station === "font") return DOM.set({
