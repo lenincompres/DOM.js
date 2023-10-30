@@ -130,7 +130,7 @@ myElement.set({
 });
 ```
 
-### Creating and element
+### Creating an element
 
 DOM.set() returns a new element and appends it to the DOM when provided a tag as a second parameter. The following returns a paragraph.
 
