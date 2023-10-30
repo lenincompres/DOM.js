@@ -130,12 +130,12 @@ myElement.set({
 });
 ```
 
-### DOM.element
+### Creating and element
 
-Similar to DOM.set(), this method returns a new element and does not append it to the DOM. The following returns a paragraph. By default, DOM.element creates a *section* element.
+DOM.set() returns a new element and appends it to the DOM when provided a tag as a second parameter. The following returns a paragraph.
 
 ```javascript
-const myParagraph = DOM.element({
+const myParagraph = DOM.set({
   padding: "0.5em 2em",
   backgroundColor: "lavender",
   text: "Some text",
