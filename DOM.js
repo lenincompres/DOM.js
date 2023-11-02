@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.42
+ * @version 1.0.44
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -11,6 +11,7 @@ Element.prototype.get = function (station) {
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
   else if (["text"].includes(station)) output = this.innerText;
   else if (["outer", "self"].includes(station)) output = this.outerHTML;
+  else if (station === "classes") output = this.getAttribute(station).split(" ");
   else if (DOM.attributes.includes(station) || station.startsWith("data")) output = this.getAttribute(station);
   else if (DOM.isStyle(station, this)) output = this.style[station];
   else output = station ? this[station] : this.value;
@@ -22,19 +23,23 @@ Element.prototype.get = function (station) {
 }
 
 Element.prototype.set = function (model, ...args) {
-  if ([null, undefined].includes(model)) return;
+  if ([null, undefined].includes(model)) return this;
   let contentType = DOM.typify(model.content);
   if (contentType.p5Element || contentType.element) {
     let elt = contentType.element ? contentType.element : contentType.p5Element.elt;
     this.set(elt, ...args);
-    return Object.keys(model).filter(k => k !== "content").forEach(k => elt.set(model[k], k, ...args));
+    Object.keys(model).filter(k => k !== "content").forEach(k => elt.set(model[k], k, ...args));
+    return this;
   }
-  if (Array.isArray(model.content)) return model.content.forEach(item => {
-    if ([null, undefined].includes(item)) return;
-    let individual = Object.assign({}, model);
-    individual.content = item;
-    this.set(individual, ...args);
-  });
+  if (Array.isArray(model.content)) {
+    model.content.forEach(item => {
+      if ([null, undefined].includes(item)) return;
+      let individual = Object.assign({}, model);
+      individual.content = item;
+      this.set(individual, ...args);
+    });
+    return this;
+  }
   let modelType = DOM.typify(model);
   const TAG = this.tagName.toLowerCase();
   const IS_HEAD = TAG === "head";
@@ -46,11 +51,14 @@ Element.prototype.set = function (model, ...args) {
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
   // css exceptions
-  if (STATION === "fontFace") return document.body.set({
-    css: {
-      [station]: model
-    }
-  });
+  if (STATION === "fontFace") {
+    document.body.set({
+      css: {
+        [station]: model
+      }
+    });
+    return this;
+  }
   let uncamel = DOM.unCamelize(STATION);
   // needs dissambiguation for head link and pseaudoclass
   if (!["link", "target"].includes(station) && (DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel))) return this.set({
@@ -59,19 +67,26 @@ Element.prototype.set = function (model, ...args) {
     }
   });
   // element exceptions
-  if (station === "id") return DOM.addID(model, this);
+  if (station === "id") {
+    DOM.addID(model, this);
+    return this;
+  }
   if (station === "content" && TAG === "meta") station = "*content"; // disambiguate
-  if (DOM.reserveStations.includes(station)) return;
+  if (DOM.reserveStations.includes(station)) return this;
   const IS_CONTENT = station === "content";
   const IS_LISTENER = DOM.listeners.includes(station);
   const p5Elem = argsType.p5Element;
   if (modelType.function) {
-    if (DOM.typify(STATION).event) return this.addEventListener(STATION, e => model(e, this));
-    else if (p5Elem && typeof p5Elem[STATION] === "function") return p5Elem[STATION](e => model(e, this));
-    else return this[STATION] = e => model(e, this);
+    if (DOM.typify(STATION).event) this.addEventListener(STATION, e => model(e, this));
+    else if (p5Elem && typeof p5Elem[STATION] === "function") p5Elem[STATION](e => model(e, this));
+    else this[STATION] = e => model(e, this);
+    return this;
   }
   if (model._bonds) model = model.bind();
-  if (model.binders) return model.binders.forEach(binder => binder.bind(this, STATION, model.onvalue, model.listener, ["attribute", "style", "attributes"].includes(station) ? station : undefined));
+  if (model.binders) {
+    model.binders.forEach(binder => binder.bind(this, STATION, model.onvalue, model.listener, ["attribute", "style", "attributes"].includes(station) ? station : undefined));
+    return this;
+  }
   if (station === "css") {
     const getID = elt => {
       if (elt.id) return elt.id;
@@ -84,14 +99,38 @@ Element.prototype.set = function (model, ...args) {
     if (![document.head, document.body].includes(this)) model = {
       [`#${getID(this)}`]: model,
     };
-    return document.head.set(typeof model === "string" ? model : DOM.css(model), "style");
+    document.head.set(typeof model === "string" ? model : DOM.css(model), "style");
+    return this;
   }
-  if (["text", "innertext"].includes(station)) return this.innerText = model;
-  if (["html", "innerhtml"].includes(station)) return this.innerHTML = model;
-  if (["attribute", "attributes"].includes(station)) return Object.entries(model).map(([key, value]) => {
-    if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.onvalue, value.listener, "attribute"));
-    this.setAttribute(key, value);
-  });
+  if (["text", "innertext"].includes(station)) {
+    this.innerText = model;
+    return this;
+  }
+  if (["html", "innerhtml"].includes(station)) {
+    this.innerHTML = model;
+    return this;
+  }
+  if (["attribute", "attributes"].includes(station)) {
+    Object.entries(model).map(([key, value]) => {
+      if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.onvalue, value.listener, "attribute"));
+      this.setAttribute(key, value);
+    });
+    return this;
+  }
+  if (station === "class") {
+    if (IS_PRIMITIVE) this.setAttribute(station, model);
+    if (Array.isArray(model)) model.forEach(c => this.classList.add(c));
+    else Object.entries(model).forEach(([key, value]) => {
+      if (value._bonds) value.bind(this, "class", val => new Object({
+        [key]: !!val,
+      }));
+      else if (value.binders) value.binders.forEach(binder => binder.bind(this, "class", val => new Object({
+        [key]: !!value.onvalue(),
+      }), value.listener));
+      else value ? this.classList.add(key) : this.classList.remove(key);
+    });
+    return this;
+  };
   if (IS_HEAD) {
     if (station === "font" && modelType.object) return DOM.set({
       fontFace: model
@@ -134,13 +173,22 @@ Element.prototype.set = function (model, ...args) {
   if (TAG === "style" && !model.content && !IS_PRIMITIVE) model = DOM.css(model);
   if (IS_CONTENT && !model.binders) {
     if (CLEAR) this.innerHTML = "";
-    if (IS_PRIMITIVE) return TAG === "input" ? this.value = model : this.innerHTML += model;
-    if (Array.isArray(model)) return model.forEach(m => this.set(m));
+    if (IS_PRIMITIVE) {
+      TAG === "input" ? this.value = model : this.innerHTML += model;
+      return this;
+    }
+    if (Array.isArray(model)) {
+      model.forEach(m => this.set(m));
+      return this;
+    }
     Object.keys(model).forEach(key => this.set(model[key], key, p5Elem));
     return this;
   }
   if (modelType.array) {
-    if (IS_LISTENER) return this.addEventListener(...model);
+    if (IS_LISTENER) {
+      this.addEventListener(...model);
+      return this;
+    }
     let map = model.map(m => this.set(m, [tag, ...cls].join("."), p5Elem));
     if (id) DOM.addID(id, map);
     return map;
@@ -150,58 +198,55 @@ Element.prototype.set = function (model, ...args) {
     if (model.function) model.listener = model.function;
     if (model.method) model.listener = model.method;
     if (model.call) model.listener = model.call;
-    if (model.options) return this.addEventListener(model.type, model.listener, model.options);
-    return this.addEventListener(model.type, model.listener, model.useCapture, model.wantsUntrusted);
+    if (model.options) {
+      this.addEventListener(model.type, model.listener, model.options);
+      return this;
+    }
+    this.addEventListener(model.type, model.listener, model.useCapture, model.wantsUntrusted);
+    return this;
   }
-  if (station === "class") {
-    if (IS_PRIMITIVE) return this.classList.add(model);
-    return Object.entries(model).forEach(([key, value]) => {
-      if (value._bonds) value.bind(this, "class", val => new Object({
-        [key]: !!val,
-      }));
-      else if (value.binders) value.binders.forEach(binder => binder.bind(this, "class", val => new Object({
-        [key]: !!value.onvalue(),
-      }), value.listener));
-      else value ? this.classList.add(key) : this.classList.remove(key);
-    });
-  };
   if (station === "style") {
-    if (IS_PRIMITIVE && !IS_HEAD) return this.setAttribute(station, model);
+    if (IS_PRIMITIVE && !IS_HEAD) {
+      this.setAttribute(station, model);
+      return this;
+    }
     if (!model.content) {
       if (CLEAR) this.setAttribute(station, "");
-      return Object.entries(model).forEach(([key, value]) => this.set(value, key));
+      Object.entries(model).forEach(([key, value]) => this.set(value, key));
+      return this;
     }
     if (DOM.typify(model.content).object) model.content = DOM.css(model.content);
   }
   if (IS_PRIMITIVE) {
     if (IS_HEAD) {
-      if (station === "title") return this.innerHTML += `<title>${model}</title>`;
-      if (station === "icon") return this.innerHTML += `<link rel="icon" href="${model}">`;
-      if (station === "image") return this.innerHTML += `<meta property="og:image" content="${model}">`;
-      if (station === "charset") return this.innerHTML += `<meta charset="${model}">`;
-      if (station.startsWith("og:")) return this.innerHTML += `<meta property="${station}" content="${model}">`;
-      if (DOM.metaNames.includes(station)) return this.innerHTML += `<meta name="${station}" content="${model}">`;
-      if (DOM.htmlEquivs.includes(STATION)) return this.innerHTML += `<meta http-equiv="${DOM.unCamelize(STATION)}" content="${model}">`;
-      if (station === "font") return DOM.set({
+      if (station === "title") this.innerHTML += `<title>${model}</title>`;
+      else if (station === "icon") this.innerHTML += `<link rel="icon" href="${model}">`;
+      else if (station === "image") this.innerHTML += `<meta property="og:image" content="${model}">`;
+      else if (station === "charset") this.innerHTML += `<meta charset="${model}">`;
+      else if (station.startsWith("og:")) this.innerHTML += `<meta property="${station}" content="${model}">`;
+      else if (DOM.metaNames.includes(station)) this.innerHTML += `<meta name="${station}" content="${model}">`;
+      else if (DOM.htmlEquivs.includes(STATION)) this.innerHTML += `<meta http-equiv="${DOM.unCamelize(STATION)}" content="${model}">`;
+      if (station === "font") DOM.set({
         fontFace: {
           fontFamily: model.split("/").pop().split(".")[0],
           src: model.startsWith("url") ? model : `url("${model}")`
         }
       }, "css");
       const type = DOM.getDocType(model);
-      if (station === "link") return this.set({
+      if (station === "link") this.set({
         rel: type,
         href: model
       }, station);
-      if (station === "script") return this.set({
+      if (station === "script") this.set({
         type: type,
         src: model
       }, station);
+      return this;
     }
     let done = DOM.isStyle(STATION, this) ? this.style[STATION] = model : undefined;
     if (DOM.typify(STATION).attribute || station.includes("*") || STATION.startsWith("data")) done = !this.setAttribute(station.replace("*", ""), model);
     if (station === "id") DOM.addID(model, this);
-    if (done !== undefined) return;
+    if (done !== undefined) return this;
   }
   let elem = (model.tagName || model.elt) ? model : false;
   if (!elem) {
@@ -215,7 +260,7 @@ Element.prototype.set = function (model, ...args) {
   if (id) elt.setAttribute("id", id);
   if (!argsType.boolean) this.append(elt);
   ["ready", "onready", "done", "ondone"].forEach(f => {
-    if (!model[f]) return;
+    if (!model[f]) return this;
     model[f](elem);
   });
   if (argsType.functions) argsType.functions.forEach(f => f(elem));
