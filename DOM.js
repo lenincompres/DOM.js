@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.41
+ * @version 1.0.42
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -88,7 +88,7 @@ Element.prototype.set = function (model, ...args) {
   }
   if (["text", "innertext"].includes(station)) return this.innerText = model;
   if (["html", "innerhtml"].includes(station)) return this.innerHTML = model;
-  if(["attribute", "attributes"].includes(station)) return Object.entries(model).map(([key, value]) => {
+  if (["attribute", "attributes"].includes(station)) return Object.entries(model).map(([key, value]) => {
     if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.onvalue, value.listener, "attribute"));
     this.setAttribute(key, value);
   });
@@ -140,10 +140,6 @@ Element.prototype.set = function (model, ...args) {
     return this;
   }
   if (modelType.array) {
-    if (station === "class") return model.forEach(c => {
-      if (!c) return;
-      this.classList.add(c);
-    });
     if (IS_LISTENER) return this.addEventListener(...model);
     let map = model.map(m => this.set(m, [tag, ...cls].join("."), p5Elem));
     if (id) DOM.addID(id, map);
@@ -157,6 +153,18 @@ Element.prototype.set = function (model, ...args) {
     if (model.options) return this.addEventListener(model.type, model.listener, model.options);
     return this.addEventListener(model.type, model.listener, model.useCapture, model.wantsUntrusted);
   }
+  if (station === "class") {
+    if (IS_PRIMITIVE) return this.classList.add(model);
+    return Object.entries(model).forEach(([key, value]) => {
+      if (value._bonds) value.bind(this, "class", val => new Object({
+        [key]: !!val,
+      }));
+      else if (value.binders) value.binders.forEach(binder => binder.bind(this, "class", val => new Object({
+        [key]: !!value.onvalue(),
+      }), value.listener));
+      else value ? this.classList.add(key) : this.classList.remove(key);
+    });
+  };
   if (station === "style") {
     if (IS_PRIMITIVE && !IS_HEAD) return this.setAttribute(station, model);
     if (!model.content) {
@@ -251,7 +259,7 @@ class Binder {
       if (!bond.target) return;
       let theirValue = bond.onvalue(this._value);
       if (bond.target.tagName) {
-        if(!bond.type) return bond.target.set(theirValue, bond.station);
+        if (!bond.type) return bond.target.set(theirValue, bond.station);
         return bond.target.set({
           [bond.type]: {
             [bond.station]: theirValue,
