@@ -90,7 +90,7 @@ The new **h1** and **p** elements will be appended to the element.
 
 ---
 
-### Properties: Attributes, Events and More
+### Properties: Attributes, Events and listeners
 
 DOM.set recognizes **properties** in the model structure, such as attributes or event handlers.
 
@@ -127,6 +127,37 @@ myElement.set({
   padding: "0.5em 2em",
   backgroundColor: "lavender",
   text: "Some text",
+});
+```
+
+### Classes
+
+You can set up the class attribute of the element passing a string to replace the content of the class tribute.
+
+```javascript
+myElement.set({
+  class = "my-classname other-classname",
+});
+```
+
+Or, use an array, to add classes to the classList without replacing existing ones.
+```javascript
+myElement.set({
+  class = [
+    "my-classname",
+    "other-classname",
+  ],
+});
+```
+
+You may also use and object to add or remove a class.
+```javascript
+myElement.set({
+  class = {
+    classname: false, // this removes the class "classname"
+    "other-classname": true, // this adds the class
+    "yet-another": isAnother, // this adds or removes depending of the truthy o falsy value of isAnother
+  },
 });
 ```
 
@@ -211,18 +242,18 @@ Note how **set** recognizes common head information (icon, charset, keywords, de
 In fact, the **DOM.set** method recognizes these as well, and adds them on the *document.head* instead of the *body*.
 
 ```javascript
-const myHeader = DOM.element( {
+const myHeader = DOM.set( {
   h1: "Page built with DOM.set",
 }, "header");
 
-const myMain = DOM.element({
+const myMain = DOM.set({
   article: {
     h2: "Basic DOM element",
     p: "<b>This</b> is a paragraph.",
   }
 }, "main");
 
-const myFooter = DOM.element( {
+const myFooter = DOM.set( {
   p: "Made with DOM.set",
 }, "footer");
 
@@ -329,7 +360,7 @@ DOM.set([
 Asign a string to the *style* property to update the inline style of the element—replacing any previous value.
 
 ```javascript
-const myMain = DOM.element({
+const myMain = DOM.set({
   style: "margin: 20px; font-family: Tahoma; background-color: gray;",
   content: "The style is in the style attribute of the main element.",
 }, "main");
@@ -347,7 +378,7 @@ DOM.set({
 Asign a structural object to the *style* to update individual style properties—use names in camelCase.
 
 ```javascript
-const myMain = DOM.element({
+const myMain = DOM.set({
   style: {
     margin: "20px",
     fontFamily: "Tahoma",
@@ -373,7 +404,7 @@ This is equivalent to using the [style property of DOM elements](https://www.w3s
 Styles may be assigned without an emcompasing *style* property. The previous code could be written as follows.
 
 ```javascript
-const myMain = DOM.element({
+const myMain = DOM.set({
   margin: "20px",
   fontFamily: "Tahoma",
   backgroundColor: "gray",
@@ -397,7 +428,7 @@ Yet, **DOM.set** interprets structural properties to match attributes, styles, e
 If *style* has a *content* property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
 
 ```javascript
-const myMain = DOM.element({
+const myMain = DOM.set({
   style: {
     lang: "scss",
     content: "main { margin: 20px; font-family: Tahoma; color: gray; }",
@@ -447,7 +478,7 @@ Lastly,
 Use *css:* in your model structure to create styling rules that apply **only** to the current element and its children.
 
 ```javascript
-const myMain = DOM.element({
+const myMain = DOM.set({
   css: {
     margin: "20px",
     fontFamily: "Tahoma",
@@ -558,9 +589,9 @@ Any element's property (attribute, content, style, content or event handler) can
 When the *value* property of this object changes, it automatically updates all element properties' bound to it.
 
 ```javascript
-const myBinder = DOM.binder("Default value");
+const myBinder = new Binder("Default value");
 
-const myMain = DOM.element({
+const myMain = DOM.set({
   input: {
     value: myBinder,
   },
@@ -587,9 +618,9 @@ DOM.set({
 You may provide a function that returns the correct value to assign to the element's property based on the value of the binder. Or provide an object model to map the values to.
 
 ```javascript
-const fieldEnabled = DOM.binder(false);
+const fieldEnabled = new Binder(false);
 
-const myMain = DOM.element({
+const myMain = DOM.set({
   div: {
     style: {
       background: fieldEnabled.as({
@@ -602,6 +633,9 @@ const myMain = DOM.element({
       value: fieldEnabled.as(value => `The field is: ${value}.`),
     },
     button : {
+      class: {
+        enablebutton: fieldEnabled, // classes passed as object keys can be bound as well.
+      },
       text: 'toggle',
       onclick: () => fieldEnabled.value = !fieldEnabled.value,
     }
@@ -616,6 +650,8 @@ DOM.set({
   footer: "the footer"
 });
 ```
+
+Classes in the classList can be bound to a binder as well. They changing value of *true* or *false* will determine if the class would be added or removed.
 
 ### Binding outside a create model
 
@@ -735,6 +771,8 @@ DOM.get("backgroundColor"); // returns the body's background color
 document.body.get("backgroundColor"); // same as before
 
 myElement.get("class");  // returns the class attribute of the element
+
+myElement.get("classes");  // returns the classes in the attribute of the element as an array
 
 myElement.get(); // returns the value (in the case of inputs) or the innerHTML
 
