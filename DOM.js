@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.44
+ * @version 1.0.45
  * @repository https://github.com/lenincompres/DOM.js
  */
 
-Element.prototype.get = function (station) {
+ Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -71,7 +71,6 @@ Element.prototype.set = function (model, ...args) {
     DOM.addID(model, this);
     return this;
   }
-  if (station === "content" && TAG === "meta") station = "*content"; // disambiguate
   if (DOM.reserveStations.includes(station)) return this;
   const IS_CONTENT = station === "content";
   const IS_LISTENER = DOM.listeners.includes(station);
@@ -115,6 +114,10 @@ Element.prototype.set = function (model, ...args) {
       if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.onvalue, value.listener, "attribute"));
       this.setAttribute(key, value);
     });
+    return this;
+  }
+  if (TAG.toLocaleLowerCase() === "meta") {
+    Object.entries(model).map(([key, value]) => this.setAttribute(key, value));
     return this;
   }
   if (station === "class") {
@@ -219,6 +222,7 @@ Element.prototype.set = function (model, ...args) {
   }
   if (IS_PRIMITIVE) {
     if (IS_HEAD) {
+      const type = DOM.getDocType(model);
       if (station === "title") this.innerHTML += `<title>${model}</title>`;
       else if (station === "icon") this.innerHTML += `<link rel="icon" href="${model}">`;
       else if (station === "image") this.innerHTML += `<meta property="og:image" content="${model}">`;
@@ -226,31 +230,29 @@ Element.prototype.set = function (model, ...args) {
       else if (station.startsWith("og:")) this.innerHTML += `<meta property="${station}" content="${model}">`;
       else if (DOM.metaNames.includes(station)) this.innerHTML += `<meta name="${station}" content="${model}">`;
       else if (DOM.htmlEquivs.includes(STATION)) this.innerHTML += `<meta http-equiv="${DOM.unCamelize(STATION)}" content="${model}">`;
-      if (station === "font") DOM.set({
+      else if (station === "font") DOM.set({
         fontFace: {
           fontFamily: model.split("/").pop().split(".")[0],
           src: model.startsWith("url") ? model : `url("${model}")`
         }
       }, "css");
-      const type = DOM.getDocType(model);
-      if (station === "link") this.set({
+      else if (station === "link") this.set({
         rel: type,
         href: model
       }, station);
-      if (station === "script") this.set({
+      else if (station === "script") this.set({
         type: type,
         src: model
       }, station);
       return this;
     }
     let done = DOM.isStyle(STATION, this) ? this.style[STATION] = model : undefined;
-    if (DOM.typify(STATION).attribute || station.includes("*") || STATION.startsWith("data")) done = !this.setAttribute(station.replace("*", ""), model);
+    if (DOM.typify(STATION).attribute || STATION.startsWith("data")) done = !this.setAttribute(station, model);
     if (station === "id") DOM.addID(model, this);
     if (done !== undefined) return this;
   }
   let elem = (model.tagName || model.elt) ? model : false;
   if (!elem) {
-    if (tag && tag.length) tag = tag.replace("*", "");
     if (!tag || !isNaN(tag) || !tag.length) tag = "section";
     elem = p5Elem ? createElement(tag) : document.createElement(tag);
     elem.set(model, p5Elem);
@@ -426,6 +428,14 @@ class DOM {
   static set(model = "", ...args) {
     if (!args.includes("css") && !window.DOM_RESETTED) {
       DOM.set(DOM.RESET, "css");
+      document.head.set({
+        charset: "UTF-8",
+        viewport: "width=device-width, initial-scale=1.0",
+        meta: {
+          "http-equiv": "X-UA-Compatible",
+          content: "IE=edge",
+        }, 
+      });
       window.DOM_RESETTED = true;
     }
     // checks if the model is meant for an element
@@ -631,8 +641,6 @@ class DOM {
       quotes: "none",
       content: "none",
       backgroundColor: "transparent",
-      //fontSize: "100%",
-      //font: "inherit"
     },
     "article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section": {
       display: "block",
