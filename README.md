@@ -183,6 +183,26 @@ DOM.set({
 });
 ```
 
+Conversely, if what you pass as a string argument is not a tag, but a known property like *attribute*, *style*, an event, or *class*, DOM.set will modify the property accordingly in the element invoking the method.
+
+```javascript
+myParagraph.set({
+  padding: "0.5em 2em",
+  backgroundColor: "lavender",
+}, "style");
+
+myButton.set({
+  warning: true,
+  submit: false,
+}, "class");
+
+mySection.set({
+  id: "my-button",
+}, "attribute");
+
+myButton.set(e => runMethod(), "click");
+```
+
 ### Set the Head
 
 Just as any element, you may invoke the **set** method on the head element. Many of its properties can be set directly. It will even link fonts and make them available as font-family styles.
