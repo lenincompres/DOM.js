@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.45
+ * @version 1.0.46
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -109,29 +109,26 @@ Element.prototype.set = function (model, ...args) {
     this.innerHTML = model;
     return this;
   }
-  if (["attribute", "attributes"].includes(station)) {
-    Object.entries(model).map(([key, value]) => {
-      if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.onvalue, value.listener, "attribute"));
-      this.setAttribute(key, value);
-    });
-    return this;
-  }
   if (TAG.toLocaleLowerCase() === "meta") {
     Object.entries(model).map(([key, value]) => this.setAttribute(key, value));
+    return this;
+  }
+  const handleProps = (fallBack = () => null) => {
+    Object.entries(model).map(([key, value]) => {
+      if (value && value._bonds) value.bind(this, key, value.onvalue, station);
+      if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.onvalue, value.listener, station));
+      fallBack(key, value);
+    });
+  };
+  if (["attribute", "attributes"].includes(station)) {
+    station = "attribute";
+    handleProps((key, value) => this.setAttribute(key, value));
     return this;
   }
   if (station === "class") {
     if (IS_PRIMITIVE) this.setAttribute(station, model);
     if (Array.isArray(model)) model.forEach(c => this.classList.add(c));
-    else Object.entries(model).forEach(([key, value]) => {
-      if (value._bonds) value.bind(this, "class", val => new Object({
-        [key]: !!val,
-      }));
-      else if (value.binders) value.binders.forEach(binder => binder.bind(this, "class", val => new Object({
-        [key]: !!value.onvalue(),
-      }), value.listener));
-      else value ? this.classList.add(key) : this.classList.remove(key);
-    });
+    else handleProps((key, value) => value ? this.classList.add(key) : this.classList.remove(key));
     return this;
   };
   if (IS_HEAD) {
@@ -215,7 +212,7 @@ Element.prototype.set = function (model, ...args) {
     }
     if (!model.content) {
       if (CLEAR) this.setAttribute(station, "");
-      Object.entries(model).forEach(([key, value]) => this.set(value, key));
+      handleProps((key, value) => this.style[key] = value);
       return this;
     }
     if (DOM.typify(model.content).object) model.content = DOM.css(model.content);
