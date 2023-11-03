@@ -466,33 +466,6 @@ DOM.set({
 ```
 
 This method is discouraged, since it will affect all elements in the DOM not just the one invoking **set**.
-Instead, set global styles using **DOM.style**, which adds the CSS to the head, and can interpret structural objects into CSS—nesting and all.
-
-```javascript
-DOM.style({
-  main: { 
-    margin: "20px",
-    fontFamily: "Tahoma",
-    color: "gray",
-  },
-  'p, article>*': {
-    margin: "2em",
-  },
-  nav: {
-    a: {
-      backgroundColor: "silver",
-      hover: {
-        backgroundColor: "gold",
-      }
-    }
-  }
-});
-```
-
-**DOM.style** even recognizes pseudo-elements and pseudo-classes when converting CSS.
-And selectors containing underscores (\_) are interpreted as periods (.); so, *button_warning* becomes *button.warning*.
-
-Lastly,
 
 ### CSS Property
 Use *css:* in your model structure to create styling rules that apply **only** to the current element and its children.
@@ -536,39 +509,6 @@ DOM.set({
 
 The CSS is added to the document.head's style element under the *id* of the element where it is created.
 If the element doesn't have an *id*, a unique one is provided for it.
-
-Elements also have a **css** method you may use to asigned their style. So the previous code could also be written as:
-
-```javascript
-DOM.set({
-  main: {
-    id: "mainArea",
-    nav: {
-      a: [
-        {
-          href: "home.html",
-          content: "HOME",
-        }, {
-          href: "gallery.html",
-          content: "GALLERY",
-        }
-      ]
-    }
-  }
-});
-
-mainArea.css({
-  margin: "20px",
-  fontFamily: "Tahoma",
-  backgroundColor: "gray",
-  a: {
-    backgroundColor: "silver",
-    hover: {
-      backgroundColor: "gold",
-    }
-  }
-});
-```
 
 Nested selectors affect all children in the hierarchy of the DOM. 
 - **tag_**: Use a trailing underscore (\_) to affect only immediate children of the element.
