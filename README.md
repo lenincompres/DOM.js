@@ -613,7 +613,7 @@ DOM.set({
 
 Classes in the classList can be bound to a binder as well. They changing value of *true* or *false* will determine if the class would be added or removed.
 
-### Binding outside a create model
+### Binding outside the set method
 
 You may call the *bind* method of a binder and provide the element and property to be bound to it.
 
