@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.46
+ * @version 1.0.47
  * @repository https://github.com/lenincompres/DOM.js
  */
 
- Element.prototype.get = function (station) {
+Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -83,7 +83,7 @@ Element.prototype.set = function (model, ...args) {
   }
   if (model._bonds) model = model.bind();
   if (model.binders) {
-    model.binders.forEach(binder => binder.bind(this, STATION, model.onvalue, model.listener, ["attribute", "style", "attributes"].includes(station) ? station : undefined));
+    model.binders.forEach(binder => binder.bind(this, STATION, model.onvalue, model.listener, ["attribute", "attributes"].includes(station) ? station : undefined));
     return this;
   }
   if (station === "css") {
@@ -431,7 +431,7 @@ class DOM {
         meta: {
           "http-equiv": "X-UA-Compatible",
           content: "IE=edge",
-        }, 
+        },
       });
       window.DOM_RESETTED = true;
     }
