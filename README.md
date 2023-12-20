@@ -143,10 +143,7 @@ myElement.set({
 Or, use an array, to add classes to the classList without replacing existing ones.
 ```javascript
 myElement.set({
-  class: [
-    "my-classname",
-    "other-classname",
-  ],
+  class: ["my-classname", "other-classname",],
 });
 ```
 
