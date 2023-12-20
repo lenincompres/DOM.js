@@ -136,14 +136,14 @@ You can set up the class attribute of the element passing a string to replace th
 
 ```javascript
 myElement.set({
-  class = "my-classname other-classname",
+  class: "my-classname other-classname",
 });
 ```
 
 Or, use an array, to add classes to the classList without replacing existing ones.
 ```javascript
 myElement.set({
-  class = [
+  class: [
     "my-classname",
     "other-classname",
   ],
@@ -153,7 +153,7 @@ myElement.set({
 You may also use and object to add or remove a class.
 ```javascript
 myElement.set({
-  class = {
+  class: {
     classname: false, // this removes the class "classname"
     "other-classname": true, // this adds the class
     "yet-another": isAnother, // this adds or removes depending of the truthy o falsy value of isAnother
