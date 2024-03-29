@@ -51,8 +51,9 @@ someElement.set({
 });
 ```
 
-The new **h1** and **p** elements will be appended to the element.
 [p5js](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
+
+The new **h1** and **p** elements will be appended to the element.
 
 ---
 
@@ -682,7 +683,7 @@ DOM.set({
 });
 ```
 
-[p5jsj](https://editor.p5js.org/jht9629-nyu/sketches/66VL3dHNk)
+[p5js](https://editor.p5js.org/jht9629-nyu/sketches/66VL3dHNk)
 
 Classes in the classList can be bound to a binder as well. They changing value of _true_ or _false_ will determine if the class would be added or removed.
 
@@ -790,7 +791,7 @@ DOM.set({
 });
 ```
 
-## [p5js](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
+[p5js](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
 
 ## DOM.get() and element.get()
 
