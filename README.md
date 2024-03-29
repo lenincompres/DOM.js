@@ -52,6 +52,7 @@ someElement.set({
 ```
 
 The new **h1** and **p** elements will be appended to the element.
+[p5js](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
 
 ---
 
@@ -118,14 +119,16 @@ DOM.set({
     innerText: 'Go',
     addEventListener: {
       type: 'click',
-      listerner: (event) => (myInput.value = 'Button pressed'),
+      listener: (event) => (myInput.value = 'Button pressed'),
     },
   },
 });
 
 myInput.style.border = 'none';
-goBtn.click();
+// goBtn.click();
 ```
+
+[p5js](https://editor.p5js.org/jht9629-nyu/sketches/IJDh1-znl)
 
 NOTE:
 
@@ -225,6 +228,8 @@ mySection.set(
 
 myButton.set((e) => runMethod(), 'click');
 ```
+
+[p5js](https://editor.p5js.org/jht9629-nyu/sketches/Hl1Tu1U1U)
 
 ### Set the Head
 
@@ -601,6 +606,8 @@ mainArea.css({
 
 ## Binding
 
+<!-- JHT: recommend Binding section move up before CSS  -->
+
 Any element's property (attribute, content, style, content or event handler) can be **bound** to a _Binder_ object.
 When the _value_ property of this object changes, it automatically updates all element properties' bound to it.
 
@@ -631,6 +638,8 @@ DOM.set({
   footer: 'the footer',
 });
 ```
+
+[p5js](https://editor.p5js.org/jht9629-nyu/sketches/DNCSUTBnq)
 
 ### Binding Functions
 
@@ -779,7 +788,7 @@ DOM.set({
 });
 ```
 
----
+## [p5js](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
 
 ## DOM.get() and element.get()
 
@@ -820,17 +829,19 @@ When called from p5 or a p5 element, all elements given an id are created as p5 
 
 ```javascript
 someP5Element.set({
-  h1: "Hello world",
+  h1: 'Hello world',
   button: {
-    id: "goBtn",
-    text: "Go",
-    mouseClicked: e => alert("Go was clicked."),
-  }
-);
+    id: 'goBtn',
+    text: 'Go',
+    mouseClicked: (e) => alert('Go was clicked.'),
+  },
+});
 
 /* goBtn is a p5 Element. */
 
-goBtn.addClass("nice-button");
+goBtn.addClass('nice-button');
 ```
+
+[p5js](https://editor.p5js.org/jht9629-nyu/sketches/mLU67cNL0)
 
 ## Have fun!
