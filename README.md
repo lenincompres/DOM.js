@@ -682,6 +682,8 @@ DOM.set({
 });
 ```
 
+[p5jsj](https://editor.p5js.org/jht9629-nyu/sketches/66VL3dHNk)
+
 Classes in the classList can be bound to a binder as well. They changing value of _true_ or _false_ will determine if the class would be added or removed.
 
 ### Binding outside the set method
