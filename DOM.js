@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.48
+ * @version 1.0.49
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -61,7 +61,7 @@ Element.prototype.set = function (model, ...args) {
   }
   let uncamel = DOM.unCamelize(STATION);
   // needs dissambiguation for head link and pseaudoclass
-  if (!["link", "target"].includes(station) && (DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel))) return this.set({
+  if (!["link", "target", "lang"].includes(station) && (DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel))) return this.set({
     css: {
       [uncamel]: model
     }
