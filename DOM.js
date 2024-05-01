@@ -453,6 +453,10 @@ class DOM {
       document.head.set(model.head);
       delete model.head;
     }
+    if (model.lang) {
+      document.documentElement.set(model.lang, "lang");
+      delete model.lang;
+    }
     let headModel = {};
     Object.keys(model).forEach(key => {
       if (!DOM.headTags.includes(key.toLowerCase())) return;
