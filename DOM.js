@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.49
+ * @version 1.0.50
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -127,7 +127,7 @@ Element.prototype.set = function (model, ...args) {
   }
   if (station === "class") {
     if (IS_PRIMITIVE) this.setAttribute(station, model);
-    if (Array.isArray(model)) model.forEach(c => this.classList.add(c));
+    else if (Array.isArray(model)) model.forEach(c => this.classList.add(c));
     else handleProps((key, value) => value ? this.classList.add(key) : this.classList.remove(key));
     return this;
   };
