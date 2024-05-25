@@ -54,6 +54,7 @@ someElement.set({
 ```
 
 The new **h1** and **p** elements will be appended to the element.
+
 [p5js](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
 
 ---
@@ -131,6 +132,7 @@ myInput.style.border = 'none';
 ```
 
 [p5js](https://editor.p5js.org/jht9629-nyu/sketches/IJDh1-znl)
+
 [p5js more inputs](https://editor.p5js.org/jht9629-nyu/sketches/AwB8tHJ15)
 
 NOTE:
