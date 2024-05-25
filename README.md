@@ -6,6 +6,8 @@ by Lenin Compres
 
 The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in javaScript (_main.js_). We will not need CSS either.
 
+Click here to learn [what is HTML](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/HTML_basics)
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -52,6 +54,7 @@ someElement.set({
 ```
 
 The new **h1** and **p** elements will be appended to the element.
+
 [p5js](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
 
 ---
@@ -130,6 +133,8 @@ myInput.style.border = 'none';
 
 [p5js](https://editor.p5js.org/jht9629-nyu/sketches/IJDh1-znl)
 
+[p5js more inputs](https://editor.p5js.org/jht9629-nyu/sketches/AwB8tHJ15)
+
 NOTE:
 
 - Providing an element with an _id_ will create a global variable (with that name) to hold that element.
@@ -163,7 +168,7 @@ myElement.set({
 });
 ```
 
-You may also use and object to add or remove a class.
+You may also use an object to add or remove a class.
 
 ```javascript
 myElement.set({
@@ -682,7 +687,7 @@ DOM.set({
 });
 ```
 
-[p5jsj](https://editor.p5js.org/jht9629-nyu/sketches/66VL3dHNk)
+[p5js](https://editor.p5js.org/jht9629-nyu/sketches/66VL3dHNk)
 
 Classes in the classList can be bound to a binder as well. They changing value of _true_ or _false_ will determine if the class would be added or removed.
 
