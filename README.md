@@ -6,6 +6,8 @@ by Lenin Compres
 
 The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in javaScript (_main.js_). We will not need CSS either.
 
+Click here to learn [what is HTML](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/HTML_basics)
+
 ```html
 <!DOCTYPE html>
 <html>
