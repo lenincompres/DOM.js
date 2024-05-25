@@ -168,7 +168,7 @@ myElement.set({
 });
 ```
 
-You may also use and object to add or remove a class.
+You may also use an object to add or remove a class.
 
 ```javascript
 myElement.set({
