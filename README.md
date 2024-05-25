@@ -129,6 +129,7 @@ myInput.style.border = 'none';
 ```
 
 [p5js](https://editor.p5js.org/jht9629-nyu/sketches/IJDh1-znl)
+[p5js more inputs](https://editor.p5js.org/jht9629-nyu/sketches/AwB8tHJ15)
 
 NOTE:
 
