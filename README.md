@@ -125,7 +125,6 @@ DOM.set({
 });
 
 myInput.style.border = 'none';
-// goBtn.click();
 ```
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/IJDh1-znl)
@@ -485,7 +484,7 @@ DOM.set({
 });
 ```
 
-The _style_ and _content_ properties are useful for organizing the model structure.
+The _style_, _attribute_, and _content_ properties are useful for organizing the model structure, and to clarify what kind of property you are trying to set. If DOM.js is not setting a value in the right property you intended to (style, attributes, events, etc.), you should put this key/value pair inside one of these wrapping or organizing properties.
 Yet, **DOM.set** interprets structural properties to match attributes, styles, event handlers and element tags.
 
 ### Style Element
@@ -566,8 +565,8 @@ If the element doesn't have an _id_, a unique one is provided for it.
 Nested selectors affect all children in the hierarchy of the DOM.
 
 - **tag\_**: Use a trailing underscore (\_) to affect only immediate children of the element.
-- **tag_class**: Other underscores in the selector are turned into (.) to indicate classes.
-- **\_\_class**: Two leading underscores means the class is applied to the parent selector.
+- **_class, tag_class**: Leading underscores and any other in the selector are turned into (.) to indicate classes.
+- **\_\_class**: Two leading underscores mean the class is applied to the parent selector.
 
 ```javascript
 mainArea.css({
@@ -643,7 +642,7 @@ DOM.set({
 
 ### Binding Functions
 
-You may provide a function that returns the correct value to assign to the element's property based on the value of the binder. Or provide an object model to map the values to.
+Using the **.as()** method of the binders, you may provide a function that returns the correct value to assign to the element's property based on the value of the binder, or provide an object model to map the values to.
 
 ```javascript
 const fieldEnabled = new Binder(false);
@@ -684,7 +683,7 @@ DOM.set({
 
 [p5jsj](https://editor.p5js.org/jht9629-nyu/sketches/66VL3dHNk)
 
-Classes in the classList can be bound to a binder as well. They changing value of _true_ or _false_ will determine if the class would be added or removed.
+Classes in the classList can be bound to a binder as well. They changing value of _true_ or _false_ will determine if a class is added or removed.
 
 ### Binding outside the set method
 
@@ -697,7 +696,7 @@ myBinder.bind(someElement, 'text', (value) => `The field is: ${value}.`);
 The _bind_ method is agnostic about the order of the arguments provided.
 An _element_ is the target, a _string_ the property to bind, and a _function_ will return the appropriate value to update the element.
 
-The DOM.binder function may also be invoked with initial binding settings. The first argument will be the value of the binder.
+The DOM.binder function may also be called with initial binding settings. The first argument will be the value of the binder.
 
 ```javascript
 let myBinder = DOM.binder(true, someElement, 'text', (value) => `The field is: ${value}.`);
@@ -713,7 +712,7 @@ myBinder.bind(someOtherBinder, (value) => (value ? 'red' : 'blue'));
 
 #### Listening to binders
 
-You may add listerner methods to be called when a binder updates.
+You may add listerner methods to be called when a binder is updated.
 
 ```javascript
 myBinder.addListener((value) => alert('The value was updated to: ' + value));
@@ -739,7 +738,7 @@ Note that if the value is a boolean, _false_ would be position 0, and _true_ is 
 
 ## Extending the HTMLElement class
 
-To create custom HTML elements using a DOM.js approach, we can extend Javascript's HTMLElement class
+To create custom HTML elements using the DOM.js approach, we can extend Javascript's HTMLElement class.
 
 ```javascript
 // declares the class
@@ -790,11 +789,11 @@ DOM.set({
 });
 ```
 
-## [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
+[See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
 
 ## DOM.get() and element.get()
 
-This method returns a value based on the _string_ provided, it tries to match it to an attribute, style property, element tag (in the scope), or a query selector. If no station is given, it returns the value property or the innerHTML.
+This method returns an element's property value based on a _string_ provided. It matches it to an attribute, style property, element tag (in the scope), or query selector. If no _string_ is provided, it returns the value property or the innerHTML.
 
 ```javascript
 DOM.get('backgroundColor'); // returns the body's background color
@@ -818,7 +817,7 @@ myElement.get('.nice'); // similar to querySelectorAll, but returns an array of 
 
 ## DOM.js and P5.js
 
-Yes, DOM.set works for P5.js elements. If you are not familiar with P5.js? [Remedy that](https://p5js.org/).
+Yes, DOM.set works for P5.js elements. If you are not familiar with P5.js, please [remedy that](https://p5js.org/).
 
 ```javascript
 p5.set({
