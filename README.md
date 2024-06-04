@@ -30,9 +30,9 @@ The following is all the HTML we are going to need for the entirety of this docu
 </html>
 ```
 
-##  Basic Usage of DOM.js or the DOM.set Method
+##  Basic Usage
 
-Use the DOM.set method to create elements:
+Use the DOM.set method to create and append elements:
 
 ```javascript
 const model = {
