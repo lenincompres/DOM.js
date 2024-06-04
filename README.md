@@ -4,7 +4,9 @@ by Lenin Compres
 
 P5 editor examples by John Henry Thompson
 
-DOM.js is a lightweight JavaScript library for creating and manipulating DOM elements using JavaScript objects or JSON as models. It simplifies DOM interactions, allowing for dynamic and efficient web development. Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
+DOM.js is a lightweight JavaScript library for creating and manipulating DOM elements using JavaScript objects or JSON models. It simplifies DOM interactions, enabling dynamic and efficient web development. With DOM.js, you can effortlessly create elements, manage attributes and styles, bind properties, and handle events.
+
+Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
 
 Features:
 * Create and manage DOM elements using JavaScript objects or JSON.
