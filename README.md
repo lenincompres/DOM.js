@@ -52,7 +52,7 @@ someElement.set({
 ```
 
 The new **h1** and **p** elements will be appended to the element.
-[p5js](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
+[See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
 
 ---
 
@@ -128,7 +128,7 @@ myInput.style.border = 'none';
 // goBtn.click();
 ```
 
-[p5js](https://editor.p5js.org/jht9629-nyu/sketches/IJDh1-znl)
+[See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/IJDh1-znl)
 
 NOTE:
 
@@ -229,7 +229,7 @@ mySection.set(
 myButton.set((e) => runMethod(), 'click');
 ```
 
-[p5js](https://editor.p5js.org/jht9629-nyu/sketches/Hl1Tu1U1U)
+[See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Hl1Tu1U1U)
 
 ### Set the Head
 
@@ -639,7 +639,7 @@ DOM.set({
 });
 ```
 
-[p5js](https://editor.p5js.org/jht9629-nyu/sketches/DNCSUTBnq)
+[See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/DNCSUTBnq)
 
 ### Binding Functions
 
@@ -790,7 +790,7 @@ DOM.set({
 });
 ```
 
-## [p5js](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
+## [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
 
 ## DOM.get() and element.get()
 
@@ -844,6 +844,6 @@ someP5Element.set({
 goBtn.addClass('nice-button');
 ```
 
-[p5js](https://editor.p5js.org/jht9629-nyu/sketches/mLU67cNL0)
+[See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/mLU67cNL0)
 
 ## Have fun!
