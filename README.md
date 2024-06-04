@@ -42,7 +42,7 @@ DOM.set({
 });
 ```
 
-If called before the body is loaded, **DOM.set** waits for the window _load_ event before executing.
+If called before the HTML document's body is loaded, **DOM.set** waits for the window _load_ event before executing.
 
 You may also invoke the **set** method directly on an element to model it.
 
