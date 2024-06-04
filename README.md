@@ -4,6 +4,14 @@ by Lenin Compres
 
 P5 editor examples by John Henry Thompson
 
+DOM.js is a lightweight JavaScript library for creating and manipulating DOM elements using JavaScript objects or JSON as models. It simplifies DOM interactions, allowing for dynamic and efficient web development. Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
+
+Features:
+* Create and manage DOM elements using JavaScript objects or JSON.
+* Bind properties to elements for dynamic updates.
+* Extend HTML elements with custom methods.
+* Integrate seamlessly with libraries like P5.js.
+
 ## Setup
 
 The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in javaScript (_main.js_). We will not need CSS either.
@@ -20,10 +28,29 @@ The following is all the HTML we are going to need for the entirety of this docu
 </html>
 ```
 
-## The DOM.js or DOM.set Method
+##  Basic Usage of DOM.js or the DOM.set Method
 
-This library allows you to create DOM elements using a structural JavaScript object (or JSON) as a model.
-Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
+Use the DOM.set method to create elements:
+
+```javascript
+const model = {
+  tag: 'div',
+  id: 'container',
+  children: [
+    {
+      tag: 'h1',
+      innerHTML: 'Hello, World!'
+    },
+    {
+      tag: 'p',
+      innerHTML: 'This is a paragraph.'
+    }
+  ]
+};
+DOM.set(model);
+```
+
+You may also use the tags as key properties and values as their innerHTML.
 
 ```javascript
 DOM.set({
@@ -42,7 +69,7 @@ DOM.set({
 });
 ```
 
-If called before the HTML document's body is loaded, **DOM.set** waits for the window _load_ event before executing.
+If called before the HTML document's body loads, **DOM.set** waits for the window _load_ event before executing.
 
 You may also invoke the **set** method directly on an element to model it.
 
