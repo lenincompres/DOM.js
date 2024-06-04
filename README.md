@@ -411,7 +411,7 @@ DOM.set({
 });
 ```
 
-You can name this elements anything—in this case they were named _elements_—. Each will be assigned their specified tag. Just avoid using known property names like: _content_, _margin_, _text_, etc. Using a plural word for the property helps avoiding this mistake.
+You can name these elements anything—in this case they were named _elements_—; another recommended name is _children_. Each will be assigned a specified tag. But, you must avoid using known property names like: _content_, _margin_, _text_, etc. Using a plural word for the property helps avoid this mistake.
 
 Similarly, if you give DOM.set an array, it assumes it is an array of elements, and will create them as *div*s, or any tag property they possess.
 
