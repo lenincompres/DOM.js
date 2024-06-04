@@ -1,6 +1,7 @@
 # DOM.js
 
 by Lenin Compres
+P5 editor examples by John Henry Thompson
 
 ## Setup
 
