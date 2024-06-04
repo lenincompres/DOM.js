@@ -18,7 +18,7 @@ The following is all the HTML we are going to need for the entirety of this docu
 </html>
 ```
 
-## The DOM.set Method
+## The DOM.js or DOM.set Method
 
 This library allows you to create DOM elements using a structural JavaScript object (or JSON) as a model.
 Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
