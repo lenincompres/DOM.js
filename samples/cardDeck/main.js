@@ -15,6 +15,14 @@ const palette = {
 
 DOM.set({
   title: "Deck of Cards",
+  charset: 'UTF-8',
+  icon: 'icon.ico',
+  keywords: 'javaScript, frameworks, gallery, sample',
+  description: 'Card deck inspired sample for DOM.js',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+  },
 
   css: {
     h: {
@@ -129,18 +137,18 @@ const CARD_CHARS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q",
 let cards = [];
 for (suit of CARD_SUITS) {
   for (char of CARD_CHARS) {
-    let card = getNewCard(suit, char);
+    let card = createNewCard(suit, char);
     cards.push(card);
   }
 };
 
-function getNewCard(suit, char) {
+function createNewCard(suit, char) {
   let card = {};
   card._FLIPPED = new Binder(true);
   card.show = () => card._FLIPPED.value = true;
   card.hide = () => card._FLIPPED.value = false;
   card.toggle = () => card._FLIPPED.value ? card.hide() : card.show();
-  card.elt = DOM.element({
+  card.elt = DOM.set({
     width: "2.5em",
     height: "3.4em",
     textAlign: "center",
@@ -151,12 +159,12 @@ function getNewCard(suit, char) {
     borderRadius: "0.25em",
     boxShadow: "1px 1px 3px black",
     cursor: "pointer",
-    p: {
+    span: {
       opacity: card._FLIPPED.as(0, 1),
       text: char + suit,
     },
     click: e => card.toggle(),
-  });
+  }, "section", false);
   return card;
 }
 
