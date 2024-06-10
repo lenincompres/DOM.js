@@ -257,7 +257,7 @@ Element.prototype.set = function (model, ...args) {
   elt = p5Elem ? elem.elt : elem;
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute("id", id);
-  if (!argsType.boolean) this.append(elt);
+  if (argsType.boolean === undefined) this.append(elt);
   ["ready", "onready", "done", "ondone"].forEach(f => {
     if (!model[f]) return this;
     model[f](elem);
@@ -476,7 +476,7 @@ class DOM {
     window.addEventListener("load", _ => document.body.set(model, ...args));
   }
   // returns a new element without appending it to the DOM
-  static element = (model, tag = "section") => DOM.set(model, tag, true);
+  static element = (model, tag = "section") => DOM.set(model, tag, false);
   // returns a new binder
   static binder(value, ...args) {
     let binder = new Binder(value);
