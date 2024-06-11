@@ -142,7 +142,7 @@ let mainImage = DOM.set(
 );
 ```
 
-For DOM.set a boolean argument with a value of *false* indicated that this element should not be appended to the document. A value of *true* would mean that this element (and model) will replace all the current content in the DOM (or in the element invoking the **set** method).
+For DOM.set, a boolean argument with a *false* value indicates that this element should not be appended to the document body. A value of *true* would mean that the element (and/or model) will replace all the current content in the DOM (or in the element invoking the **set** method).
 
 </details>
 
