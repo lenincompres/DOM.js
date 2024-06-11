@@ -10,7 +10,6 @@ const palette = {
 
 const _CARD_DECK = new Binder([]);
 
-
 //DOM setup
 
 DOM.set({
@@ -24,6 +23,7 @@ DOM.set({
       width: 'device-width',
       initialScale: 1,
     },
+    font: 'IrishGrover.ttf',
   },
 
   css: {
@@ -129,13 +129,14 @@ const CARD_COLOR = {
 let cards = [];
 for (suit of CARD_SUITS) {
   for (char of CARD_CHARS) {
-    let _FLIPPED = new Binder(true);
-    card = DOM.set({
+    const _FLIPPED = new Binder(true);
+    let card = DOM.set({
       width: "2.5em",
       height: "3.4em",
       textAlign: "center",
       padding: "1em 0.5em",
       margin: "0.25em",
+      fontFamily: "IrishGrover",
       color: CARD_COLOR[suit],
       backgroundColor: _FLIPPED.as(palette.accent, palette.light),
       borderRadius: "0.25em",

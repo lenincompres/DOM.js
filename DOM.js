@@ -422,7 +422,6 @@ class DOM {
     // checks if the station belongs to the head
     DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
-  static create = (...args) => DOM.set(...args);
   // create elements based on an object model
   static set(model = "", ...args) {
     if (!args.includes("css") && !window.DOM_RESETTED) {
@@ -477,6 +476,7 @@ class DOM {
     // waits for the body to load
     window.addEventListener("load", _ => document.body.set(model, ...args));
   }
+  static create = (...args) => DOM.set(...args);
   // returns a new element without appending it to the DOM
   static element = (model, tag = "section") => DOM.set(model, tag, false);
   // returns a new binder
