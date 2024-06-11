@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.50
+ * @version 1.1.0
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -50,8 +50,9 @@ Element.prototype.set = function (model, ...args) {
   if ([undefined, "create", "assign", "model", "inner", "set"].includes(station)) station = "content";
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
-  // SELECT exception
+  // SELECT and input exception
   if (STATION === "selectedIndex" && !model.binders) return this.selectedIndex = model;
+  if (STATION === "value" && IS_PRIMITIVE && !model.binders) return this.value = model;
   // css exceptions
   if (STATION === "fontFace") {
     document.body.set({

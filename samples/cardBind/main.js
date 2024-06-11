@@ -11,19 +11,39 @@ const _SELECTED_SUIT = new Binder();
 const _SELECTED_NUM = new Binder(CARD_NUMS[0]);
 const _SELECTED_COLOR = new Binder();
 
-_SELECTED_SUIT.addListener((suit) => _SELECTED_COLOR.value = CARD_COLOR[suit]);
-_SELECTED_SUIT.addListener((suit) => _SELECTED_NUM.value = _SELECTED_NUM.value);
+_SELECTED_SUIT.bind((suit) => _SELECTED_COLOR.value = CARD_COLOR[suit]);
+_SELECTED_SUIT.bind((suit) => _SELECTED_NUM.value = _SELECTED_NUM.value);
 _SELECTED_SUIT.value = CARD_SUITS[0];
+
+const CSS_MODEL = {
+  h: {
+    fontFamily: 'Serif',
+  },
+  a: {
+    color: 'skyblue',
+    hover: {
+      color: 'gold',
+      textDecoration: 'underline',
+    }
+  },
+  p: {
+    marginBottom: "1em",
+  },
+  select: {
+    minWidth: '3em',
+  }
+};
 
 const HEADER = {
   backgroundColor: _SELECTED_SUIT.as((suit) => CARD_COLOR[suit]),
   color: 'white',
   padding: '1em',
   h1: {
+    id: 'mainTitle',
     color: 'wheat',
     text: 'Pick a card',
   },
-  p: 'Simple sample created with <a href="#">DOM.js</a>'
+  p: 'Simple sample created with <a href="#">DOM.js</a>',
 };
 
 const FOOTER_MODEL = {
@@ -32,19 +52,19 @@ const FOOTER_MODEL = {
   padding: '1em',
   p: "Choose a number and suit",
   menu: {
-    children: {
+    span: {
       padding: '0.5em',
       content: [{
         label: 'Number: ',
         select: {
-          selectedIndex: _SELECTED_NUM.as((num) => CARD_NUMS.indexOf(num)),
+          value: _SELECTED_NUM,
           option: CARD_NUMS,
           change: (evt) => _SELECTED_NUM.value = evt.target.value,
         }
       }, {
         label: 'Suit: ',
         select: {
-          selectedIndex: _SELECTED_SUIT.as((suit) => CARD_SUITS.indexOf(suit)),
+          value: _SELECTED_SUIT,
           option: CARD_SUITS,
           change: (evt) => _SELECTED_SUIT.value = evt.target.value,
         }
@@ -99,25 +119,6 @@ const MAIN_MODEL = {
       return output;
     }),
   },
-};
-
-const CSS_MODEL = {
-  h: {
-    fontFamily: 'Serif',
-  },
-  a: {
-    color: 'skyblue',
-    hover: {
-      color: 'gold',
-      textDecoration: 'underline',
-    }
-  },
-  p: {
-    marginBottom: "1em",
-  },
-  select: {
-    minWidth: '3em',
-  }
 };
 
 

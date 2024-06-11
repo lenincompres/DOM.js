@@ -89,7 +89,7 @@ DOM.set({
       padding: '1em',
       p: "Choose a number and suit",
       menu: {
-        children: {
+        span: {
           padding: '0.5em',
           content: [{
             label: 'Number: ',
