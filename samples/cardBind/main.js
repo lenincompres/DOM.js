@@ -11,8 +11,8 @@ const _SELECTED_SUIT = new Binder();
 const _SELECTED_NUM = new Binder(CARD_NUMS[0]);
 const _SELECTED_COLOR = new Binder();
 
-_SELECTED_SUIT.addListener((suit) =>  _SELECTED_COLOR.value = CARD_COLOR[suit]);
-_SELECTED_SUIT.addListener((suit) =>  _SELECTED_NUM.value = _SELECTED_NUM.value);
+_SELECTED_SUIT.addListener((suit) => _SELECTED_COLOR.value = CARD_COLOR[suit]);
+_SELECTED_SUIT.addListener((suit) => _SELECTED_NUM.value = _SELECTED_NUM.value);
 _SELECTED_SUIT.value = CARD_SUITS[0];
 
 const HEADER = {
@@ -37,14 +37,14 @@ const FOOTER_MODEL = {
       content: [{
         label: 'Number: ',
         select: {
-          value: _SELECTED_NUM,
+          selectedIndex: _SELECTED_NUM.as((num) => CARD_NUMS.indexOf(num)),
           option: CARD_NUMS,
           change: (evt) => _SELECTED_NUM.value = evt.target.value,
         }
       }, {
         label: 'Suit: ',
         select: {
-          value: _SELECTED_SUIT,
+          selectedIndex: _SELECTED_SUIT.as((suit) => CARD_SUITS.indexOf(suit)),
           option: CARD_SUITS,
           change: (evt) => _SELECTED_SUIT.value = evt.target.value,
         }
@@ -73,7 +73,7 @@ const MAIN_MODEL = {
     fontFamily: 'IrishGrover',
     fontSize: '3em',
     textAlign: 'center',
-    padding: '1.25em 0',
+    padding: '1.25em 0.25em',
     width: '2.8em',
     height: '4em',
     margin: '0 auto',
@@ -85,19 +85,19 @@ const MAIN_MODEL = {
     }, {
       text: _SELECTED_SUIT,
     }],
-    p: {
-      fontSize: '0.3em',
-      color: _SELECTED_COLOR,
-      content: _SELECTED_NUM.as((num) => {
-        num = parseInt(num);
-        if (isNaN(num)) return '';
-        let output = '';
-        for (let i = 0; i < num; i++) {
-          output += _SELECTED_SUIT.value;
-        }
-        return output;
-      }),
-    },
+  },
+  section: {
+    height: '1em',
+    color: _SELECTED_COLOR,
+    content: _SELECTED_NUM.as((num) => {
+      num = parseInt(num);
+      if (isNaN(num)) return '';
+      let output = '';
+      for (let i = 0; i < num; i++) {
+        output += _SELECTED_SUIT.value + ' ';
+      }
+      return output;
+    }),
   },
 };
 

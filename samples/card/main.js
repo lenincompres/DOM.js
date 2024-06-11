@@ -68,7 +68,7 @@ DOM.set({
         fontFamily: 'cardFont',
         fontSize: '3em',
         textAlign: 'center',
-        padding: '1.25em 0',
+        padding: '1.25em 0.25em',
         width: '2.8em',
         height: '4em',
         margin: '0 auto',
