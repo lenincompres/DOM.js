@@ -8,6 +8,8 @@ const palette = {
   accent: "#46a",
 }
 
+const _CARD_DECK = new Binder([]);
+
 
 //DOM setup
 
@@ -164,7 +166,7 @@ function createNewCard(suit, char) {
       text: char + suit,
     },
     click: e => card.toggle(),
-  }, "section", false);
+  }, "section"), false;
   return card;
 }
 
@@ -202,4 +204,4 @@ function randomFlip() {
   shuffle();
 }
 
-addCards(cardDeck);
+addCards();

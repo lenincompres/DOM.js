@@ -34,7 +34,7 @@ const CSS_MODEL = {
   }
 };
 
-const HEADER = {
+const HEADER_MODEL = {
   backgroundColor: _SELECTED_SUIT.as((suit) => CARD_COLOR[suit]),
   color: 'white',
   padding: '1em',
@@ -87,7 +87,7 @@ const MAIN_MODEL = {
   tag: 'main',
   backgroundColor: 'white',
   padding: '2em',
-  div: {
+  section: {
     backgroundColor: 'white',
     verticalAlign: 'center',
     fontFamily: 'IrishGrover',
@@ -106,7 +106,7 @@ const MAIN_MODEL = {
       text: _SELECTED_SUIT,
     }],
   },
-  section: {
+  footer: {
     height: '1em',
     color: _SELECTED_COLOR,
     content: _SELECTED_NUM.as((num) => {
@@ -140,7 +140,7 @@ DOM.set({
   maxWidth: '30em',
   margin: '1em auto',
   border: '1em solid white',
-  header: HEADER,
+  header: HEADER_MODEL,
   main: MAIN_MODEL,
   footer: FOOTER_MODEL,
 });
