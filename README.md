@@ -20,7 +20,7 @@ The following is all the HTML we are going to need for the entirety of this docu
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <script src="https://cdn.jsdelivr.net/gh/lenincompres/DOM.js@latest/DOM.js"></script>
   </head>
