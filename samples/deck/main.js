@@ -1,12 +1,10 @@
-
-
 // general variables
 
 const palette = {
   base: "lightGray",
   light: "white",
   dark: "#222",
-  neutral: "#a97",
+  darkened: "rgba(0,0,0,0.6)",
   accent: "#46a",
 }
 
@@ -14,14 +12,16 @@ const palette = {
 //DOM setup
 
 DOM.set({
-  title: "Deck of Cards",
-  charset: 'UTF-8',
-  icon: 'icon.ico',
-  keywords: 'javaScript, frameworks, gallery, sample',
-  description: 'Card deck inspired sample for DOM.js',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
+  head: {
+    title: "Deck of Cards",
+    charset: 'UTF-8',
+    icon: 'icon.ico',
+    keywords: 'javaScript, frameworks, gallery, sample',
+    description: 'Card deck inspired sample for DOM.js',
+    viewport: {
+      width: 'device-width',
+      initialScale: 1,
+    },
   },
 
   css: {
@@ -101,10 +101,10 @@ DOM.set({
       display: "flex",
       flexWrap: "wrap",
       fontSize: "1.2em",
-      backgroundColor: palette.neutral,
+      backgroundColor: palette.darkened,
       margin: "1em auto",
-      padding: "0.5em",
-      maxWidth: "40em",
+      padding: "1em",
+      maxWidth: "41em",
       minHeight: "10em",
     }
 
@@ -120,7 +120,7 @@ DOM.set({
         id: "colorChooser",
         type: "color",
         change: e => DOM.set({
-          backgroundColor: colorChooser.value
+          backgroundColor: e.target.value,
         }),
       }
     }
@@ -170,7 +170,7 @@ function createNewCard(suit, char) {
 
 //Actions
 
-function addCards(){
+function addCards() {
   for (let card of cards) {
     cardDeck.set(card.elt);
   }
