@@ -23,10 +23,8 @@ The following is all the HTML we are going to need for the entirety of this docu
 <html>
   <head>
     <script src="https://cdn.jsdelivr.net/gh/lenincompres/DOM.js@latest/DOM.js"></script>
-  </head>
-  <body>
     <script src="main.js"></script>
-  </body>
+  </head>
 </html>
 ```
 
@@ -128,6 +126,21 @@ let mainElement = DOM.set(
   'main'
 );
 ```
+
+The following code creates an image element without adding it to the document body first.
+
+```javascript
+let mainImage = DOM.set(
+  {
+    alt: 'Hello world',
+    src: 'myImage.png',
+  },
+  'img',
+  false,
+);
+```
+
+For DOM.set, a boolean argument with a *false* value indicates that this element should not be appended to the document body. A value of *true* would mean that the element (and/or model) will replace all the current content in the DOM (or in the element invoking the **set** method).
 
 </details>
 
