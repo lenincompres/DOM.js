@@ -15,16 +15,16 @@ DOM.set({
       width: 'device-width',
       initialScale: 1,
     },
-    font: {
+    font: { // the font key creates a font-face css rule
       fontFamily: 'cardFont',
       src: 'IrishGrover.ttf',
-    },
+    }, // to wadd more than one font, just assign an array
   },
-  css: {
+  css: { // the css key will create a style tag with css in the head element
     h: {
       fontFamily: 'Serif',
     },
-    a: { 
+    a: {
       color: 'skyblue',
       hover: {
         color: 'gold',
@@ -45,13 +45,13 @@ DOM.set({
     maxWidth: '30em',
     margin: '1em auto',
     border: '1em solid white',
-  },
+  }, // you may assign all these style properties without the wrapping style key
   children: [{
       tag: 'header',
       backgroundColor: 'black', // you may asign selectors without a style property
       color: 'white',
       padding: '1em',
-      h1: { // you may append elements without a children property
+      h1: { // you may append elements without a children property using their tag as key
         color: 'wheat',
         text: 'Pick a card', // 'text' = 'innerText'
       },
@@ -75,7 +75,7 @@ DOM.set({
         boxShadow: '1px 1px 3px black',
         borderRadius: '0.3em',
         span: [{
-          id: 'theNumber',  
+          id: 'theNumber',
           text: selectedNum,
         }, {
           id: 'theSuit',
@@ -89,31 +89,29 @@ DOM.set({
       padding: '1em',
       p: "Choose a number and suit",
       menu: {
-        span: {
+        span: [{  // assig an array to create multiple similar elements
+          label: 'Number: ',
+          select: {
+            id: 'numSelect',
+            value: selectedNum,
+            option: CARD_NUMS,
+            change: updateNum,
+          }
+        }, {
           padding: '0.5em',
-          content: [{
-            label: 'Number: ',
-            select: {
-              id: 'numSelect',
-              value: selectedNum,
-              option: CARD_NUMS,
-              change: updateNum,
-            }
-          }, {
-            label: 'Suit: ',
-            select: {
-              id: 'suitSelect',
-              value: selectedSuit,
-              option: CARD_SUITS,
-              change: updateSuit,
-            }
-          }, {
-            button: {
-              text: 'Random',
-              click: randomCard,
-            }
-          }]
-        },
+          label: 'Suit: ',
+          select: {
+            id: 'suitSelect',
+            value: selectedSuit,
+            option: CARD_SUITS,
+            change: updateSuit,
+          }
+        }, {
+          button: {
+            text: 'Random',
+            click: randomCard,
+          }
+        }],
       }
     }
   ]
@@ -121,7 +119,7 @@ DOM.set({
 
 // Functions
 
-function updateCard(){
+function updateCard() {
   let index = CARD_SUITS.indexOf(selectedSuit);
   theCard.set({
     color: (index % 2) ? 'darkred' : 'black',
@@ -144,9 +142,9 @@ function updateSuit() {
   updateCard();
 }
 
-function randomCard(){
-  selectedNum = CARD_NUMS[ Math.floor(Math.random() * CARD_NUMS.length) ];
-  selectedSuit = CARD_SUITS[ Math.floor(Math.random() * CARD_SUITS.length) ];
+function randomCard() {
+  selectedNum = CARD_NUMS[Math.floor(Math.random() * CARD_NUMS.length)];
+  selectedSuit = CARD_SUITS[Math.floor(Math.random() * CARD_SUITS.length)];
   numSelect.value = selectedNum;
   suitSelect.value = selectedSuit;
   updateCard();
