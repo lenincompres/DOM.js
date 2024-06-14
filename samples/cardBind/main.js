@@ -30,7 +30,7 @@ const CSS_MODEL = {
     }
   },
   p: {
-    marginBottom: "1em",
+    marginBottom: '1em',
   },
   select: {
     minWidth: '3em',
@@ -72,11 +72,11 @@ DOM.set({
   }
 });
 
-// Providing DOM.set a tag (string) argument returns an element
+// Provide DOM.set a tag (string) argument and it will return an element
 let footerElement = DOM.set({
   backgroundColor: '#ccc',
   padding: '1em',
-  p: "Choose a number and suit",
+  p: 'Choose a number and suit',
   menu: {
     span: [{
       label: 'Number: ',
@@ -106,8 +106,8 @@ let footerElement = DOM.set({
     }],
   }
 }, 'footer', false);
-// This string argument (or "station") indicates WHERE the model is going to be set
-// An optional false argument tells it to create but not append this element
+// This string argument (or "station") indicates WHERE the model is set
+// An optional false argument tells it to create but not append the element
 
 const MAIN_MODEL = {
   tag: 'main',
@@ -150,5 +150,5 @@ const MAIN_MODEL = {
 
 DOM.set({
   main: MAIN_MODEL, // The main element is CREATED here
-  footer: footerElement, // This existing footer element is appended (or MOVED) here
+  footer: footerElement, // This EXISTING element is appended (or moved) here
 });
