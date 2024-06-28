@@ -83,8 +83,6 @@ someElement.set({
 The new **h1** and **p** elements will be appended to the element.
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
 
-If called before the HTML document's body loads, **DOM.set** waits for the window _load_ event before executing.
-
 ---
 
 <details>
