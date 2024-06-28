@@ -800,7 +800,7 @@ class MyElement extends HTMLElement {
       margin: '0 auto',
       display: 'block',
       textAlign: 'center',
-      backgroundColor: this.valueBinder.as((v) => (v ? 'green' : 'red')),
+      backgroundColor: this.valueBinder.as(['red', 'green']),
       p: {
         text: this.valueBinder,
       },
