@@ -395,8 +395,10 @@ DOM.set({
   },
 });
 
-// Makes the second element yellow
-listedThings[1].style.backgroundColor = 'yellow';
+// The following makes the second element yellow
+listedThings[1].set({
+  backgroundColor: 'yellow',
+});
 ```
 
 When an _id_ is provided, a global variable holding the array of elements is created.
