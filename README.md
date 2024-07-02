@@ -243,35 +243,6 @@ DOM.set({
 });
 ```
 
-Conversely, if what you pass as a string argument is not a tag, but a known property like _attribute_, _style_, an event, or _class_, DOM.set will modify the property accordingly in the element invoking the method.
-
-```javascript
-myParagraph.set(
-  {
-    padding: '0.5em 2em',
-    backgroundColor: 'lavender',
-  },
-  'style'
-);
-
-myButton.set(
-  {
-    warning: true,
-    submit: false,
-  },
-  'class'
-);
-
-mySection.set(
-  {
-    id: 'my-button',
-  },
-  'attribute'
-);
-
-myButton.set((e) => runMethod(), 'click');
-```
-
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Hl1Tu1U1U)
 
 ### Set the Head
