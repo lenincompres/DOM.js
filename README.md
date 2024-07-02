@@ -243,6 +243,9 @@ DOM.set({
 });
 ```
 
+NOTE:
+- A third boolean parameter of value *false* would tell **set** not to append the new element to the DOM. While a *true* value would append the new element and remove everything else in the DOM's content. 
+
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Hl1Tu1U1U)
 
 ### Set the Head
