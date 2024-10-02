@@ -14,6 +14,11 @@ Features:
 * Extend HTML elements with custom methods.
 * Integrate seamlessly with libraries like P5.js.
 
+### Why use DOM.js?
+**Performance Benefits**
+
+DOM.js is lightweight and focused on the front-end, making it ideal for smaller projects where the overhead of a larger library like React might not be necessary. By avoiding server-side dependencies and additional languages like JSX, DOM.js can result in faster load times and more direct control over the DOM. This makes it particularly effective for applications with simpler state management or minimal reactivity needs.
+
 ### DOM.js vs. React
 
 DOM.js offers a simpler, front-end-focused alternative to React, working with the virtual DOM and allowing component architecture by extending the HTMLElement class. Unlike React, DOM.js doesn't require server-side code, installations, or learning additional languages like JSX. It's ideal for lightweight applications where direct control over the DOM is needed, providing a more streamlined, vanilla JavaScript approach. React, on the other hand, excels in large-scale applications with complex state management and a vast ecosystem.
@@ -427,6 +432,32 @@ DOM.set([
   },
 ]);
 ```
+## Usage Examples and Component Architecture
+
+DOM.js allows you to build modular, reusable components by expanding the HTMLElement class. Here's an example:
+
+```javascript
+class CustomButton extends HTMLElement {
+  constructor() {
+    super();
+    this.set({
+      text: "Click Me!",
+      onclick: () => this.clickAction(),
+    });
+  }
+
+  clickAction() {
+    alert("Button clicked!");
+  }
+}
+
+customElements.define('custom-button', CustomButton);
+```
+
+customElements.define('custom-button', CustomButton);
+You can now use **<custom-button></custom-button>** in your HTML.
+
+DOM.js simplifies event handling, styles, and structure with a lightweight footprint, making it ideal for projects where direct DOM manipulation is preferable to React's virtual DOM abstraction.
 
 ---
 
