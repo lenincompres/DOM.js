@@ -14,6 +14,10 @@ Features:
 * Extend HTML elements with custom methods.
 * Integrate seamlessly with libraries like P5.js.
 
+### DOM.js vs. React
+
+DOM.js offers a simpler, front-end-focused alternative to React, working with the virtual DOM and allowing component architecture by extending the HTMLElement class. Unlike React, DOM.js doesn't require server-side code, installations, or learning additional languages like JSX. It's ideal for lightweight applications where direct control over the DOM is needed, providing a more streamlined, vanilla JavaScript approach. React, on the other hand, excels in large-scale applications with complex state management and a vast ecosystem.
+
 ## Setup
 
 The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in javaScript (_main.js_). We will not need CSS either.
@@ -834,10 +838,6 @@ myElement.get('.nice'); // similar to querySelectorAll, but returns an array of 
 ```
 
 ---
-
-## DOM.js vs. React
-
-DOM.js offers a simpler, front-end-focused alternative to React, working with the virtual DOM and allowing component architecture by extending the HTMLElement class. Unlike React, DOM.js doesn't require server-side code, installations, or learning additional languages like JSX. It's ideal for lightweight applications where direct control over the DOM is needed, providing a more streamlined, vanilla JavaScript approach. React, on the other hand, excels in large-scale applications with complex state management and a vast ecosystem.
 
 ## DOM.js and P5.js
 
