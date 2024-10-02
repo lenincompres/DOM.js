@@ -454,10 +454,7 @@ class CustomButton extends HTMLElement {
 customElements.define('custom-button', CustomButton);
 ```
 
-customElements.define('custom-button', CustomButton);
-You can now use **<custom-button></custom-button>** in your HTML.
-
-DOM.js simplifies event handling, styles, and structure with a lightweight footprint, making it ideal for projects where direct DOM manipulation is preferable to React's virtual DOM abstraction.
+This allows you to use **<custom-button></custom-button>** in your HTML. DOM.js enables simple, modular component design that can be extended further with [Binds](https://github.com/lenincompres/DOM.js/blob/main/README.md#extending-the-htmlelement-class) for more advanced functionality.
 
 ---
 
