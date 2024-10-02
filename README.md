@@ -119,7 +119,7 @@ DOM.set is agnostic about the order of the arguments that follow the first (mode
 - An **element** is where the model should be created instead of _document.body_.
 - A **string** is a tag for a new element to be created.
 
-The following code creates and returns a main element, and does not add it to the dom.
+The following code creates and returns a main element, and adds it to the document body.
 
 ```javascript
 let mainElement = DOM.set(
@@ -131,7 +131,7 @@ let mainElement = DOM.set(
 );
 ```
 
-The following code creates an image element without adding it to the document body first.
+The following code creates an image element without adding it to the document body.
 
 ```javascript
 let mainImage = DOM.set(
