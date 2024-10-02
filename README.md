@@ -835,6 +835,10 @@ myElement.get('.nice'); // similar to querySelectorAll, but returns an array of 
 
 ---
 
+## DOM.js vs. React
+
+DOM.js offers a simpler, front-end-focused alternative to React, working with the virtual DOM and allowing component architecture by extending the HTMLElement class. Unlike React, DOM.js doesn't require server-side code, installations, or learning additional languages like JSX. It's ideal for lightweight applications where direct control over the DOM is needed, providing a more streamlined, vanilla JavaScript approach. React, on the other hand, excels in large-scale applications with complex state management and a vast ecosystem.
+
 ## DOM.js and P5.js
 
 Yes, DOM.set works for P5.js elements. If you are not familiar with P5.js, please [remedy that](https://p5js.org/).
