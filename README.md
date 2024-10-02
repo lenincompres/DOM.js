@@ -354,7 +354,7 @@ Use arrays to create multiple consecutive elements of the same kind.
 ```javascript
 DOM.set({
   ul: {
-    li: ['First item', 'Second item', 'A third one, for good meassure'],
+    li: ['First item', 'Second item', 'A third one, for good measure'],
   },
 });
 ```
@@ -485,7 +485,7 @@ DOM.set({
 
 This is equivalent to using the [style property of DOM elements](https://www.w3schools.com/jsref/prop_html_style.asp).
 
-Styles may be assigned without an emcompasing _style_ property. The previous code could be written as follows.
+Styles may be assigned without an encompassing _style_ property. The previous code could be written as follows.
 
 ```javascript
 const myMain = DOM.set(
