@@ -663,19 +663,19 @@ Any element's property (attribute, content, style, content or event handler) can
 When the _value_ property of this object changes, it automatically updates all element properties' bound to it.
 
 ```javascript
-const myBinder = new Binder('Default value');
+const _MY_BINDER = new Binder('Default value');
 
 const myMain = DOM.set(
   {
     input: {
-      value: myBinder,
+      value: _MY_BINDER,
     },
     p: {
-      text: myBinder,
+      text: _MY_BINDER,
     },
     button: {
       text: 'Go',
-      onclick: (event) => (myBinder.value = 'Go was clicked.'),
+      onclick: (event) => (_MY_BINDER.value = 'Go was clicked.'),
     },
   },
   'main'
@@ -690,6 +690,8 @@ DOM.set({
 });
 ```
 
+The convention of declaring binders as a constant and naming them in all-caps preceded by an underscore character can be helpful.
+
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/DNCSUTBnq)
 
 ### Binding Functions
@@ -697,27 +699,27 @@ DOM.set({
 Using the **.as()** method of the binders, you may provide a function that returns the correct value to assign to the element's property based on the value of the binder, or provide an object model to map the values to.
 
 ```javascript
-const fieldEnabled = new Binder(false);
+const _FIELD_ENABLED = new Binder(false);
 
 const myMain = DOM.set(
   {
     div: {
       style: {
-        background: fieldEnabled.as({
+        background: _FIELD_ENABLED.as({
           true: 'green',
           false: 'gray',
         }),
       },
       input: {
-        enabled: fieldEnabled,
-        value: fieldEnabled.as((value) => `The field is: ${value}.`),
+        enabled: _FIELD_ENABLED,
+        value: _FIELD_ENABLED.as((value) => `The field is: ${value}.`),
       },
       button: {
         class: {
-          enablebutton: fieldEnabled, // classes passed as object keys can be bound as well.
+          enablebutton: _FIELD_ENABLED, // classes passed as object keys can be bound as well.
         },
         text: 'toggle',
-        onclick: () => (fieldEnabled.value = !fieldEnabled.value),
+        onclick: () => (_FIELD_ENABLED.value = !_FIELD_ENABLED.value),
       },
     },
   },
@@ -742,7 +744,7 @@ Classes in the classList can be bound to a binder as well. They changing value o
 You may call the _bind_ method of a binder and provide the element and property to be bound to it.
 
 ```javascript
-myBinder.bind(someElement, 'text', (value) => `The field is: ${value}.`);
+_MY_BINDER.bind(someElement, 'text', (value) => `The field is: ${value}.`);
 ```
 
 The _bind_ method is agnostic about the order of the arguments provided.
@@ -759,7 +761,7 @@ let myBinder = DOM.binder(true, someElement, 'text', (value) => `The field is: $
 You may update the value of other binders by binding them.
 
 ```javascript
-myBinder.bind(someOtherBinder, (value) => (value ? 'red' : 'blue'));
+_MY_BINDER.bind(_ANOTHER_BINDER, (value) => (value ? 'red' : 'blue'));
 ```
 
 #### Listening to binders
@@ -767,7 +769,7 @@ myBinder.bind(someOtherBinder, (value) => (value ? 'red' : 'blue'));
 You may add listerner methods to be called when a binder is updated.
 
 ```javascript
-myBinder.addListener((value) => alert('The value was updated to: ' + value));
+_MY_BINDER.addListener((value) => alert('The value was updated to: ' + value));
 ```
 
 #### Binding array of values
@@ -776,12 +778,12 @@ If instead of a function or an object model, the binding is given an array, it a
 
 ```javascript
 DOM.set({
-  background: fieldEnabled.as(['gray', 'green']),
+  background: _FIELD_ENABLED.as(['gray', 'green']),
 });
 
-myBinder.bind(someElement, 'text', ['field is disabled', 'field is enabled']);
+_MY_BINDER.bind(someElement, 'text', ['field is disabled', 'field is enabled']);
 
-myBinder.bind(someOtherBinder, ['blue', 'red']);
+_MY_BINDER.bind(_ANOTHER_BINDER, ['blue', 'red']);
 ```
 
 Note that if the value is a boolean, _false_ would be position 0, and _true_ is position 1.
@@ -798,7 +800,7 @@ class MyElement extends HTMLElement {
   constructor(startVal) {
     super();
 
-    this.valueBinder = new Binder(startVal);
+    this._MY_BINDER = new Binder(startVal);
 
     this.set({
       width: 'fit-content',
@@ -806,7 +808,7 @@ class MyElement extends HTMLElement {
       margin: '0 auto',
       display: 'block',
       textAlign: 'center',
-      backgroundColor: this.valueBinder.as(['red', 'green']),
+      backgroundColor: this._MY_BINDER.as(['red', 'green']),
       p: {
         text: this.valueBinder,
       },
@@ -818,11 +820,11 @@ class MyElement extends HTMLElement {
   }
 
   set value(val) {
-    this.valueBinder.value = val;
+    this._MY_BINDER.value = val;
   }
 
   get value() {
-    return this.valueBinder.value;
+    return this._MY_BINDER.value;
   }
 
   toggle() {
