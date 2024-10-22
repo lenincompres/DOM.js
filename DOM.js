@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.1.2
+ * @version 1.1.3
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -630,7 +630,7 @@ class DOM {
   static headTags = ["meta", "link", "title", "font", "icon", "image", ...DOM.metaNames, ...DOM.htmlEquivs];
   static reserveStations = ["tag", "id", "onready", "ready", "done", "ondone"];
   static listeners = ["addevent", "addeventlistener", "eventlistener", "listener", "on"];
-  static getDocType = str => typeof str === "string" ? new Object({
+  static getDocType = str => typeof str === "string" ? ({
     css: "stylesheet",
     sass: "stylesheet/sass",
     scss: "stylesheet/scss",
