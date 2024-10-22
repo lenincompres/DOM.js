@@ -753,7 +753,7 @@ An _element_ is the target, a _string_ the property to bind, and a _function_ wi
 The DOM.binder function may also be called with initial binding settings. The first argument will be the value of the binder.
 
 ```javascript
-let myBinder = DOM.binder(true, someElement, 'text', (value) => `The field is: ${value}.`);
+let _MY_BINDER = DOM.binder(true, someElement, 'text', (value) => `The field is: ${value}.`);
 ```
 
 #### Binding binders
