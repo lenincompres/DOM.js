@@ -114,9 +114,9 @@ The following example creates a _main_ element inside the _someElement_. It retu
 
 ```javascript
 DOM.set({
-  h1: "Hello world",
-  p: "This is <b>a</b> paragraph.";
-}, "main", someElement);
+  h1: 'Hello world',
+  p: 'This is <b>a</b> paragraph.';
+}, 'main', someElement);
 ```
 
 DOM.set is agnostic about the order of the arguments that follow the first (model structure):
@@ -199,7 +199,7 @@ myElement.set({
 
 ### Classes
 
-You can set up the class attribute of the element passing a string to replace the content of the class tribute.
+You can set up the class attribute of the element passing a string to replace its content.
 
 ```javascript
 myElement.set({
