@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.1.3
+ * @version 1.1.4
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -85,7 +85,7 @@ Element.prototype.set = function (model, ...args) {
   }
   if (model._bonds) model = model.bind();
   if (model.binders) {
-    if(DOM.tags.includes(STATION) && !DOM.attributes.includes(STATION)) return this.set({
+    if (DOM.tags.includes(STATION) && !DOM.attributes.includes(STATION)) return this.set({
       content: model,
     }, STATION);
     model.binders.forEach(binder => binder.bind(this, STATION, model.onvalue, model.listener, ["attribute", "attributes"].includes(station) ? station : undefined));
@@ -109,6 +109,14 @@ Element.prototype.set = function (model, ...args) {
   if (["text", "innertext"].includes(station)) {
     this.innerText = model;
     return this;
+  }
+  if (["markdown", "md"].includes(station)) {
+    model = model.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+      .replace(/__(.*?)__/g, '<b>$1</b>')
+      .replace(/\*(.*?)\*/g, '<i>$1</i>')
+      .replace(/_(.*?)_/g, '<i>$1</i>')
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+    station = "html";
   }
   if (["html", "innerhtml"].includes(station)) {
     this.innerHTML = model;
