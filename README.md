@@ -186,6 +186,7 @@ NOTE:
 
 - Providing an element with an _id_ will create a global variable (with that name) to hold that element.
 - Use _text_ or _innerText_, _html_ or _innerHTML_, or simply _content_ for the element's inner content.
+- Use _markdown_ or _md_ for HTML markdown inline notations (bold, italics, and links).
 
 The **set** method allows you to modify attributes, styles, event handlers, and content of existing elements with just one call.
 
