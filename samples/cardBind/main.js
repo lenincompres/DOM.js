@@ -8,34 +8,14 @@ const CARD_COLOR = {
 };
 
 // Binders hold a 'value' that can be bound to elements' properties and change them as they change
-const _SELECTED_SUIT = new Binder();
-const _SELECTED_NUM = new Binder(CARD_NUMS[0]); // you may give them an initial value
 const _SELECTED_COLOR = new Binder();
+const _SELECTED_NUM = new Binder(CARD_NUMS[0]); // you may give them an initial value
 
 // You may add (or bind) listeners to be executed when their value changes
+const _SELECTED_SUIT = new Binder();
 _SELECTED_SUIT.bind((suit) => _SELECTED_COLOR.value = CARD_COLOR[suit]);
 _SELECTED_SUIT.bind((suit) => _SELECTED_NUM.value = _SELECTED_NUM.value);
-
 _SELECTED_SUIT.value = CARD_SUITS[0];
-
-const CSS_MODEL = {
-  h: {
-    fontFamily: 'Serif',
-  },
-  a: {
-    color: 'skyblue',
-    hover: {
-      color: 'gold',
-      textDecoration: 'underline',
-    }
-  },
-  p: {
-    marginBottom: '1em',
-  },
-  select: {
-    minWidth: '3em',
-  }
-};
 
 DOM.set({
   title: 'Deck of Cards',
@@ -48,17 +28,30 @@ DOM.set({
     initialScale: 1,
   },
   font: 'IrishGrover.ttf',
-  css: CSS_MODEL, // You may declare a JS model and assign it with DOM.set later
+  css: {
+    h: {
+      fontFamily: 'Serif',
+    },
+    a: {
+      color: 'skyblue',
+      hover: {
+        color: 'gold',
+        textDecoration: 'underline',
+      }
+    },
+    p: {
+      marginBottom: '1em',
+    },
+    select: {
+      minWidth: '3em',
+    }
+  },
   backgroundColor: 'silver',
   backgroundImage: 'url(bg.png)',
   textAlign: 'center',
   maxWidth: '30em',
   margin: '1em auto',
   border: '1em solid white',
-});
-
-// You may set models separately
-DOM.set({
   header: {
     backgroundColor: _SELECTED_COLOR, // The background color changes with the binder's value
     color: 'white',
@@ -69,86 +62,75 @@ DOM.set({
       text: 'Pick a card',
     },
     p: 'Simple sample created with <a href="#">DOM.js</a>',
-  }
-});
-
-// Provide DOM.set a tag (string) argument and it will return an element
-let footerElement = DOM.set({
-  backgroundColor: '#ccc',
-  padding: '1em',
-  p: 'Choose a number and suit',
-  menu: {
-    span: [{
-      label: 'Number: ',
-      select: {
-        value: _SELECTED_NUM,
-        option: CARD_NUMS,
-        change: (evt) => _SELECTED_NUM.value = evt.target.value,
-      }
-    }, {
-      padding: '0.5em',
-      label: 'Suit: ',
-      select: {
-        value: _SELECTED_SUIT,
-        option: CARD_SUITS,
-        change: (evt) => _SELECTED_SUIT.value = evt.target.value,
-      }
-    }, {
-      button: {
-        text: 'Random',
-        click: (evt) => {
-          let randomNum = Math.floor(Math.random() * CARD_NUMS.length);
-          let randomSuit = Math.floor(Math.random() * CARD_SUITS.length);
-          _SELECTED_NUM.value = CARD_NUMS[randomNum];
-          _SELECTED_SUIT.value = CARD_SUITS[randomSuit];
-        },
-      }
-    }],
-  }
-}, 'footer', false);
-// This string argument (or "station") indicates WHERE the model is set
-// An optional false argument tells it to create but not append the element
-
-const MAIN_MODEL = {
-  tag: 'main',
-  backgroundColor: 'white',
-  padding: '2em',
-  section: {
+  },
+  main: {
     backgroundColor: 'white',
-    verticalAlign: 'center',
-    fontFamily: 'IrishGrover',
-    fontSize: '3em',
-    textAlign: 'center',
-    padding: '1.25em 0.25em',
-    width: '2.8em',
-    height: '4em',
-    margin: '0 auto',
-    boxShadow: '1px 1px 3px black',
-    borderRadius: '0.3em',
-    color: _SELECTED_COLOR,
-    span: [{
-      text: _SELECTED_NUM,
-    }, {
-      text: _SELECTED_SUIT,
-    }],
+    padding: '2em',
+    section: {
+      backgroundColor: 'white',
+      verticalAlign: 'center',
+      fontFamily: 'IrishGrover',
+      fontSize: '3em',
+      textAlign: 'center',
+      padding: '1.25em 0.25em',
+      width: '2.8em',
+      height: '4em',
+      margin: '0 auto',
+      boxShadow: '1px 1px 3px black',
+      borderRadius: '0.3em',
+      color: _SELECTED_COLOR,
+      span: [{
+        text: _SELECTED_NUM,
+      }, {
+        text: _SELECTED_SUIT,
+      }],
+    },
+    footer: {
+      height: '1em',
+      color: _SELECTED_COLOR,
+      // The 'as' method uses the binder's value to get another value to assign
+      text: _SELECTED_NUM.as((num) => {
+        num = parseInt(num);
+        let output = '';
+        if (isNaN(num)) return output;
+        for (let i = 0; i < num; i++) {
+          output += _SELECTED_SUIT.value + ' ';
+        }
+        return output;
+      }),
+    },
   },
   footer: {
-    height: '1em',
-    color: _SELECTED_COLOR,
-    // The 'as' method uses the binder's value to get another value to assign
-    text: _SELECTED_NUM.as((num) => {
-      num = parseInt(num);
-      let output = '';
-      if (isNaN(num)) return output;
-      for (let i = 0; i < num; i++) {
-        output += _SELECTED_SUIT.value + ' ';
-      }
-      return output;
-    }),
-  },
-};
-
-DOM.set({
-  main: MAIN_MODEL, // The main element is CREATED here
-  footer: footerElement, // This EXISTING element is appended (or moved) here
+    backgroundColor: '#ccc',
+    padding: '1em',
+    p: 'Choose a number and suit',
+    menu: {
+      span: [{
+        label: 'Number: ',
+        select: {
+          value: _SELECTED_NUM,
+          option: CARD_NUMS,
+          change: (evt) => _SELECTED_NUM.value = evt.target.value,
+        }
+      }, {
+        padding: '0.5em',
+        label: 'Suit: ',
+        select: {
+          value: _SELECTED_SUIT,
+          option: CARD_SUITS,
+          change: (evt) => _SELECTED_SUIT.value = evt.target.value,
+        }
+      }, {
+        button: {
+          text: 'Random',
+          click: (evt) => {
+            let randomNum = Math.floor(Math.random() * CARD_NUMS.length);
+            let randomSuit = Math.floor(Math.random() * CARD_SUITS.length);
+            _SELECTED_NUM.value = CARD_NUMS[randomNum];
+            _SELECTED_SUIT.value = CARD_SUITS[randomSuit];
+          },
+        }
+      }],
+    }
+  }
 });
