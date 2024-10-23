@@ -111,12 +111,12 @@ Element.prototype.set = function (model, ...args) {
     return this;
   }
   if (["markdown", "md"].includes(station)) {
-    model = model.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+    this.innerHTML = model.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
       .replace(/__(.*?)__/g, '<b>$1</b>')
       .replace(/\*(.*?)\*/g, '<i>$1</i>')
       .replace(/_(.*?)_/g, '<i>$1</i>')
       .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
-    station = "html";
+    return this;
   }
   if (["html", "innerhtml"].includes(station)) {
     this.innerHTML = model;
