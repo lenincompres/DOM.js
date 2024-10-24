@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.1.4
+ * @version 1.1.5
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -83,6 +83,10 @@ Element.prototype.set = function (model, ...args) {
     else this[STATION] = e => model(e, this);
     return this;
   }
+  if (station === "binder") {
+    this.binderSet(model);
+    return this;
+  }
   if (model._bonds) model = model.bind();
   if (model.binders) {
     if (DOM.tags.includes(STATION) && !DOM.attributes.includes(STATION)) return this.set({
@@ -111,11 +115,7 @@ Element.prototype.set = function (model, ...args) {
     return this;
   }
   if (["markdown", "md"].includes(station)) {
-    this.innerHTML = model.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-      .replace(/__(.*?)__/g, '<b>$1</b>')
-      .replace(/\*(.*?)\*/g, '<i>$1</i>')
-      .replace(/_(.*?)_/g, '<i>$1</i>')
-      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+    this.innerHTML = model.replace(/^###### (.*$)/gim, '<h6>$1</h6>').replace(/^##### (.*$)/gim, '<h5>$1</h5>').replace(/^#### (.*$)/gim, '<h4>$1</h4>').replace(/^### (.*$)/gim, '<h3>$1</h3>').replace(/^## (.*$)/gim, '<h2>$1</h2>').replace(/^# (.*$)/gim, '<h1>$1</h1>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/__(.*?)__/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/_(.*?)_/g, '<i>$1</i>').replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>').replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>').replace(/^\* (.*$)/gim, '<ul><li>$1</li></ul>').replace(/^\d+\. (.*$)/gim, '<ol><li>$1</li></ol>').replace(/^\s*([^\n]+)\s*$/gim, '<p>$1</p>').replace(/\n{2,}/g, '<br>').trim();
     return this;
   }
   if (["html", "innerhtml"].includes(station)) {
@@ -420,6 +420,25 @@ class Binder {
 
 function bind(...args) {
   return DOM.bind(...args);
+}
+
+Element.prototype.binderSet = function (name, value) {
+  if (typeof name == 'string') {
+    let _name = '_' + name;
+    this[_name] = new Binder(value);
+    Object.defineProperty(this, name, {
+      get() {
+        return this[_name].value;
+      },
+      set(val) {
+        this[_name].value = val;
+      },
+    });
+    return;
+  }
+  for (const [key, value] of Object.entries(name)) {
+    this.binderSet(key, value);
+  }
 }
 
 // global static methods to handle the DOM
