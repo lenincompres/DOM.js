@@ -850,7 +850,7 @@ DOM.set({
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
 
-## BinderSet: creating binders setters and getters for my elements
+### BinderSet: creating binders setters and getters for my elements
 
 The method _binderSet_ creates binders, plus the setters and betters for them in my element objects. The names for the binders will be preceded by an underscore (_) once created, while the properties that get and set their values will be accessible with the plain names (or keys) given to the method.
 
