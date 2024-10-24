@@ -438,12 +438,16 @@ DOM.set([
 DOM.js allows you to build modular, reusable components by expanding the HTMLElement class. Here's an example:
 
 ```javascript
-class CustomButton extends HTMLElement {
+class CustomElement extends HTMLElement {
   constructor() {
     super();
     this.set({
-      text: "Click Me!",
-      onclick: () => this.clickAction(),
+      h2: "A title",
+      p: "A paragraph.",
+      button: {
+        text: "Click Me!",
+        onclick: () => this.clickAction(),
+      }
     });
   }
 
@@ -452,7 +456,7 @@ class CustomButton extends HTMLElement {
   }
 }
 
-customElements.define('custom-button', CustomButton);
+customElements.define('custom-element', CustomElement);
 ```
 
 This allows you to use **<custom-button></custom-button>** in your HTML. DOM.js enables simple, modular component design that can be extended further with [Binds](https://github.com/lenincompres/DOM.js/blob/main/README.md#extending-the-htmlelement-class) for more advanced functionality.
@@ -845,6 +849,53 @@ DOM.set({
 ```
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
+
+## BinderSet: creating binders setters and getters for my elements
+
+The method _binderSet_ creates binder, plus the setters and betters for them in my element objects.
+
+
+
+```javascript
+// declares the class
+class MyElement extends HTMLElement {
+  constructor(startVal) {
+    super();
+
+    this.binderSet({
+      myValue: startVal,
+    });
+
+    this.set({
+      width: 'fit-content',
+      padding: '2em',
+      margin: '0 auto',
+      display: 'block',
+      textAlign: 'center',
+      backgroundColor: this._myValue.as(['red', 'green']),
+      p: {
+        text: this._myValue,
+      },
+      button: {
+        text: 'toggle',
+        onclick: (e) => this.toggle(),
+      },
+    });
+  }
+
+  toggle() {
+    this.myValue = !this.myValue;
+  }
+}
+customElements.define('my-element', MyElement);
+```
+
+NOTE:
+* You can set multiple binders with the _binderSet_ method. Remember that the binders created will be preceded by an underscore (_), while the properties that get and set their values will be accessible with the names (or keys) given to the method.
+* The method _binderSet_ can also create binders individually using _this.binderSet(name, initVal, ...bindArguments)_, like so:
+```javascript
+this.binderSet("myValue", 0, val => console.log(`myValue was changed to ${val}`));
+```
 
 ## DOM.get() and element.get()
 
