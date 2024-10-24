@@ -5,7 +5,7 @@
  * @repository https://github.com/lenincompres/DOM.js
  */
 
-Element.prototype.get = function (station) {
+ Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -422,7 +422,7 @@ function bind(...args) {
   return DOM.bind(...args);
 }
 
-Element.prototype.binderSet = function (name, value) {
+Object.prototype.binderSet = function (name, value, ...bind) {
   if (typeof name == 'string') {
     let _name = '_' + name;
     this[_name] = new Binder(value);
@@ -434,6 +434,7 @@ Element.prototype.binderSet = function (name, value) {
         this[_name].value = val;
       },
     });
+    if(bind) this[_name].bind(...bind);
     return;
   }
   for (const [key, value] of Object.entries(name)) {
