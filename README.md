@@ -850,18 +850,18 @@ DOM.set({
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
 
-### BinderSet: creating binders setters and getters for my elements
+### BinderSet: create binders and their setters and getters with one method
 
 The method _binderSet_ creates binders, plus the setters and betters for them in my element objects. The names for the binders will be preceded by an underscore (_) once created, while the properties that get and set their values will be accessible with the plain names (or keys) given to the method.
 
 ```javascript
 // declares the class
 class MyElement extends HTMLElement {
-  constructor(startVal) {
+  constructor() {
     super();
 
     this.binderSet({
-      active: startVal,
+      active: false,
       otherProp: "initial other value",
     });
 
@@ -871,13 +871,9 @@ class MyElement extends HTMLElement {
       p: "This button toggles the active state of the element",
       button: {
         text: this._active.as(['activate', 'deactivate']),
-        onclick: (e) => this.toggle(),
+        onclick: (e) => this.active = !this.active;,
       },
     });
-  }
-
-  toggle() {
-    this.active = !this.active;
   }
 }
 customElements.define('my-element', MyElement);
@@ -886,7 +882,7 @@ customElements.define('my-element', MyElement);
 NOTE:
 The method _binderSet_ can also create binders individually using _this.binderSet(name, initVal, ...bindArguments)_, like so:
 ```javascript
-this.binderSet("myValue", 0, val => console.log(`myValue was changed to ${val}`));
+this.binderSet("myProp", 0, val => console.log(`myProp was changed to ${val}`));
 ```
 
 ## DOM.get() and element.get()
