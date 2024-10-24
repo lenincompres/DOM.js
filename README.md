@@ -852,9 +852,7 @@ DOM.set({
 
 ## BinderSet: creating binders setters and getters for my elements
 
-The method _binderSet_ creates binder, plus the setters and betters for them in my element objects.
-
-
+The method _binderSet_ creates binders, plus the setters and betters for them in my element objects. The names for the binders will be preceded by an underscore (_) once created, while the properties that get and set their values will be accessible with the plain names (or keys) given to the method.
 
 ```javascript
 // declares the class
@@ -863,36 +861,30 @@ class MyElement extends HTMLElement {
     super();
 
     this.binderSet({
-      myValue: startVal,
+      active: startVal,
+      otherProp: "initial other value",
     });
 
     this.set({
-      width: 'fit-content',
-      padding: '2em',
-      margin: '0 auto',
-      display: 'block',
-      textAlign: 'center',
-      backgroundColor: this._myValue.as(['red', 'green']),
-      p: {
-        text: this._myValue,
-      },
+      padding: "1em",
+      backgroundColor: this._active.as(['red', 'green']),
+      p: "This button toggles the active state of the element",
       button: {
-        text: 'toggle',
+        text: this._active.as(['activate', 'deactivate']),
         onclick: (e) => this.toggle(),
       },
     });
   }
 
   toggle() {
-    this.myValue = !this.myValue;
+    this.active = !this.active;
   }
 }
 customElements.define('my-element', MyElement);
 ```
 
 NOTE:
-* You can set multiple binders with the _binderSet_ method. Remember that the binders created will be preceded by an underscore (_), while the properties that get and set their values will be accessible with the names (or keys) given to the method.
-* The method _binderSet_ can also create binders individually using _this.binderSet(name, initVal, ...bindArguments)_, like so:
+The method _binderSet_ can also create binders individually using _this.binderSet(name, initVal, ...bindArguments)_, like so:
 ```javascript
 this.binderSet("myValue", 0, val => console.log(`myValue was changed to ${val}`));
 ```
