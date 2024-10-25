@@ -436,14 +436,14 @@ function bind(...args) {
 
 Object.prototype.binderSet = function (name, value) {
   if (typeof name == 'string') {
-    let _name = '_' + name;
-    let _ = new Binder(value);
+    const _name = '_' + name;
+    const _ = new Binder(value);
     Object.defineProperty(this, _name, {
       get() {
         return _;
       },
       set(val) {
-        console.error(`Error: This (${_name}) is a read-only binder and cannot be reassigned. Use: ${name}, or: ${_name}.value. to change it's value.`);
+        console.error(`Error: This (${_name}) is a read-only binder and cannot be reassigned. Use: ${name}, or: ${_name}.value. to change its value.`);
       },
       configurable: false, // Prevents deletion of the property
       enumerable: true,
