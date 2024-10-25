@@ -1,11 +1,11 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.1.5
+ * @version 1.1.6
  * @repository https://github.com/lenincompres/DOM.js
  */
 
- Element.prototype.get = function (station) {
+Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -83,9 +83,21 @@ Element.prototype.set = function (model, ...args) {
     else this[STATION] = e => model(e, this);
     return this;
   }
-  if (station === "binder") {
-    this.binderSet(model);
+  if (model.duration) {
+    model.duration = parseInt(model.duration);
+    if (model.to && model.from) model.through = [model.from, model.to];
+    let ms = model.duration/(model.through.length - 1);
+    this.set(model.through[0], STATION);
+    model.through.forEach((val, i) => setTimeout(() => this.set(val, STATION), i * ms));
+    if (model.transition) {
+      let t = this.get('transition');
+      this.set(`${this.get('transition')}, ${DOM.unCamelize(STATION)} ${ms}ms ${model.transition}`, 'transition');
+    }
     return this;
+  }
+  if (model.bind && !model._bonds){
+    if(Array.isArray(model.bind)) model = DOM.bind(model.bind, model.as);
+    else model = model.as ? model.bind.bind(model.as) : model.bind;
   }
   if (model._bonds) model = model.bind();
   if (model.binders) {
@@ -422,10 +434,20 @@ function bind(...args) {
   return DOM.bind(...args);
 }
 
-Object.prototype.binderSet = function (name, value, ...bind) {
+Object.prototype.binderSet = function (name, value) {
   if (typeof name == 'string') {
     let _name = '_' + name;
-    this[_name] = new Binder(value);
+    let _ = new Binder(value);
+    Object.defineProperty(this, _name, {
+      get() {
+        return _;
+      },
+      set(val) {
+        console.error(`Error: This (${_name}) is a read-only binder and cannot be reassigned. Use: ${name}, or: ${_name}.value. to change it's value.`);
+      },
+      configurable: false, // Prevents deletion of the property
+      enumerable: true,
+    });
     Object.defineProperty(this, name, {
       get() {
         return this[_name].value;
@@ -434,7 +456,6 @@ Object.prototype.binderSet = function (name, value, ...bind) {
         this[_name].value = val;
       },
     });
-    if(bind) this[_name].bind(...bind);
     return;
   }
   for (const [key, value] of Object.entries(name)) {
