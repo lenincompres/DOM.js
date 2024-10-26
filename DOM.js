@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.0
+ * @version 1.2.1
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -570,19 +570,21 @@ class DOM {
     });
     document.head.set(headModel);
     if (Array.isArray(model)) return model.map(m => DOM.set(m, ...args));
-    // checks if the model requires a new element
-    if (model.tag) args.push(model.tag);
-    else if (DOM.typify(model).isPrimitive) args.push("section");
     // checks if the model should replace the DOM
     if (argsType.boolean) document.body.innerHTML = "";
     // checks if the body is loaded
-    if (document.body) return document.body.set(model, ...args);
-    // waits for the body to load
-    window.addEventListener("load", _ => document.body.set(model, ...args));
+    if (document.body) setTimeout(() => document.body.set(model, ...args), 0);
+    else window.addEventListener("load", _ => document.body.set(model, ...args));
   }
   static create = (...args) => DOM.set(...args);
   // returns a new element without appending it to the DOM
-  static element = (model, tag = "section") => DOM.set(model, tag, false);
+  static element = (model, tag = "section") => {
+    if (model && model.tag) {
+      tag = model.tag;
+      delete model.tag;
+    }
+   return document.createElement(tag).set(model);
+  }
   // returns a new binder
   static binder(value, ...args) {
     let binder = new Binder(value);
