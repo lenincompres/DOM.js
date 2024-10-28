@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.1
+ * @version 1.2.2
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -20,6 +20,10 @@ Element.prototype.get = function (station) {
   if (output.length) return output.length < 2 ? output[0] : output;
   output = [...this.querySelectorAll(station)];
   if (output.length) return output;
+}
+
+Element.prototype.let = function (station, be = () => undefined, ...args) {
+  return this.set(typeof be === "function" ? be(this.get(station)) : be, station, ...args);
 }
 
 Element.prototype.set = function (model, ...args) {
@@ -83,17 +87,41 @@ Element.prototype.set = function (model, ...args) {
     else this[STATION] = e => model(e, this);
     return this;
   }
-  if (model.duration) {
-    model.duration = parseInt(model.duration);
-    if (model.to !== undefined && model.from !== undefined) model.through = [model.from, model.to];
-    this.set(model.through[0], STATION);
-    model.through.forEach((val, i) => setTimeout(() => this.set(val, STATION), i * model.duration));
-    if (model.transition) this.set(`${this.get('transition')}, ${DOM.unCamelize(STATION)} ${model.duration}ms ${model.transition}`, 'transition');
+  if (argsType.boolean === true && this.intervals && this.intervals[STATION]) {
+    DOM.transition(this, `${DOM.unCamelize(STATION)} 0s`);
+    clearInterval(this.intervals[STATION]);
+  }
+  if (model.interval || model.delay) {
+    model.interval = parseInt(model.interval);
+    if (!model.loop && !model.through) model.through = [];
+    if (model.from !== undefined) model.through.push(model.from);
+    if (model.to !== undefined) model.through.push(model.to);
+    if (model.through) {
+      model.loop = model.through;
+      model.repeat = 1;
+    }
+    if(model.delay === undefined) model.delay = 0;
+    if (model.delay !== undefined && model.interval === undefined) model.interval = model.delay;
+    if (model.transition) DOM.transition(this, `${DOM.unCamelize(STATION)} ${model.interval}ms ${model.transition}`);
+    if(model.repeat === undefined) model.repeat = -1;
+    if(!model.while) model.while =  typeof model.repeat === "function" ? model.repeat : () => model.repeat;
+    if (model.loop) setTimeout(() => {
+      this.set(model.loop[0], STATION);
+      let i = 1;
+      DOM.interval(this, () => {
+        this.set(model.loop[i], STATION);
+        i += 1;
+        if (i >= model.loop.length) {
+          i = 0;
+          if (!isNaN(model.repeat)) model.repeat -= 1
+        }
+      }, model.interval, model.while, STATION);
+    }, model.delay);
     return this;
   }
   if (model._bonds) model = model.bind();
   else {
-    if (model.with && typeof model.with !== 'function') model.bind = model.with;
+    if (model.with && typeof model.with !== "function") model.bind = model.with;
     if (model.bind) {
       if (Array.isArray(model.bind)) model = DOM.bind(model.bind, model.as);
       else model = model.as ? model.bind.bind(model.as) : model.bind;
@@ -285,6 +313,16 @@ Element.prototype.set = function (model, ...args) {
   ["ready", "onready", "done", "ondone"].forEach(f => {
     if (!model[f]) return this;
     model[f](elem);
+  });
+  ["timeout"].forEach(f => {
+    if (!model[f]) return this;
+    let [func, t] = Array.isArray(model[f]) ? model[f] : [model[f], 1];
+    setTimeout(() => func(elem), t);
+  });
+  ["interval"].forEach(f => {
+    if (!model[f]) return this;
+    let [func, t, end] = Array.isArray(model[f]) ? model[f] : [model[f], 1];
+    DOM.interval(this, func, t, end);
   });
   if (argsType.functions) argsType.functions.forEach(f => f(elem));
   return elem;
@@ -518,13 +556,12 @@ Object.prototype.binderSet = function (name, value) {
 // global static methods to handle the DOM
 class DOM {
   // returns value based on 
-  static get(station, ...args) {
-    // checks if meant to get from an element
-    let argsType = DOM.typify(...args);
-    let elt = argsType.element ? argsType.element : argsType.p5Element;
-    if (elt) return elt.get(model);
-    // checks if the station belongs to the head
+  static get(station) {
     DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
+  }
+  static
+  let (station, be) {
+    DOM.headTags.includes(station.toLowerCase()) ? document.head.let(station, be) : document.body.let(station, be);
   }
   // create elements based on an object model
   static set(model = "", ...args) {
@@ -583,7 +620,7 @@ class DOM {
       tag = model.tag;
       delete model.tag;
     }
-   return document.createElement(tag).set(model);
+    return document.createElement(tag).set(model);
   }
   // returns a new binder
   static binder(value, ...args) {
@@ -678,6 +715,25 @@ class DOM {
     }
     return qs.split("/");
   }
+  static interval(elem, func, ms, end, station = "none") {
+    if (!elem.intervals) elem.intervals = {};
+    else if (elem.intervals[station]) clearInterval(elem.intervals[station]);
+    let iId = setInterval(() => {
+      let go = typeof end === "function" ? end() : end || end === undefined;
+      if (!go) return clearInterval(iId);
+      func(elem);
+      if (!isNaN(end)) end -= 1;
+    }, ms);
+    elem.intervals[station] = iId;
+  }
+  static transition(elem, trn) { // for animations (loop, duration)
+    let prop = trn.split(' ')[0].trim();
+    let trns = elem.get("transition");
+    if (trns) trns = trns.split(",").map(t => t.trim()).filter(t => t !== "NaN")
+      .map(t => t.startsWith(prop) ? trn : t);
+    else trns = [trn];
+    elem.set(trns.join(", "), "transition");
+  }
   static addID = (id, elt) => {
     if (!isNaN(id)) return console.error("ID's should not be numeric. id: " + id);
     if (elt.tagName) elt.setAttribute("id", id);
@@ -743,7 +799,7 @@ class DOM {
   static metaNames = ["viewport", "keywords", "description", "author", "refresh", "application-name", "generator"];
   static htmlEquivs = ["contentSecurityPolicy", "contentType", "defaultStyle", "content-security-policy", "content-type", "default-style", "refresh"];
   static headTags = ["meta", "link", "title", "font", "icon", "image", ...DOM.metaNames, ...DOM.htmlEquivs];
-  static reserveStations = ["tag", "id", "onready", "ready", "done", "ondone"];
+  static reserveStations = ["tag", "id", "bind", "with", "as", "binders", "_bonds"];
   static listeners = ["addevent", "addeventlistener", "eventlistener", "listener", "on"];
   static getDocType = str => typeof str === "string" ? ({
     css: "stylesheet",
