@@ -91,7 +91,7 @@ Element.prototype.set = function (model, ...args) {
     DOM.transition(this, `${DOM.unCamelize(STATION)} 0s`);
     clearInterval(this.intervals[STATION]);
   }
-  if (model.interval || model.delay) {
+  if ((model.interval || model.delay) && (model.to || model.through || model.loop)) {
     model.interval = parseInt(model.interval);
     if (!model.loop && !model.through) model.through = [];
     if (model.from !== undefined) model.through.push(model.from);
