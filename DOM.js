@@ -1,11 +1,15 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.3
+ * @version 1.2.4
  * @repository https://github.com/lenincompres/DOM.js
  */
 
-Element.prototype.get = function (station) {
+/**
+ * Gets the value of an element's property.
+ * @param {station} string - The style|attribute|(element)tag|innerText/innetHTML|on(event)|name of an element.
+ */
+ Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -22,10 +26,24 @@ Element.prototype.get = function (station) {
   if (output.length) return output;
 }
 
+/**
+ * Sets the value of an element's property.
+ * @param {station} string - The station of an element.
+ * @param {be} - the values to be set, or function to modify its given the currentvalue 
+ */
 Element.prototype.let = function (station, be = () => undefined, ...args) {
   return this.set(typeof be === "function" ? be(this.get(station)) : be, station, ...args);
 }
 
+
+/**
+ * Sets the DOM structure, creating elemtns to append and their properties.
+ * @param {model} object - JSON model of the DOM structure. Is could also be an array or primitive value
+ * @param {args} - in any order: 
+ * {string} - the station (style|attribute|(element)tag|innerText/innetHTML|onevent|name) to be set.
+ * {element} - element where the model will be applied
+ * {boolean} - whether to append, prepend or replace the content
+ */
 Element.prototype.set = function (model, ...args) {
   if ([null, undefined].includes(model)) return this;
   let contentType = DOM.typify(model.content);
@@ -329,6 +347,10 @@ Element.prototype.set = function (model, ...args) {
 };
 
 // Adds set method to P5 elements
+
+/**
+ * Adds set method to P5 elements
+ */
 if (typeof p5 !== "undefined") {
   p5.set = (...args) => DOM.set(...args, createDiv());
   p5.Element.prototype.set = function (...args) {
@@ -336,7 +358,10 @@ if (typeof p5 !== "undefined") {
   }
 }
 
-// Adds css to the head under the element"s ID
+/**
+ * Adds css to the head under the element"s ID
+ * @param {style} object - CSS in JSON notation.
+ */
 Element.prototype.css = function (style) {
   if ([document.head, document.body].includes(this)) return typeof style === "string" ? document.head.set({
     content: style
@@ -353,8 +378,14 @@ Element.prototype.css = function (style) {
   }, "css");
 }
 
-// Update props of bound element when its value changes. Can also update other binders.
+/**
+ * Updates stations of element when its value changes. Can also update other binders.
+ */
 class Binder {
+  /**
+   * creates a new instance of a Binder.
+   * @param {val} - Initial value for the Binder to hold.
+   */
   constructor(val) {
     this._value = val;
     this._bonds = [];
@@ -376,6 +407,10 @@ class Binder {
       bond.target[bond.station] = theirValue;
     }
   }
+  /**
+   * Keeps track of other Binders or binds that may be tracking value changes.
+   * @param {func} - 
+   */
   addListener(func) {
     if (typeof func !== "function") return;
     this._listeners[this._listenerCount] = func;
@@ -384,6 +419,9 @@ class Binder {
   removeListener(countIndex) {
     delete this._listeners[countIndex];
   }
+  /**
+   * Creates a binding object inside a model to be set().
+   */
   as(...args) {
     if (args.length === 1) return this.bind(args[0]);
     if (typeof args[0] === "function") {
@@ -392,6 +430,11 @@ class Binder {
     }
     return this.bind(args);
   }
+  /**
+   * Returns the approriate value from an array or map based on the binder's value.
+   * @param {format} object - values to be selected from and array or object (map).
+   * @param {as} function name(value) - logic to be applied given the current value in the binder.
+   */
   getAs(format, as = val => val) {
     if (typeof format == 'function') return () => format(val => as(val));
     if (Array.isArray(format) && format.length) {
@@ -410,6 +453,16 @@ class Binder {
     }
     return as;
   }
+  /**
+   * Creates a bind.
+   * @param {target} element - element to bind
+   * @param {station} string - station (prop) to bind
+   * @param {listeners} number - any other binders of the same prop
+   * @param {values} array - value to select based on numeric result ot the bind
+   * @param {map} object - value to select based on key result ot the bind
+   * @param {as} function - logic to be applied to the value in the binder
+   * @param {type} string - not sure what this is
+   */
   bind(...args) {
     let argsType = DOM.typify(...args);
     let target = argsType.element ? argsType.element : argsType.binder;
@@ -433,12 +486,23 @@ class Binder {
     this._bonds.push(bond);
     this.update(bond);
   }
+  /**
+   * Creates a binding object inside a model to be set(), if multiple binders are to be applied. Expected to be called followed by a "as()" call: myBinder.with(otherBinder).as((val1, val2) => ...).
+   * @param {binders} array - binders to consides in the binding.
+   */
   with(...binders) {
     binders.unshift(this);
     return {
       as: func => DOM.bind(binders, func),
     };
   }
+  /**
+   * Iterates through values. Reverts to the intital.
+   * @param {values} array - values to iterate through.
+   * @param {interval} number - miliseconds to wait betwee values.
+   * @param {revert} boolean - is it supposed to return to the first value?
+   * @param {callback} function - to be called once the iteration is over.
+   */
   //Iterates through values. Reverts to the intital
   through(values, interval = 1000, revert = false, callback = () => null) {
     if (!Array.isArray(values)) values = [values];
@@ -455,15 +519,27 @@ class Binder {
       callback();
     }, interval.shift());
   }
-  //Iterates through values in a loop
+  /**
+   * Loops through values.
+   * @param {values} array - values to iterate through.
+   * @param {interval} number - miliseconds to wait betwee values.
+   */
   loop(values, interval) {
     if (!Array.isArray(values)) return;
     this.value = values.shift();
     setTimeout(() => this.through(values, interval, false), interval);
   }
+  /**
+   * Sets the value in the binder.
+   * @param {val} - value to hold.
+   */
   apply(val) {
     this.value = val;
   }
+  /**
+   * Sets the value in the binder.
+   * @param {val} - value to hold.
+   */
   set value(val) {
     this._value = val;
     this._bonds.forEach(bond => {
@@ -474,14 +550,38 @@ class Binder {
     Object.values(this._listeners).forEach(func => func(val));
     this.setter = undefined;
   }
+  /**
+   * Gets the value in the binder.
+   */
   get value() {
     return this._value;
   }
+  /**
+   * Creates a bind, given one of more binders.
+   * @param {binders} array - binders to bind
+   * @param {target} element - element to bind
+   * @param {station} string - station (prop) to bind
+   * @param {listeners} number - any other binders of the same prop
+   * @param {values} array - value to select based on numeric result ot the bind
+   * @param {map} object - value to select based on key result ot the bind
+   * @param {as} function - logic to be applied to the value in the binder
+   * @param {type} string - not sure what this is
+   */
   static with(...args) {
     return DOM.bind(...args);
   }
 }
 
+/**
+ * Creates a bind to a specific element.
+ * @param {binders} array - binders to bind
+ * @param {station} string - station (prop) to bind
+ * @param {listeners} number - any other binders of the same prop
+ * @param {values} array - value to select based on numeric result ot the bind
+ * @param {map} object - value to select based on key result ot the bind
+ * @param {as} function - logic to be applied to the value in the binder
+ * @param {type} string - not sure what this is
+ */
 Element.prototype.bind = function (...args) {
   let argsType = DOM.typify(...args);
   if (argsType.strings === args) return args.forEach(a => this.bind(a));
@@ -495,35 +595,12 @@ Element.prototype.bind = function (...args) {
   return DOM.bind(...args, this);
 }
 
-class BinderSet {
-  constructor(...args) {
-    this.binderSet(...args);
-  }
-  with(...args) {
-    if (Array.isArray(args[0])) return this.with(...args[0]).as(args[1]);
-    return DOM.bind(...this.validate(args));
-  }
-  validate(...args) {
-    if (Array.isArray(args[0])) return this.validate(...args[0]);
-    return args.map(a => typeof a === 'string' ? this["_" + a] : a);
-  }
-  bind(...args) {
-    let argsType = DOM.typify(...args);
-    if (argsType.element) return {
-      with: (...binders) => ({
-        as: func => argsType.element.set({
-          [argsType.string]: DOM.bind(this.validate(binders), func),
-        })
-      })
-    }
-    if (args[0].target) return args[0].target.set({
-      [args[0].station]: DOM.bind(this.validate(args[0].with), args[0].as),
-    });
-    if (args[0].with) return this.with(args[0].with, args[0].as);
-    return this.with(...args);
-  }
-}
-
+/**
+ * Creates binders and it's setters and getters in an object.
+ * @param {name} string - name of the binder
+ * @param {name} object - key:value pairs of binders to be created
+ * @param {value} string - initial value in the binder
+ */
 Object.prototype.binderSet = function (name, value) {
   if (typeof name == 'string') {
     const _name = '_' + name;
@@ -553,17 +630,87 @@ Object.prototype.binderSet = function (name, value) {
   }
 }
 
-// global static methods to handle the DOM
+/**
+ * Creates a objects that holds several binders.
+ */
+class BinderSet {
+  /**
+   * Creates a BinderSet instance
+   */
+  constructor(...args) {
+    this.binderSet(...args);
+  }
+  /**
+   * Creates a binding object inside a model to be set() applying one of multiple binders in the set. Expected to be called followed by a "as()" call: myBinderSet.with("binderName").as(func).
+   * @param {args} array - binders to consides in the binding.
+   */
+  with(...args) {
+    if (Array.isArray(args[0])) return this.with(...args[0]).as(args[1]);
+    return DOM.bind(...this.validate(args));
+  }
+  /**
+   * Given a string name returnd the appropriate binder in the set.
+   * @param {args} array - binders to be returned.
+   */
+  validate(...args) {
+    if (Array.isArray(args[0])) return this.validate(...args[0]);
+    return args.map(a => typeof a === 'string' ? this["_" + a] : a);
+  }
+  /**
+   * Binds binders in the set to an element's property.
+   * @param {binders} array - binders to bind
+   * @param {target} element - element to bind
+   * @param {station} string - station (prop) to bind
+   * @param {listeners} number - any other binders of the same prop
+   * @param {values} array - value to select based on numeric result ot the bind
+   * @param {map} object - value to select based on key result ot the bind
+   * @param {as} function - logic to be applied to the value in the binder
+   */
+  bind(...args) {
+    let argsType = DOM.typify(...args);
+    if (argsType.element) return {
+      with: (...binders) => ({
+        as: func => argsType.element.set({
+          [argsType.string]: DOM.bind(this.validate(binders), func),
+        })
+      })
+    }
+    if (args[0].target) return args[0].target.set({
+      [args[0].station]: DOM.bind(this.validate(args[0].with), args[0].as),
+    });
+    if (args[0].with) return this.with(args[0].with, args[0].as);
+    return this.with(...args);
+  }
+}
+
+/**
+ * Class for global static methods to handle the DOM
+ */
 class DOM {
-  // returns value based on 
+  /**
+   * Gets the value of a property from the document body or head.
+   * @param {station} station - propety to get.
+   */
   static get(station) {
     DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
+  /**
+   * Sets the value of a property from the document body or head.
+   * @param {station} station - propety to get.
+   * @param {be} func - logic to be applied based on the current value of the station.
+   */
   static
   let (station, be) {
     DOM.headTags.includes(station.toLowerCase()) ? document.head.let(station, be) : document.body.let(station, be);
   }
-  // create elements based on an object model
+  /**
+   * Sets the value of a property and creates elements in the document head and body based on an object model. Also resets the css.
+   * @param {model} object - JSON model of the DOM structure. Is could also be an array or primitive value
+   * @param {args} - in any order: 
+   * {string} - the station (style|attribute|(element)tag|innerText/innetHTML|onevent|name) to be set.
+   * {element} - element where the model will be applied
+   * {boolean} - whether to append, prepend or replace the content
+   */
   static set(model = "", ...args) {
     if (!args.includes("css") && !window.DOM_RESETTED) window.DOM_RESETTED = !!document.head.set({
       charset: "UTF-8",
@@ -610,8 +757,11 @@ class DOM {
     if (document.body) setTimeout(() => document.body.set(model, ...args), 0);
     else window.addEventListener("load", _ => document.body.set(model, ...args));
   }
-  static create = (...args) => DOM.set(...args);
-  // returns a new element without appending it to the DOM
+  /**
+   * Returns a new element without appending it to the DOM.
+   * @param {model} object - model to be set to create the structure and properties of the element.
+   * @param {tag} string - tag.
+   */
   static element = (model, tag = "section") => {
     if (model && model.tag) {
       tag = model.tag;
@@ -619,13 +769,19 @@ class DOM {
     }
     return document.createElement(tag).set(model);
   }
-  // returns a new binder
+  /**
+   * Creates and returns a new binder.
+   * @param {value} object - initial value to hold.
+   * @param {args} array - arguments to create a bind right away.
+   */
   static binder(value, ...args) {
     let binder = new Binder(value);
     if (args.length) binder.bind(...args);
     return binder;
   }
-  // returns a bind for element's
+  /**
+   * Creates bind between a given element's station and a binder or binders.
+   */
   static bind(...args) {
     const argsType = DOM.typify(...args);
     let [binder, as, listener, binders] = [argsType.binder, argsType.function, argsType.number, argsType.binders];
@@ -644,10 +800,17 @@ class DOM {
       as: () => as(...binders.map(b => b.value)),
     }
   }
+  /**
+   * Creates bind between a given element's station and a binder or binders.
+   */
   static with(...args) {
     return DOM.bind(...args);
   }
-  // converts JSON to CSS. Supports nesting. Turns "_" in selectors into ".". Preceding "__" assumes class on previous selector. Trailing "_" assumes immediate children (>).
+  /**
+   * converts JSON to CSS. Supports nesting. Turns "_" in selectors into ".". Preceding "__" assumes class on previous selector. Trailing "_" assumes immediate children (>).
+   * @param {sel} strings - selector.
+   * @param {model} object - CSS in JSON format.
+   */
   static css(sel, model) {
     if (!sel) return;
     const assignAll = (arr = [], dest = {}) => {
@@ -695,14 +858,26 @@ class DOM {
     }).join(" ");
     return (css ? `\n${sel} {\n ${css}}` : "") + extra.join(" ");
   }
-  // adds styles to the head as global CSS
+  /**
+   * Adds styles to the head as global CSS.
+   * @param {model} object - CSS in JSON format.
+   */
   static style = model => DOM.set(model, "css");
-  // returns html based on a model
+  /**
+   * Returns html based on a JSON model.
+   * @param {model} object - HTML in JSON format.
+   * @param {tag} string - tag of the object to create.
+   */
   static html = (model, tag = "section") => !model ? null : (model.tagName ? model : DOM.element(model, tag)).outerHTML;
-  // returns querystring as a structural object 
+  /**
+   * Returns querystring as an object 
+   */
   static get queryString() {
     return DOM.querystring();
   }
+  /**
+   * Returns querystring as an object 
+   */
   static querystring = () => {
     var qs = location.search.substring(1);
     if (!qs) return Object();
@@ -712,18 +887,34 @@ class DOM {
     }
     return qs.split("/");
   }
-  static interval(elem, func, ms, end, station = "none") {
+  /**
+   * Sets and interval tied to an element and station 
+   * @param {elem} element - element related to the interval.
+   * @param {func} function - action to take on interval.
+   * @param {ms} number - miliseconds or interval.
+   * @param {station} string - station related to the interval.
+   * @param {callback} function - action to be takend when done.
+   */
+  static interval(elem, func, ms, end, station = "none", callback = () => null) {
     if (!elem.intervals) elem.intervals = {};
     else if (elem.intervals[station]) clearInterval(elem.intervals[station]);
     let iId = setInterval(() => {
       let go = typeof end === "function" ? end() : end || end === undefined;
-      if (!go) return clearInterval(iId);
+      if (!go) {
+        callback();
+        return clearInterval(iId);
+      }
       func(elem);
       if (!isNaN(end)) end -= 1;
     }, ms);
     elem.intervals[station] = iId;
   }
-  static transition(elem, trn) { // for animations (loop, duration)
+  /**
+   * Gets and sets proper format fo rtransition css calue
+   * @param {elem} element - element with transition to retrieve.
+   * @param {trn} string - transition to change.
+   */
+  static transition(elem, trn) { // 
     let prop = trn.split(' ')[0].trim();
     let trns = elem.get("transition");
     if (trns) trns = trns.split(",").map(t => t.trim()).filter(t => t !== "NaN")
@@ -731,6 +922,11 @@ class DOM {
     else trns = [trn];
     elem.set(trns.join(", "), "transition");
   }
+  /**
+   * Ads a new global variable for elements with an id
+   * @param {id} string - id for var name of the element.
+   * @param {elt} element - element to name globally.
+   */
   static addID = (id, elt) => {
     if (!isNaN(id)) return console.error("ID's should not be numeric. id: " + id);
     if (elt.tagName) elt.setAttribute("id", id);
@@ -739,7 +935,10 @@ class DOM {
     if (Array.isArray(window[id])) return window[id].push(elt);
     window[id] = [window[id], elt];
   };
-  // returns objects with all value types
+  /**
+   * Returns objects with all value types
+   * @param {args} array - objects to type.
+   */
   static typify = (...args) => {
     if (args === undefined) return;
     let output = {};
@@ -783,10 +982,23 @@ class DOM {
     if (output.styles) output.style = output.styles[0];
     return output;
   };
+  /**
+   * Returns the camelcase version of a string separated with dashes
+   * @param {str} string
+   */
   static camelize = str => str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
     return index === 0 ? word.toLowerCase() : word.toUpperCase();
   }).replace(/\s+/g, '');
+  /**
+   * Returns the dash separated version of a string in camelCase
+   * @param {str} string
+   */
   static unCamelize = (str, char = "-") => str.replace(/([A-Z])/g, char + "$1").toLowerCase();
+  /**
+   * Lets you know is a string is css style prop of elements
+   * @param {str} string - name of the styles prop
+   * @param {elt} element - specific element to check 
+   */
   static isStyle = (str, elt) => ((elt ? elt : document.body ? document.body : document.createElement("section")).style)[str] !== undefined;
   static tags = ["a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "blockquote", "body", "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hr", "html", "i", "iframe", "img", "input", "ins", "kbd", "label", "legend", "li", "link", "main", "map", "mark", "meta", "meter", "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "picture", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strong", "style", "sub", "summary", "sup", "svg", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "time", "title", "tr", "track", "u", "ul", "var", "video", "wbr"];
   static events = ["abort", "afterprint", "animationend", "animationiteration", "animationstart", "beforeprint", "beforeunload", "blur", "canplay", "canplaythrough", "change", "click", "contextmenu", "copy", "cut", "dblclick", "drag", "dragend", "dragenter", "dragleave", "dragover", "dragstart", "drop", "durationchange", "ended", "error", "focus", "focusin", "focusout", "fullscreenchange", "fullscreenerror", "hashchange", "input", "invalid", "keydown", "keypress", "keyup", "load", "loadeddata", "loadedmetadata", "loadstart", "message", "mousedown", "mouseenter", "mouseleave", "mousemove", "mouseover", "mouseout", "mouseup", "offline", "online", "open", "pagehide", "pageshow", "paste", "pause", "play", "playing", "progress", "ratechange", "resize", "reset", "scroll", "search", "seeked", "seeking", "select", "show", "stalled", "submit", "suspend", "timeupdate", "toggle", "touchcancel", "touchend", "touchmove", "touchstart", "transitionend", "unload", "volumechange", "waiting", "wheel"];
@@ -798,6 +1010,10 @@ class DOM {
   static headTags = ["meta", "link", "title", "font", "icon", "image", ...DOM.metaNames, ...DOM.htmlEquivs];
   static reserveStations = ["tag", "id", "bind", "with", "as", "binders", "_bonds"];
   static listeners = ["addevent", "addeventlistener", "eventlistener", "listener", "on"];
+  /**
+   * Gets the doctype of a docs name based on its extension
+   * @param {str} string - socument name
+   */
   static getDocType = str => typeof str === "string" ? ({
     css: "stylesheet",
     sass: "stylesheet/sass",
