@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.2
+ * @version 1.2.3
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -100,11 +100,11 @@ Element.prototype.set = function (model, ...args) {
       model.loop = model.through;
       model.repeat = 1;
     }
-    if(model.delay === undefined) model.delay = 0;
+    if (model.delay === undefined) model.delay = 0;
     if (model.delay !== undefined && model.interval === undefined) model.interval = model.delay;
     if (model.transition) DOM.transition(this, `${DOM.unCamelize(STATION)} ${model.interval}ms ${model.transition}`);
-    if(model.repeat === undefined) model.repeat = -1;
-    if(!model.while) model.while =  typeof model.repeat === "function" ? model.repeat : () => model.repeat;
+    if (model.repeat === undefined) model.repeat = -1;
+    if (!model.while) model.while = typeof model.repeat === "function" ? model.repeat : () => model.repeat;
     if (model.loop) setTimeout(() => {
       this.set(model.loop[0], STATION);
       let i = 1;
@@ -348,7 +348,7 @@ Element.prototype.css = function (style) {
     this.setAttribute("id", id);
     window.domids.push(id);
   }
-  DOM.set({
+  return DOM.set({
     [`#${id}`]: style,
   }, "css");
 }
@@ -565,18 +565,15 @@ class DOM {
   }
   // create elements based on an object model
   static set(model = "", ...args) {
-    if (!args.includes("css") && !window.DOM_RESETTED) {
-      DOM.set(DOM.RESET, "css");
-      document.head.set({
-        charset: "UTF-8",
-        viewport: "width=device-width, initial-scale=1.0",
-        meta: {
-          "http-equiv": "X-UA-Compatible",
-          content: "IE=edge",
-        },
-      });
-      window.DOM_RESETTED = true;
-    }
+    if (!args.includes("css") && !window.DOM_RESETTED) window.DOM_RESETTED = !!document.head.set({
+      charset: "UTF-8",
+      viewport: "width=device-width, initial-scale=1.0",
+      meta: {
+        "http-equiv": "X-UA-Compatible",
+        content: "IE=edge",
+      },
+      style: DOM.css(DOM.RESET),
+    });
     // checks if the model is meant for an element
     let argsType = DOM.typify(...args);
     let elt = argsType.element ? argsType.element : argsType.p5Element;
