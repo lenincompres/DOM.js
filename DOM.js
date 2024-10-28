@@ -440,26 +440,26 @@ class Binder {
     };
   }
   //Iterates through values. Reverts to the intital
-  flash(values, delay = 1000, revert, callback) {
+  through(values, interval = 1000, revert = false, callback = () => null) {
     if (!Array.isArray(values)) values = [values];
-    if (!Array.isArray(delay)) delay = new Array(values.length).fill(delay);
+    if (!Array.isArray(interval)) interval = new Array(values.length).fill(interval);
     let oldValue = this.value;
     this.value = values.shift();
     if (revert === false) {
       values.push(oldValue);
-      delay.push(delay[0]);
+      interval.push(interval[0]);
     }
     setTimeout(_ => {
-      if (values.length) return this.flash(values, delay, revert);
+      if (values.length) return this.through(values, interval, revert);
       if (revert === true) return this.value = oldValue;
-      if (callback) callback();
-    }, delay.shift());
+      callback();
+    }, interval.shift());
   }
   //Iterates through values in a loop
-  loop(values, delay) {
+  loop(values, interval) {
     if (!Array.isArray(values)) return;
     this.value = values.shift();
-    setTimeout(() => this.flash(values, delay, false), delay);
+    setTimeout(() => this.through(values, interval, false), interval);
   }
   apply(val) {
     this.value = val;
