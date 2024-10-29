@@ -1,6 +1,6 @@
 # DOM.js
 
-by Lenin Compres
+by Lenin Comprés
 
 P5 editor examples by John Henry Thompson
 
