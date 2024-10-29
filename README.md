@@ -239,7 +239,7 @@ const myParagraph = DOM.set(
     backgroundColor: 'lavender',
     text: 'Some text',
   },
-  'p'
+  'p',
 );
 
 DOM.set({
@@ -254,13 +254,13 @@ DOM.set({
 ```
 
 NOTE:
-- A third boolean parameter of value *false* would tell **set** not to append the new element to the DOM. While a *true* value would append the new element and remove everything else in the DOM's content. 
+- A third (boolean) parameter of value *false* would tell **set** not to append the new element to the DOM. While a *true* value would append the new element and remove everything else in the DOM's content. 
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Hl1Tu1U1U)
 
 ### Set the Head
 
-Just as any element, you may invoke the **set** method on the head element. Many of its properties can be set directly. It will even link fonts and make them available as font-family styles.
+Just as with any element, you may invoke the **set** method on the head element. Many of its properties can be set directly. It will even link fonts and make them available as font-family styles.
 
 ```javascript
 document.head.set({
@@ -386,9 +386,9 @@ listedThings[1].set({
 ```
 
 When an _id_ is provided, a global variable holding the array of elements is created.
-In fact, if you give several elements the same _id_, DOM.set will group them in one global array.
+If you give several elements the same _id_, DOM.set will group them in one global array.
 
-Arrays can be used to create consecutive element of different types; just indicate their _tag_ as a property.
+Arrays can create consecutive elements of different types; just indicate their _tag_ as a property.
 
 ```javascript
 DOM.set({
@@ -412,7 +412,7 @@ DOM.set({
 });
 ```
 
-You can name these elements anything—in this case they were named _elements_—; another recommended name is _children_. Each will be assigned a specified tag. But, you must avoid using known property names like: _content_, _margin_, _text_, etc. Using a plural word for the property helps avoid this mistake.
+You can name these elements anything—in this case, they were named _elements_—; another recommended name is _children_. Each will be assigned a specified tag. But, you must avoid using known property names like: _content_, _margin_, _text_, etc. Using a plural word for the property helps avoid this mistake.
 
 Similarly, if you give DOM.set an array, it assumes it is an array of elements, and will create them as *div*s, or any tag property they possess.
 
