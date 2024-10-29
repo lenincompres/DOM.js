@@ -766,7 +766,7 @@ let _myBinder = DOM.binder(true, someElement, 'text', (value) => `The field is: 
 You may update the value of other binders by binding them.
 
 ```javascript
-_myBinder.bind(_ANOTHER_BINDER, (value) => (value ? 'red' : 'blue'));
+_myBinder.bind(_anotherBinder, (value) => (value ? 'red' : 'blue'));
 ```
 
 #### Listening to binders
@@ -788,7 +788,7 @@ DOM.set({
 
 _myBinder.bind(someElement, 'text', ['field is disabled', 'field is enabled']);
 
-_myBinder.bind(_ANOTHER_BINDER, ['blue', 'red']);
+_myBinder.bind(_anotherBinder, ['blue', 'red']);
 ```
 
 Note that if the value is a boolean, _false_ would be position 0, and _true_ is position 1.
