@@ -17,8 +17,8 @@
   constructor(map = {}) {
     this.binderSet("key");
     this.add(map);
-    this.hashed = !Pager.pager;
-    if (this.hashed) {
+    this.#hashed = !Pager.pager;
+    if (this.#hashed) {
       this._key.onChange(val => location.href = `#${val}`);
       const hash = () => this.key = location.hash.substr(1).split("-")[0];
       window.addEventListener("hashchange", hash);
