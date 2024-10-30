@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.4
+ * @version 1.2.5
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -9,7 +9,7 @@
  * Gets the value of an element's property.
  * @param {station} string - The style|attribute|(element)tag|innerText/innetHTML|on(event)|name of an element.
  */
- Element.prototype.get = function (station) {
+Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -287,14 +287,25 @@ Element.prototype.set = function (model, ...args) {
     }
     if (DOM.typify(model.content).object) model.content = DOM.css(model.content);
   }
+  if(IS_HEAD && !IS_PRIMITIVE){
+    if(station === "image") {
+      return this.set({
+        "og:image": model.src,
+        "og:image:alt": model.alt,
+        "twitter:image": model.src,
+        "twitter:card": model.card,
+      })
+    }
+  }
   if (IS_PRIMITIVE) {
     if (IS_HEAD) {
       const type = DOM.getDocType(model);
-      if (station === "title") this.innerHTML += `<title>${model}</title>`;
+      if (station === "description") this.innerHTML += `<meta property="og:description" content="${model}">`;
+      if (station === "title") this.innerHTML += `<title>${model}</title><meta property="og:title" content="${model}"><meta property="og:type" content="website">`;
       else if (station === "icon") this.innerHTML += `<link rel="icon" href="${model}">`;
       else if (station === "image") this.innerHTML += `<meta property="og:image" content="${model}">`;
       else if (station === "charset") this.innerHTML += `<meta charset="${model}">`;
-      else if (station.startsWith("og:")) this.innerHTML += `<meta property="${station}" content="${model}">`;
+      else if (station.includes(":")) this.innerHTML += `<meta property="${station}" content="${model}">`;
       else if (DOM.metaNames.includes(station)) this.innerHTML += `<meta name="${station}" content="${model}">`;
       else if (DOM.htmlEquivs.includes(STATION)) this.innerHTML += `<meta http-equiv="${DOM.unCamelize(STATION)}" content="${model}">`;
       else if (station === "font") DOM.set({
@@ -382,19 +393,21 @@ Element.prototype.css = function (style) {
  * Updates stations of element when its value changes. Can also update other binders.
  */
 class Binder {
+  #value;
+
   /**
    * creates a new instance of a Binder.
    * @param {val} - Initial value for the Binder to hold.
    */
   constructor(val) {
-    this._value = val;
+    this.#value = val;
     this._bonds = [];
     this._listeners = {};
     this._listenerCount = 0;
     this.onvalue = v => v;
     this.update = bond => {
       if (!bond.target) return;
-      let theirValue = bond.as(this._value);
+      let theirValue = bond.as(this.#value);
       if (bond.target.tagName) {
         if (!bond.type) return bond.target.set(theirValue, bond.station);
         return bond.target.set({
@@ -411,7 +424,7 @@ class Binder {
    * Keeps track of other Binders or binds that may be tracking value changes.
    * @param {func} - 
    */
-  addListener(func) {
+  onChange(func) {
     if (typeof func !== "function") return;
     this._listeners[this._listenerCount] = func;
     return this._listenerCount++;
@@ -474,7 +487,7 @@ class Binder {
     let as = argsType.function ? argsType.function : val => val;
     if (values && values.length) as = this.getAs(values, as);
     else if (map && map !== target) as = this.getAs(map, as);
-    if (!target) return DOM.bind([this], as, listener); // binding in a model 
+    if (!target) return DOM.bind([this], as, listener); // binding in a model
     if (listener) this.removeListener(listener); // if in a model, removes the listener
     let bond = {
       binder: this,
@@ -541,7 +554,7 @@ class Binder {
    * @param {val} - value to hold.
    */
   set value(val) {
-    this._value = val;
+    this.#value = val;
     this._bonds.forEach(bond => {
       if (bond.target === this.setter) return;
       this.update(bond);
@@ -554,7 +567,7 @@ class Binder {
    * Gets the value in the binder.
    */
   get value() {
-    return this._value;
+    return this.#value;
   }
   /**
    * Creates a bind, given one of more binders.
@@ -646,15 +659,7 @@ class BinderSet {
    */
   with(...args) {
     if (Array.isArray(args[0])) return this.with(...args[0]).as(args[1]);
-    return DOM.bind(...this.validate(args));
-  }
-  /**
-   * Given a string name returnd the appropriate binder in the set.
-   * @param {args} array - binders to be returned.
-   */
-  validate(...args) {
-    if (Array.isArray(args[0])) return this.validate(...args[0]);
-    return args.map(a => typeof a === 'string' ? this["_" + a] : a);
+    return DOM.bind(...BinderSet.validate(args));
   }
   /**
    * Binds binders in the set to an element's property.
@@ -671,15 +676,23 @@ class BinderSet {
     if (argsType.element) return {
       with: (...binders) => ({
         as: func => argsType.element.set({
-          [argsType.string]: DOM.bind(this.validate(binders), func),
+          [argsType.string]: DOM.bind(BinderSet.validate(binders), func),
         })
       })
     }
     if (args[0].target) return args[0].target.set({
-      [args[0].station]: DOM.bind(this.validate(args[0].with), args[0].as),
+      [args[0].station]: DOM.bind(BinderSet.validate(args[0].with), args[0].as),
     });
     if (args[0].with) return this.with(args[0].with, args[0].as);
     return this.with(...args);
+  }
+  /**
+   * Given a string name returnd the appropriate binder in the set.
+   * @param {args} array - binders to be returned.
+   */
+  static validate(...args) {
+    if (Array.isArray(args[0])) return BinderSet.validate(...args[0]);
+    return args.map(a => typeof a === 'string' ? this["_" + a] : a);
   }
 }
 
@@ -762,7 +775,12 @@ class DOM {
    * @param {model} object - model to be set to create the structure and properties of the element.
    * @param {tag} string - tag.
    */
-  static element = (model, tag = "section") => {
+  static element = (model, tag) => {
+    if(tag === undefined && typeof model === "string"){
+      tag = model;
+      model = {};
+    }
+    if(tag === undefined) tag = "section";
     if (model && model.tag) {
       tag = model.tag;
       delete model.tag;
@@ -887,6 +905,22 @@ class DOM {
     }
     return qs.split("/");
   }
+  /**
+   * @param {array} - model of items in the list
+   * @return {object} - Model of ul with li
+   */
+  static list = (...items) => Array.isArray(items[0]) ? DOM.list(...items[0]) : ({
+    ul: {
+      li: items,
+    }
+  });
+  /**
+   * @param {array} - model of links in the menu list
+   * @return {object} - Model of ul with li with links in it
+   */
+  static linkMenu = (...links) => Array.isArray(links[0]) ? DOM.linkMenu(...links[0]) : DOM.list(links.map(link => ({
+    a: link,
+  })));
   /**
    * Sets and interval tied to an element and station 
    * @param {elem} element - element related to the interval.
