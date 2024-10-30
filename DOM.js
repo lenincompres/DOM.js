@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.5
+ * @version 1.2.6
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -69,7 +69,7 @@ Element.prototype.set = function (model, ...args) {
   const IS_PRIMITIVE = modelType.isPrimitive;
   let station = argsType.string; // original style|attr|tag|inner…|on…|name
   const CLEAR = !station && IS_PRIMITIVE || station === "content";
-  if ([undefined, "create", "assign", "model", "inner", "set"].includes(station)) station = "content";
+  if ([undefined, "inner", "create", "assign", "model", "set"].includes(station)) station = "content";
   const STATION = station;
   station = station.toLowerCase(); // station lowercase
   // SELECT and input exception
@@ -105,9 +105,14 @@ Element.prototype.set = function (model, ...args) {
     else this[STATION] = e => model(e, this);
     return this;
   }
+  // deletes related transition/animation intervals
+  if (IS_CONTENT && argsType.boolean === true) {
+    while (this.firstChild) this.removeChild(parentElement.firstChild);
+    this.innerHTML = "";
+  }
   if (argsType.boolean === true && this.intervals && this.intervals[STATION]) {
+    clearInterval(this.intervals[station]);
     DOM.transition(this, `${DOM.unCamelize(STATION)} 0s`);
-    clearInterval(this.intervals[STATION]);
   }
   if ((model.interval || model.delay) && (model.to || model.through || model.loop)) {
     model.interval = parseInt(model.interval);
@@ -120,20 +125,22 @@ Element.prototype.set = function (model, ...args) {
     }
     if (model.delay === undefined) model.delay = 0;
     if (model.delay !== undefined && model.interval === undefined) model.interval = model.delay;
-    if (model.transition) DOM.transition(this, `${DOM.unCamelize(STATION)} ${model.interval}ms ${model.transition}`);
     if (model.repeat === undefined) model.repeat = -1;
-    if (!model.while) model.while = typeof model.repeat === "function" ? model.repeat : () => model.repeat;
-    if (model.loop) setTimeout(() => {
-      this.set(model.loop[0], STATION);
+    if (!model.while) model.while = (typeof model.repeat === "function") ? model.repeat : (() => model.repeat > 0);
+    DOM.transition(this, `${DOM.unCamelize(STATION)} 0s`);
+    this.set(model.loop[0], STATION);
+    setTimeout(() => {
       let i = 1;
+      if (model.transition) DOM.transition(this, `${DOM.unCamelize(STATION)} ${model.interval}ms ${model.transition}`);
       DOM.interval(this, () => {
         this.set(model.loop[i], STATION);
         i += 1;
-        if (i >= model.loop.length) {
-          i = 0;
-          if (!isNaN(model.repeat)) model.repeat -= 1
-        }
-      }, model.interval, model.while, STATION);
+        if (i >= model.loop.length) i = 0;
+        if (i === 0 && !isNaN(model.repeat)) model.repeat -= 1;
+      }, model.interval, model.while, STATION, () => {
+        this.set(model.loop[model.loop.length - 1], STATION);
+        if(model.callBack) model.callBack();
+      });
     }, model.delay);
     return this;
   }
@@ -287,8 +294,8 @@ Element.prototype.set = function (model, ...args) {
     }
     if (DOM.typify(model.content).object) model.content = DOM.css(model.content);
   }
-  if(IS_HEAD && !IS_PRIMITIVE){
-    if(station === "image") {
+  if (IS_HEAD && !IS_PRIMITIVE) {
+    if (station === "image") {
       return this.set({
         "og:image": model.src,
         "og:image:alt": model.alt,
@@ -338,7 +345,7 @@ Element.prototype.set = function (model, ...args) {
   elt = p5Elem ? elem.elt : elem;
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute("id", id);
-  if (argsType.boolean === undefined) this.append(elt);
+  argsType.boolean === false ? this.prepend(elt) : this.append(elt);
   ["ready", "onready", "done", "ondone"].forEach(f => {
     if (!model[f]) return this;
     model[f](elem);
@@ -346,7 +353,7 @@ Element.prototype.set = function (model, ...args) {
   ["timeout"].forEach(f => {
     if (!model[f]) return this;
     let [func, t] = Array.isArray(model[f]) ? model[f] : [model[f], 1];
-    setTimeout(() => func(elem), t);
+    DOM.interval(this, func, t, 1);
   });
   ["interval"].forEach(f => {
     if (!model[f]) return this;
@@ -776,11 +783,11 @@ class DOM {
    * @param {tag} string - tag.
    */
   static element = (model, tag) => {
-    if(tag === undefined && typeof model === "string"){
+    if (tag === undefined && typeof model === "string") {
       tag = model;
       model = {};
     }
-    if(tag === undefined) tag = "section";
+    if (tag === undefined) tag = "section";
     if (model && model.tag) {
       tag = model.tag;
       delete model.tag;
@@ -936,6 +943,7 @@ class DOM {
       let go = typeof end === "function" ? end() : end || end === undefined;
       if (!go) {
         callback();
+        delete elem.intervals[station];
         return clearInterval(iId);
       }
       func(elem);
@@ -951,10 +959,10 @@ class DOM {
   static transition(elem, trn) { // 
     let prop = trn.split(' ')[0].trim();
     let trns = elem.get("transition");
-    if (trns) trns = trns.split(",").map(t => t.trim()).filter(t => t !== "NaN")
-      .map(t => t.startsWith(prop) ? trn : t);
-    else trns = [trn];
-    elem.set(trns.join(", "), "transition");
+    if (trns) trns = trns.split(",").map(t => t.trim()).filter(t => t !== "NaN").map(t => t.startsWith(prop) ? trn : t).join(", ");
+    else trns = trn;
+    if (!trns.includes(trn)) trns += ", " + trn;
+    elem.set(trns, "transition");
   }
   /**
    * Ads a new global variable for elements with an id
