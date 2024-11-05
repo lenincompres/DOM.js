@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.6
+ * @version 1.2.7
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -9,7 +9,7 @@
  * Gets the value of an element's property.
  * @param {station} string - The style|attribute|(element)tag|innerText/innetHTML|on(event)|name of an element.
  */
-Element.prototype.get = function (station) {
+ Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -237,7 +237,6 @@ Element.prototype.set = function (model, ...args) {
   let elt = modelType.p5Element ? model.elt : modelType.element;
   if (elt) {
     if (id) DOM.addID(id, elt);
-    else if (tag != elt.tagName.toLowerCase()) DOM.addID(tag, elt);
     if (CLEAR) this.innerHTML = "";
     if (cls.length) elt.classList.add(...cls);
     return this.append(elt);
