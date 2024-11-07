@@ -771,10 +771,10 @@ _myBinder.bind(_anotherBinder, (value) => (value ? 'red' : 'blue'));
 
 #### Listening to binders
 
-You may add listerner methods to be called when a binder is updated.
+You may add listener methods to be called when a binder is updated.
 
 ```javascript
-_myBinder.addListener((value) => alert('The value was updated to: ' + value));
+_myBinder.onChange((value) => alert('The value was updated to: ' + value));
 ```
 
 #### Binding array of values
