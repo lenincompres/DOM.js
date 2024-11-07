@@ -783,7 +783,7 @@ If instead of a function or an object model, the binding is given an array, it a
 
 ```javascript
 DOM.set({
-  background: _fieldEnabled.as(['gray', 'green']),
+  background: _fieldEnabled.as('gray', 'green'),
 });
 
 _myBinder.bind(someElement, 'text', ['field is disabled', 'field is enabled']);
@@ -814,7 +814,7 @@ class MyElement extends HTMLElement {
       margin: '0 auto',
       display: 'block',
       textAlign: 'center',
-      backgroundColor: this._value.as(['red', 'green']),
+      backgroundColor: this._value.as('red', 'green'),
       p: {
         text: this.valueBinder,
       },
@@ -872,10 +872,10 @@ class MyElement extends HTMLElement {
 
     this.set({
       padding: "1em",
-      backgroundColor: this._active.as(['red', 'green']),
+      backgroundColor: this._active.as('red', 'green'),
       p: "This button toggles the active state of the element",
       button: {
-        text: this._active.as(['activate', 'deactivate']),
+        text: this._active.as('activate', 'deactivate'),
         onclick: (e) => this.active = !this.active;,
       },
     });
