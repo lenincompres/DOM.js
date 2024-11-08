@@ -912,6 +912,18 @@ myElement.get('article'); // returns the array of article tag elements within so
 myElement.get('.nice'); // similar to querySelectorAll, but returns an array of elements
 ```
 
+## DOM.let() and element.let()
+
+This method allows you to set the value of an elements property. And it allows you to set this value based on the current value of the property.
+
+```javascript
+document.body.let('backgroundColor', 'red');
+
+myElement.let('text', 'New text');
+
+myElement.let('color', cVal => cVal === 'red' ? 'blue' : 'green');  // It will apply this rule based on the current color,
+```
+
 ---
 
 ## DOM.js and P5.js
