@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.7
+ * @version 1.2.8
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -55,7 +55,7 @@ Element.prototype.set = function (model, ...args) {
   }
   if (Array.isArray(model.content)) {
     model.content.forEach(item => {
-      if ([null, undefined].includes(item)) return;
+      if ([null, undefined].includes(item)) return this;
       let individual = Object.assign({}, model);
       individual.content = item;
       this.set(individual, ...args);
@@ -344,7 +344,7 @@ Element.prototype.set = function (model, ...args) {
   elt = p5Elem ? elem.elt : elem;
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute("id", id);
-  argsType.boolean === false ? this.prepend(elt) : this.append(elt);
+  if(argsType.boolean !== false) argsType.boolean === true ? this.prepend(elt) : this.append(elt);
   ["ready", "onready", "done", "ondone"].forEach(f => {
     if (!model[f]) return this;
     model[f](elem);
@@ -718,9 +718,8 @@ class DOM {
    * @param {station} station - propety to get.
    * @param {be} func - logic to be applied based on the current value of the station.
    */
-  static
-  let (station, be) {
-    DOM.headTags.includes(station.toLowerCase()) ? document.head.let(station, be) : document.body.let(station, be);
+  static let (station, ...args) {
+    return DOM.headTags.includes(station.toLowerCase()) ? document.head.let(station, ...args) : document.body.let(station, ...args);
   }
   /**
    * Sets the value of a property and creates elements in the document head and body based on an object model. Also resets the css.
