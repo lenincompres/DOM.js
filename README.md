@@ -927,7 +927,7 @@ myElement.let('color', cVal => cVal === 'red' ? 'blue' : 'green');  // It will a
 You may also create elements, bu using the *let* and a tag name. This will return the newly created element.
 
 ```
-let myElement = DOM.set('section', {
+let myElement = DOM.let('section', {
   background: 'silver',
   h1: 'Heading of a new section',
 });
