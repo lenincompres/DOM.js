@@ -924,6 +924,22 @@ myElement.let('text', 'New text');
 myElement.let('color', cVal => cVal === 'red' ? 'blue' : 'green');  // It will apply this rule based on the current color,
 ```
 
+You may also create elements, bu using the *let* and a tag name. This will return the newly created element.
+
+```
+let myElement = DOM.set('section', {
+  background: 'silver',
+  h1: 'Heading of a new section',
+});
+
+myElement.let('p', {
+  margin: '2em',
+  text: 'This is a new paragraph.',
+});
+```
+
+If you add a boolean value as a third parameter, you may preppend (*true*) or not-append (*false*) the new element.
+
 ---
 
 ## DOM.js and P5.js
