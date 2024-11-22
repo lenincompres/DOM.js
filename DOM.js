@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.8
+ * @version 1.2.9
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -555,6 +555,9 @@ class Binder {
   apply(val) {
     this.value = val;
   }
+  static set(...args) {
+    binderSet(...args);
+  }
   /**
    * Sets the value in the binder.
    * @param {val} - value to hold.
@@ -772,8 +775,10 @@ class DOM {
     // checks if the model should replace the DOM
     if (argsType.boolean) document.body.innerHTML = "";
     // checks if the body is loaded
-    if (document.body) setTimeout(() => document.body.set(model, ...args), 0);
-    else window.addEventListener("load", _ => document.body.set(model, ...args));
+    if (!document.body) return window.addEventListener("load", _ => document.body.set(model, ...args));
+    document.body.set(model, ...args);
+    document.body.let("visibility", "hidden");
+    setTimeout(() => document.body.let("visibility", "visible"), 0);
   }
   /**
    * Returns a new element without appending it to the DOM.
@@ -891,7 +896,7 @@ class DOM {
    * @param {model} object - HTML in JSON format.
    * @param {tag} string - tag of the object to create.
    */
-  static html = (model, tag = "section") => !model ? null : (model.tagName ? model : DOM.element(model, tag)).outerHTML;
+  static html = (model, tag = "section") => !!model && (model.tagName ? model : DOM.element(model, tag)).outerHTML;
   /**
    * Returns querystring as an object 
    */
