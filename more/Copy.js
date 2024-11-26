@@ -1,15 +1,16 @@
 /**
  * Class that stores the copy text and retrieves the appropriate language copy (text) from a map given a key.
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.3
+ * @version 1.0.4
  * @repository https://github.com/lenincompres/DOM.js
  */
 
-class Copy {
+ class Copy {
   #map = {};
   #key;
   #indexMap = {};
   #KEY = {};
+  at = {};
 
   /** 
    * Creates an instance of a copy.
@@ -63,7 +64,8 @@ class Copy {
     if (this.#map[key]) return console.error(`Key "${key}" already exists in copy.`);
     this.#map[key] = val;
     this.#KEY[key] = key;
-    return this.get(key);
+    this.at[key] =  this.get(key);
+    return this;
   }
 
   /**
@@ -206,6 +208,9 @@ class Copy {
   }
   static get KEY() {
     return Copy.getDefaultInstance().#KEY;
+  }
+  static get at() {
+    return Copy.getDefaultInstance().at;
   }
   static add = (...args) => Copy.getDefaultInstance().add(...args);
   static get = (...args) => Copy.getDefaultInstance().get(...args);
