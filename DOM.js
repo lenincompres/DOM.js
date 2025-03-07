@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.9
+ * @version 1.2.10
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -744,6 +744,7 @@ class DOM {
     });
     // checks if the model is meant for an element
     let argsType = DOM.typify(...args);
+    if(Array.isArray(model) && !argsType.string) return DOM.set(model, 'section', ...args);
     let elt = argsType.element ? argsType.element : argsType.p5Element;
     if (elt) return elt.set(model, ...args);
     // hidden models with css for a split second 
