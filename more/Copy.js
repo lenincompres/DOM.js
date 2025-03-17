@@ -107,20 +107,22 @@
   /**
    * @return {Object} - JS model of links to toggle the page's language.
    */
-  getToggleLink = () => this.langs.map(lang => ({
+  getToggleLink = (...langs) => (langs ? langs : this.langs).map(lang => ({
     display: Copy.lang !== lang.code ? "block" : "none",
     text: lang.name,
+    href: "#",
     onclick: () => Copy.lang = lang.code,
   }));
 
   /**
    * @return {Object} - JS model with a ul of li's with links to toggle the page's language.
    */
-  getLinkMenu = () => DOM.linkMenu(this.langs.map(lang => ({
+  getLinkMenu = (...langs) => DOM.linkMenu((langs ? langs : this.langs).map(lang => ({
     class: {
       selected: Copy.lang === lang.code,
     },
     text: lang.name,
+    href: "#",
     onclick: () => Copy.lang = lang.code,
   })));
 
@@ -215,8 +217,8 @@
   static add = (...args) => Copy.getDefaultInstance().add(...args);
   static get = (...args) => Copy.getDefaultInstance().get(...args);
   static next = () => Copy.getDefaultInstance().next();
-  static getToggleLink = () => Copy.getDefaultInstance().getToggleLink();
-  static getLinkMenu = () => Copy.getDefaultInstance().getLinkMenu();
+  static getToggleLink = (...langs) => Copy.getDefaultInstance().getToggleLink(...langs);
+  static getLinkMenu = (...langs) => Copy.getDefaultInstance().getLinkMenu(...langs);
   static getSelect = () => Copy.getDefaultInstance().getSelect();
 }
 
