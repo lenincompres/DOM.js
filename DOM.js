@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.10
+ * @version 1.2.11
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -493,7 +493,7 @@ class Binder {
     let as = argsType.function ? argsType.function : val => val;
     if (values && values.length) as = this.getAs(values, as);
     else if (map && map !== target) as = this.getAs(map, as);
-    if (!target) return DOM.bind([this], as, listener); // binding in a model
+    if (!target) return DOM.bind([this], as,  this.onChange(as)); // binding in a model
     if (listener) this.removeListener(listener); // if in a model, removes the listener
     let bond = {
       binder: this,
