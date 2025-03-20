@@ -235,16 +235,16 @@ myElement.set({
 
 ### Creating an element
 
-DOM.set() returns a new element and appends it to the DOM when provided a tag as a second parameter. The following returns a paragraph.
+DOM.let() returns a new element without appending it to the DOM. Just provide a tag as the first parameter.
 
 ```javascript
-const myParagraph = DOM.set(
+const myParagraph = DOM.let(
+  'p',
   {
     padding: '0.5em 2em',
     backgroundColor: 'lavender',
     text: 'Some text',
   },
-  'p',
 );
 
 DOM.set({
@@ -256,10 +256,7 @@ DOM.set({
     p: myParagraph,
   },
 });
-```
-
-NOTE:
-- A third (boolean) parameter of value *false* would tell **set** not to append the new element to the DOM. While a *true* value would append the new element and remove everything else in the DOM's content. 
+``` 
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Hl1Tu1U1U)
 
@@ -322,28 +319,28 @@ Note how **set** recognizes common head information (icon, charset, keywords, de
 In fact, the **DOM.set** method recognizes these as well, and adds them on the _document.head_ instead of the _body_.
 
 ```javascript
-const myHeader = DOM.set(
+const myHeader = DOM.let(
+  'header',
   {
     h1: 'Page built with DOM.set',
   },
-  'header'
 );
 
-const myMain = DOM.set(
+const myMain = DOM.let(
+  'main',
   {
     article: {
       h2: 'Basic DOM element',
       p: '<b>This</b> is a paragraph.',
     },
   },
-  'main'
 );
 
-const myFooter = DOM.set(
+const myFooter = DOM.let(
+  'footer',
   {
-    p: 'Made with DOM.set',
+    p: 'Made with DOM.js',
   },
-  'footer'
 );
 
 DOM.set({
@@ -472,15 +469,15 @@ This allows you to use **<custom-button></custom-button>** in your HTML. DOM.js 
 
 ### Style Attribute
 
-Asign a string to the _style_ property to update the inline style of the element—replacing any previous value.
+Assign a string to the _style_ property to update the inline style of the element—replacing any previous value.
 
 ```javascript
-const myMain = DOM.set(
+const myMain = DOM.let(
+  'main',
   {
     style: 'margin: 20px; font-family: Tahoma; background-color: gray;',
     content: 'The style is in the style attribute of the main element.',
   },
-  'main'
 );
 
 DOM.set({
@@ -497,7 +494,8 @@ DOM.set({
 Asign a structural object to the _style_ to update individual style properties—use names in camelCase.
 
 ```javascript
-const myMain = DOM.set(
+const myMain = DOM.let(
+  'main',
   {
     style: {
       margin: '20px',
@@ -509,7 +507,6 @@ const myMain = DOM.set(
       p: 'This manages the style values individually.',
     },
   },
-  'main'
 );
 
 DOM.set({
@@ -526,7 +523,8 @@ This is equivalent to using the [style property of DOM elements](https://www.w3s
 Styles may be assigned without an encompassing _style_ property. The previous code could be written as follows.
 
 ```javascript
-const myMain = DOM.set(
+const myMain = DOM.let(
+  'main',
   {
     margin: '20px',
     fontFamily: 'Tahoma',
@@ -534,7 +532,6 @@ const myMain = DOM.set(
     h1: 'Styled Main Element',
     p: 'This manages the style values individually.',
   },
-  'main'
 );
 
 DOM.set({
@@ -554,7 +551,8 @@ Yet, **DOM.set** interprets structural properties to match attributes, styles, e
 If _style_ has a _content_ property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
 
 ```javascript
-const myMain = DOM.set(
+const myMain = DOM.let(
+  'main',
   {
     style: {
       lang: 'scss',
@@ -562,7 +560,6 @@ const myMain = DOM.set(
     },
     content: 'This style is applied to all MAIN elements in the page.',
   },
-  'main'
 );
 
 DOM.set({
@@ -581,7 +578,8 @@ This method is discouraged, since it will affect all elements in the DOM not jus
 Use _css:_ in your model structure to create styling rules that apply **only** to the current element and its children.
 
 ```javascript
-const myMain = DOM.set(
+const myMain = DOM.let(
+  'main',
   {
     css: {
       margin: '20px',
@@ -609,7 +607,6 @@ const myMain = DOM.set(
       ],
     },
   },
-  'main'
 );
 
 DOM.set({
@@ -675,7 +672,8 @@ When the _value_ property of this object changes, it automatically updates all e
 ```javascript
 const _myBinder = new Binder('Default value');
 
-const myMain = DOM.set(
+const myMain = DOM.let(
+  'main',
   {
     input: {
       value: _myBinder,
@@ -688,7 +686,6 @@ const myMain = DOM.set(
       onclick: (event) => (_myBinder.value = 'Go was clicked.'),
     },
   },
-  'main'
 );
 
 DOM.set({
@@ -711,7 +708,8 @@ Using the **.as()** method of the binders, you may provide a function that retur
 ```javascript
 const _fieldEnabled = new Binder(false);
 
-const myMain = DOM.set(
+const myMain = DOM.let(
+  'main',
   {
     div: {
       style: {
@@ -733,7 +731,6 @@ const myMain = DOM.set(
       },
     },
   },
-  'main'
 );
 
 DOM.set({
@@ -917,7 +914,7 @@ myElement.get('article'); // returns the array of article tag elements within so
 myElement.get('.nice'); // similar to querySelectorAll, but returns an array of elements
 ```
 
-## DOM.let() and element.let()
+## More DOM.let() and element.let()
 
 This method allows you to set the value of an elements property. And it allows you to set this value based on the current value of the property.
 
@@ -929,21 +926,27 @@ myElement.let('text', 'New text');
 myElement.let('color', cVal => cVal === 'red' ? 'blue' : 'green');  // It will apply this rule based on the current color,
 ```
 
-You may also create elements, bu using the *let* and a tag name. This will return the newly created element.
+When using the *DOM.let* and a tag name to create new elements, you add a boolean value as a third parameter. You may preppend (*true*) or not-append (*false*) the new element.
 
 ```
-let myElement = DOM.let('section', {
-  background: 'silver',
-  h1: 'Heading of a new section',
-});
+let myElement = DOM.let(
+  'section',
+  {
+    background: 'silver',
+    h1: 'Heading of a new section',
+  },
+  false,
+);
 
-myElement.let('p', {
-  margin: '2em',
-  text: 'This is a new paragraph.',
-});
+myElement.let(
+  'p',
+  {
+    margin: '2em',
+    text: 'This is a new paragraph.',
+  },
+  true,
+);
 ```
-
-If you add a boolean value as a third parameter, you may preppend (*true*) or not-append (*false*) the new element.
 
 ---
 
