@@ -41,27 +41,7 @@ The following is all the HTML we are going to need for the entirety of this docu
 
 ##  Basic Usage
 
-Use the DOM.set method to create and append elements:
-
-```javascript
-const model = {
-  tag: 'div',
-  id: 'container',
-  children: [
-    {
-      tag: 'h1',
-      innerHTML: 'Hello, World!'
-    },
-    {
-      tag: 'p',
-      innerHTML: 'This is a paragraph.'
-    }
-  ]
-};
-DOM.set(model);
-```
-
-You may also use the tags as key properties and values as their innerHTML.
+Use the DOM.set method to create and append elements. You may use the tags as key properties and values as their innerHTML.
 
 ```javascript
 DOM.set({
@@ -151,13 +131,33 @@ let mainImage = DOM.set(
 
 For DOM.set, a boolean argument with a *false* value indicates that this element should not be appended to the document body. A value of *true* would mean that the element (and/or model) will replace all the current content in the DOM (or in the element invoking the **set** method).
 
+Models may contain properties for tags and ids, and a children or element array of similar or different elements.
+
+```javascript
+const model = {
+  tag: 'div',
+  id: 'container',
+  children: [
+    {
+      tag: 'h1',
+      innerHTML: 'Hello, World!'
+    },
+    {
+      tag: 'p',
+      innerHTML: 'This is a paragraph.'
+    }
+  ]
+};
+DOM.set(model);
+```
+
 </details>
 
 ---
 
 ### Properties: Attributes, Events and listeners
 
-DOM.set recognizes **properties** in the model structure, such as attributes or event handlers.
+DOM.set recognizes **properties** in the model structure, such as attributes or event handlers. You may use a unique name that will become the element's id, and indicate the tag as a key property. Or, use a selector style name, which may even include classes separated by commas.
 
 ```javascript
 DOM.set({
@@ -167,14 +167,18 @@ DOM.set({
     onchange: (event) => alert(myInput.value),
     click: (event) => alert('It recognized event types to add listeners; as well as event methods.'),
   },
-  button: {
-    id: 'goBtn',
+  goBtn: {
+    tag: 'button',
     innerText: 'Go',
     addEventListener: {
       type: 'click',
-      listener: (event) => (myInput.value = 'Button pressed'),
+      listener: (event) => (myInput.value = 'Go Button clicked'),
     },
   },
+  'button#cancelBtn.red': {
+    text: 'cancel',
+    onclick: (event) => alert('The cancel button was clicked'),
+  }
 });
 
 myInput.style.border = 'none';
