@@ -157,7 +157,7 @@ DOM.set(model);
 
 ### Properties: Attributes, Events and listeners
 
-DOM.set recognizes **properties** in the model structure, such as attributes or event handlers. You may use a unique name that will become the element's id, and indicate the tag as a key property. Or, use a selector style name, which may even include classes separated by commas.
+DOM.set recognizes **properties** in the model structure, such as attributes or event handlers. You may use a unique name that will become the element's id, and indicate the tag as a key property. Or, use a selector style name, which may even include classes separated by periods.
 
 ```javascript
 DOM.set({
@@ -169,19 +169,20 @@ DOM.set({
   },
   goBtn: {
     tag: 'button',
+    class: 'green-button',
     innerText: 'Go',
     addEventListener: {
       type: 'click',
       listener: (event) => (myInput.value = 'Go Button clicked'),
     },
   },
-  'button#cancelBtn.red': {
-    text: 'cancel',
+  'button#cancelBtn.red-button': {
+    text: 'Cancel',
     onclick: (event) => alert('The cancel button was clicked'),
   }
 });
 
-myInput.style.border = 'none';
+goBtn.style.border = 'solid 2px lime';
 ```
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/IJDh1-znl)
