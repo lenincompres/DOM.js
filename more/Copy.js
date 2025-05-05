@@ -1,7 +1,7 @@
 /**
  * Class that stores the copy text and retrieves the appropriate language copy (text) from a map given a key.
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.4
+ * @version 1.0.6
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -30,7 +30,7 @@
     }
    * */
   constructor(map = {}) {
-    this.#map = map;
+    this.add(map);
     this.#key = this.keys[0];
   }
 
@@ -107,22 +107,20 @@
   /**
    * @return {Object} - JS model of links to toggle the page's language.
    */
-  getToggleLink = (...langs) => (langs ? langs : this.langs).map(lang => ({
+  getToggleLink = () => this.langs.map(lang => ({
     display: Copy.lang !== lang.code ? "block" : "none",
     text: lang.name,
-    href: "#",
     onclick: () => Copy.lang = lang.code,
   }));
 
   /**
    * @return {Object} - JS model with a ul of li's with links to toggle the page's language.
    */
-  getLinkMenu = (...langs) => DOM.linkMenu((langs ? langs : this.langs).map(lang => ({
+  getLinkMenu = () => DOM.linkMenu(this.langs.map(lang => ({
     class: {
       selected: Copy.lang === lang.code,
     },
     text: lang.name,
-    href: "#",
     onclick: () => Copy.lang = lang.code,
   })));
 
@@ -149,7 +147,7 @@
   static treat(str, vars = []) {
     if (!str) return str;
     if (Array.isArray(str)) return str.map(i => Copy.treat(i));
-    str = str.replaceAll("—", '<em class="em-dash">--</em>');
+    str = str.replaceAll("—", '<span class="em-dash">—--</span>');
     if (vars.length) vars.forEach((v, i) => str = str.replaceAll(`%${i}`, v));
     return str;
   }
@@ -217,22 +215,22 @@
   static add = (...args) => Copy.getDefaultInstance().add(...args);
   static get = (...args) => Copy.getDefaultInstance().get(...args);
   static next = () => Copy.getDefaultInstance().next();
-  static getToggleLink = (...langs) => Copy.getDefaultInstance().getToggleLink(...langs);
-  static getLinkMenu = (...langs) => Copy.getDefaultInstance().getLinkMenu(...langs);
+  static getToggleLink = () => Copy.getDefaultInstance().getToggleLink();
+  static getLinkMenu = () => Copy.getDefaultInstance().getLinkMenu();
   static getSelect = () => Copy.getDefaultInstance().getSelect();
 }
 
 /**
  * Browser readers don't handle em-dashes(—) correctly. This css, together with the treat method, allows writting copy with double dashes (--) and displays them as em-dashes, having readers read appropriately.
  */
-DOM.css({
-  "em.em-dash": {
-    display: "inline-block",
-    width: "0.7em",
-    height: "1em",
-    overflow: "hidden",
-    before: {
-      content: "—",
+DOM.set({
+  css: {
+    "span.em-dash": {
+      display: "inline-block",
+      width: "0.7em",
+      marginRight: "0.15em",
+      height: "1em",
+      overflow: "hidden",
     },
   },
 });
