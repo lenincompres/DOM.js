@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.11
+ * @version 1.2.12
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -107,8 +107,10 @@ Element.prototype.set = function (model, ...args) {
   }
   // deletes related transition/animation intervals
   if (IS_CONTENT && argsType.boolean === true) {
-    while (this.firstChild) this.removeChild(parentElement.firstChild);
-    this.innerHTML = "";
+    try{
+      while (this.firstChild) this.removeChild(parentElement.firstChild);
+      this.innerHTML = "";
+    } catch(e) {}
   }
   if (argsType.boolean === true && this.intervals && this.intervals[STATION]) {
     clearInterval(this.intervals[station]);
@@ -741,7 +743,7 @@ class DOM {
         content: "IE=edge",
       },
       style: DOM.css(DOM.RESET),
-    });
+    }, false);
     // checks if the model is meant for an element
     let argsType = DOM.typify(...args);
     if(Array.isArray(model) && !argsType.string) return DOM.set(model, 'section', ...args);
@@ -776,7 +778,7 @@ class DOM {
     // checks if the model should replace the DOM
     if (argsType.boolean) document.body.innerHTML = "";
     // checks if the body is loaded
-    if (!document.body) return window.addEventListener("load", _ => document.body.set(model, ...args));
+    if (!document.body) return window.addEventListener("load", () => document.body.set(model, ...args));
     document.body.set(model, ...args);
     document.body.let("visibility", "hidden");
     setTimeout(() => document.body.let("visibility", "visible"), 0);
@@ -1087,7 +1089,7 @@ class DOM {
       display: "block",
     },
     body: {
-      fontFamily: "Arial, sans-serif",
+      fontFamily: "Verdana, sans-serif",
       fontSize: "14px",
     },
     "b, strong": {
@@ -1133,8 +1135,12 @@ class DOM {
       borderCollapse: "collapse",
       borderSpacing: 0,
     },
+    h: { 
+      fontFamily: "'Georgia', serif",
+      fontWeight: "bold",
+    },
     h1: {
-      fontSize: "2em",
+      fontSize: "3em",
     },
     h2: {
       fontSize: "1.85em",
