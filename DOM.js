@@ -1136,7 +1136,7 @@ class DOM {
       borderSpacing: 0,
     },
     h: { 
-      fontFamily: "'Georgia', serif",
+      fontFamily: "Georgia, serif",
       fontWeight: "bold",
       fontSize: "1em",
     },
