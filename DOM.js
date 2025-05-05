@@ -1138,24 +1138,16 @@ class DOM {
     h: { 
       fontFamily: "'Georgia', serif",
       fontWeight: "bold",
+      fontSize: "1em",
     },
     h1: {
       fontSize: "3em",
     },
     h2: {
-      fontSize: "1.85em",
+      fontSize: "1.8em",
     },
     h3: {
-      fontSize: "1.67em",
-    },
-    h4: {
       fontSize: "1.5em",
     },
-    h5: {
-      fontSize: "1.33em",
-    },
-    h6: {
-      fontSize: "1.15em",
-    }
   }
 }
