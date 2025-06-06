@@ -1,7 +1,7 @@
 /**
  * Class that stores the copy text and retrieves the appropriate language copy (text) from a map given a key.
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.0.8
+ * @version 1.0.9
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -231,6 +231,7 @@ DOM.set({
       height: "1em",
       overflow: "hidden",
       verticalAlign: "text-top",
+      textIndent: 0,
       before: {
         content: '"—"',
         display: "inline-block",
