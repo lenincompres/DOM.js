@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.12
+ * @version 1.2.13
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -201,7 +201,7 @@ Element.prototype.set = function (model, ...args) {
   };
   if (["attribute", "attributes"].includes(station)) {
     station = "attribute";
-    handleProps((key, value) => this.setAttribute(key, value));
+    handleProps((key, value) => this.setAttribute(DOM.unCamelize(key), value));
     return this;
   }
   if (station === "class") {
