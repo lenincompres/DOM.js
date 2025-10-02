@@ -39,6 +39,8 @@ The following is all the HTML we are going to need for the entirety of this docu
 </html>
 ```
 
+For server-side usage, see [DOM.js Server-Side](https://github.com/lenincompres/DOM.js-server)
+
 ##  Basic Usage
 
 Use the DOM.set method to create and append elements. You may use the tags as key properties and values as their innerHTML.
