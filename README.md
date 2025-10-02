@@ -950,6 +950,19 @@ myElement.let(
 
 ---
 
+## Server-Side Usage
+
+If you want to use DOM.js on the server (Node.js environment), check out the dedicated repository:
+
+[DOM.js Server-Side](https://github.com/lenincompres/DOM.js-server)
+
+It includes:
+- `server.js` to serve `.dom.js` and `.dom.json` pages
+- `build.js` to generate HTML from source files
+- Instructions and dependencies for running DOM.js in a Node.js environment
+
+---
+
 ## DOM.js and P5.js
 
 Yes, DOM.set works for P5.js elements. If you are not familiar with P5.js, please [remedy that](https://p5js.org/).
