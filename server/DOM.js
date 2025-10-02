@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.14
+ * @version 1.2.15
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -20,7 +20,7 @@
   else if (DOM.isStyle(station, this)) output = this.style[station];
   else output = station ? this[station] : this.value;
   if (output !== undefined && output !== null) return isNaN(output) ? output : parseFloat(output);
-  output = [...this.querySelectorAll(":scope>" + station)];
+  output = [...this.querySelectorAll(":scope>" + station.replaceAll(",", ",:scope>"))];
   if (output.length) return output.length < 2 ? output[0] : output;
   output = [...this.querySelectorAll(station)];
   if (output.length) return output;
@@ -213,10 +213,10 @@ Element.prototype.set = function (model, ...args) {
   if (IS_HEAD) {
     if (station === "font" && modelType.object) return DOM.set({
       fontFace: model
-    }, "css");
+    }, "css", ...args);
     if (station === "style" && !model.content) return this.set({
       content: typeof model === "string" ? model : DOM.css(model)
-    }, station);
+    }, station, ...args);
     if (station === "keywords" && Array.isArray(model)) return this.set(model.join(","), ...args);
     if (station === "viewport" && modelType.object) return this.set(Object.entries(model).map(([key, value]) => `${DOM.unCamelize(key)}=${value}`).join(","), ...args);
   }
@@ -321,15 +321,15 @@ Element.prototype.set = function (model, ...args) {
           fontFamily: model.split("/").pop().split(".")[0],
           src: model.startsWith("url") ? model : `url("${model}")`
         }
-      }, "css");
+      }, "css", argsType.boolean);
       else if (station === "link") this.set({
         rel: type,
         href: model
-      }, station);
+      }, station, argsType.boolean);
       else if (station === "script") this.set({
         type: type,
         src: model
-      }, station);
+      }, station, argsType.boolean);
       return this;
     }
     let done = DOM.isStyle(STATION, this) ? this.style[STATION] = model : undefined;
@@ -381,10 +381,10 @@ if (typeof p5 !== "undefined") {
  * Adds css to the head under the element"s ID
  * @param {style} object - CSS in JSON notation.
  */
-Element.prototype.css = function (style) {
+Element.prototype.css = function (style, bool) {
   if ([document.head, document.body].includes(this)) return typeof style === "string" ? document.head.set({
     content: style
-  }, "style") : DOM.set(DOM.css(style), "css");
+  }, "style", bool) : DOM.set(DOM.css(style), "css");
   let id = this.id;
   if (!id) {
     if (!window.domids) window.domids = [];
@@ -394,7 +394,7 @@ Element.prototype.css = function (style) {
   }
   return DOM.set({
     [`#${id}`]: style,
-  }, "css");
+  }, "css", bool);
 }
 
 /**
@@ -716,7 +716,7 @@ class DOM {
    * @param {station} station - propety to get.
    */
   static get(station) {
-    DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
+    return DOM.headTags.includes(station.toLowerCase()) ? document.head.get(station) : document.body.get(station);
   }
   /**
    * Sets the value of a property from the document body or head.
@@ -743,7 +743,7 @@ class DOM {
         content: "IE=edge",
       },
       style: DOM.css(DOM.RESET),
-    }, false);
+    }, true);
     // checks if the model is meant for an element
     let argsType = DOM.typify(...args);
     if(Array.isArray(model) && !argsType.string) return DOM.set(model, 'section', ...args);
