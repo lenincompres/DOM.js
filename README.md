@@ -993,4 +993,11 @@ goBtn.addClass('nice-button');
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/mLU67cNL0)
 
+---
+
+## License
+
+MIT License
+
+
 ## Have fun!
