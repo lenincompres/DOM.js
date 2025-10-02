@@ -1,0 +1,8 @@
+{
+  "link": "style.css",
+  "title": "Test page for .dom.json",
+  "div_card": {
+    "h1": "Hello world",
+    "p": "created with DOM.json"
+  }
+}
