@@ -65,4 +65,14 @@ pageFiles.forEach(file => {
   console.log(`Built ${fileName}`);
 });
 
+// Copy static assets
+fs.readdirSync(SRC_DIR).forEach(file => {
+  if (!file.endsWith(".dom.js") && !file.endsWith(".dom.json")) {
+    const srcPath = path.join(SRC_DIR, file);
+    const destPath = path.join(BUILD_DIR, file);
+    fs.copyFileSync(srcPath, destPath);
+    console.log(`Copied asset ${file}`);
+  }
+});
+
 console.log("Build complete.");
