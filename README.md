@@ -39,7 +39,7 @@ The following is all the HTML we are going to need for the entirety of this docu
 </html>
 ```
 
-For server-side usage, see [DOM.js Server-Side](https://github.com/lenincompres/DOM.js-server)
+For server-side usage, see [DOM.js-server](https://github.com/lenincompres/DOM.js-server)
 
 ##  Basic Usage
 
