@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.16
+ * @version 1.2.17
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -85,7 +85,7 @@ Element.prototype.set = function (model, ...args) {
   }
   let uncamel = DOM.unCamelize(STATION);
   // needs dissambiguation for head link and pseaudoclass
-  if (!["link", "target", "lang"].includes(station) && (DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel))) return this.set({
+  if (!["link", "target", "lang", "checked"].includes(station) && (DOM.pseudoClasses.includes(uncamel) || DOM.pseudoElements.includes(uncamel))) return this.set({
     css: {
       [uncamel]: model
     }
@@ -333,7 +333,10 @@ Element.prototype.set = function (model, ...args) {
       return this;
     }
     let done = DOM.isStyle(STATION, this) ? this.style[STATION] = model : undefined;
-    if (DOM.typify(STATION).attribute || STATION.startsWith("data")) done = !this.setAttribute(station, model);
+    if (DOM.typify(STATION).attribute || STATION.startsWith("data")) {
+      if(typeof this[station] === "boolean") done = model ? !this.setAttribute(station, "") : !this.removeAttribute(station);
+      else done = !this.setAttribute(station, model);
+    }
     if (station === "id") DOM.addID(model, this);
     if (done !== undefined) return this;
   }
