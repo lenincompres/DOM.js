@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.18
+ * @version 1.2.19
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -628,7 +628,7 @@ Element.prototype.bind = function (...args) {
  * @param {name} object - key:value pairs of binders to be created
  * @param {value} string - initial value in the binder
  */
-Object.prototype.binderSet = function (name, value) {
+Element.prototype.binderSet = function (name, value) {
   if (typeof name == 'string') {
     const _name = '_' + name;
     const _ = new Binder(value);
