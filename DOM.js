@@ -1,7 +1,7 @@
 /**
  * Creates DOM structures from a JS object (structure)
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.19
+ * @version 1.2.20
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -46,6 +46,7 @@ Element.prototype.let = function (station, be = () => undefined, ...args) {
  */
 Element.prototype.set = function (model, ...args) {
   if ([null, undefined].includes(model)) return this;
+  if (model instanceof Binder) return model.bind(this, ...args);
   let contentType = DOM.typify(model.content);
   if (contentType.p5Element || contentType.element) {
     let elt = contentType.element ? contentType.element : contentType.p5Element.elt;
@@ -146,18 +147,13 @@ Element.prototype.set = function (model, ...args) {
     }, model.delay);
     return this;
   }
-  if (model._bonds) model = model.bind();
-  else {
-    if (model.with && typeof model.with !== "function") model.bind = model.with;
-    if (model.bind) {
-      if (Array.isArray(model.bind)) model = DOM.bind(model.bind, model.as);
-      else model = model.as ? model.bind.bind(model.as) : model.bind;
-    }
+  // binding in a model
+  if (model.with && typeof model.with !== "function") model.bind = model.with;
+  if (model.bind) {
+    if (Array.isArray(model.bind)) model = DOM.bind(model.bind, model.as);
+    else model = model.as ? model.bind.bind(model.as) : model.bind;
   }
   if (model.binders) {
-    if (DOM.tags.includes(STATION) && !DOM.attributes.includes(STATION)) return this.set({
-      content: model,
-    }, STATION);
     model.binders.forEach(binder => binder.bind(this, STATION, model.as, model.listener, ["attribute", "attributes"].includes(station) ? station : undefined));
     return this;
   }
@@ -194,7 +190,10 @@ Element.prototype.set = function (model, ...args) {
   }
   const handleProps = (fallBack = () => null) => {
     Object.entries(model).map(([key, value]) => {
-      if (value && value._bonds) value.bind(this, key, value.as, station);
+      if (value instanceof Binder) {
+        if(station === "class") value = value.as();
+        else return value.bind(this, key, value.as, station);
+      }
       if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.as, value.listener, station));
       fallBack(key, value);
     });
@@ -427,7 +426,7 @@ class Binder {
           }
         });
       }
-      if (bond.target._bonds) bond.target.setter = this; // knowing the setter prevents co-binder"s loop
+      if (bond.target instanceof Binder) bond.target.setter = this; // knowing the setter prevents co-binder"s loop
       bond.target[bond.station] = theirValue;
     }
   }
@@ -447,6 +446,8 @@ class Binder {
    * Creates a binding object inside a model to be set().
    */
   as(...args) {
+    //if(!this.bind) return;
+    if(args.length === 0) args.push(val => val);
     if (args.length === 1) return this.bind(args[0]);
     if (typeof args[0] === "function") {
       if (args.length === 2) return this.bind(...args);
@@ -628,7 +629,7 @@ Element.prototype.bind = function (...args) {
  * @param {name} object - key:value pairs of binders to be created
  * @param {value} string - initial value in the binder
  */
-Element.prototype.binderSet = function (name, value) {
+Object.prototype.binderSet = function (name, value) {
   if (typeof name == 'string') {
     const _name = '_' + name;
     const _ = new Binder(value);
@@ -1012,7 +1013,7 @@ class DOM {
         output.objects ? output.objects.push(item) : output.objects = [item];
         if (item.tagName) return output.elements ? output.elements.push(item) : output.elements = [item];
         if (item.elt) return output.p5Elements ? output.p5Elements.push(item) : output.p5Elements = [item];
-        if (item._bonds) return output.binders ? output.binders.push(item) : output.binders = [item];
+        if (item instanceof Binder) return output.binders ? output.binders.push(item) : output.binders = [item];
       }
     });
     output.isPrimitive = !!output.primitives;
