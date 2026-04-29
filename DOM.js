@@ -1,7 +1,13 @@
 /**
- * Creates DOM structures from a JS object (structure)
+ * BareDOM
+ * The DOM, unbound.
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.2.20
+ * @version 1.3.0
+ *
+ * Changes:
+ * - Replaced Object.prototype.binderSet with Binder.set
+ * - Introduced State class
+ * 
  * @repository https://github.com/lenincompres/DOM.js
  */
 
@@ -25,16 +31,6 @@
   output = [...this.querySelectorAll(station)];
   if (output.length) return output;
 }
-
-/**
- * Sets the value of an element's property.
- * @param {station} string - The station of an element.
- * @param {be} - the values to be set, or function to modify its given the currentvalue 
- */
-Element.prototype.let = function (station, be = () => undefined, ...args) {
-  return this.set(typeof be === "function" ? be(this.get(station)) : be, station, ...args);
-}
-
 
 /**
  * Sets the DOM structure, creating elemtns to append and their properties.
@@ -367,6 +363,15 @@ Element.prototype.set = function (model, ...args) {
   return elem;
 };
 
+/**
+ * Sets the value of an element's property.
+ * @param {station} string - The station of an element.
+ * @param {be} - the values to be set, or function to modify its given the currentvalue 
+ */
+Element.prototype.let = function (station, be = () => undefined, ...args) {
+  return this.set(typeof be === "function" ? be(this.get(station)) : be, station, ...args);
+}
+
 // Adds set method to P5 elements
 
 /**
@@ -561,13 +566,12 @@ class Binder {
   apply(val) {
     this.value = val;
   }
-  static set(...args) {
-    binderSet(...args);
-  }
+
   /**
    * Sets the value in the binder.
    * @param {val} - value to hold.
    */
+
   set value(val) {
     this.#value = val;
     this._bonds.forEach(bond => {
@@ -598,6 +602,56 @@ class Binder {
   static with(...args) {
     return DOM.bind(...args);
   }
+  
+  static set(target, name, value) {
+    // Allow Binder.set("count", 5) → defaults to window/globalThis
+    if (typeof target === "string") {
+      value = name;
+      name = target;
+      target = globalThis;
+    }
+
+    // Allow Binder.set(obj, { count: 5, name: "Lenin" })
+    if (typeof name === "object" && name !== null) {
+      for (const [key, val] of Object.entries(name)) {
+        Binder.set(target, key, val);
+      }
+      return target;
+    }
+
+    if (typeof name !== "string") {
+      throw new TypeError("Binder.set requires a property name or object map.");
+    }
+
+    const binderName = "_" + name;
+    const binder = new Binder(value);
+
+    Object.defineProperty(target, binderName, {
+      get() {
+        return binder;
+      },
+      set() {
+        console.error(
+          `Error: This (${binderName}) is a read-only binder and cannot be reassigned. Use: ${name}, or: ${binderName}.value to change its value.`
+        );
+      },
+      configurable: false,
+      enumerable: true,
+    });
+
+    Object.defineProperty(target, name, {
+      get() {
+        return this[binderName].value;
+      },
+      set(val) {
+        this[binderName].value = val;
+      },
+      configurable: true,
+      enumerable: true,
+    });
+
+    return target;
+  };
 }
 
 /**
@@ -624,90 +678,20 @@ Element.prototype.bind = function (...args) {
 }
 
 /**
- * Creates binders and it's setters and getters in an object.
- * @param {name} string - name of the binder
- * @param {name} object - key:value pairs of binders to be created
- * @param {value} string - initial value in the binder
- */
-Object.prototype.binderSet = function (name, value) {
-  if (typeof name == 'string') {
-    const _name = '_' + name;
-    const _ = new Binder(value);
-    Object.defineProperty(this, _name, {
-      get() {
-        return _;
-      },
-      set(val) {
-        console.error(`Error: This (${_name}) is a read-only binder and cannot be reassigned. Use: ${name}, or: ${_name}.value. to change its value.`);
-      },
-      configurable: false, // Prevents deletion of the property
-      enumerable: true,
-    });
-    Object.defineProperty(this, name, {
-      get() {
-        return this[_name].value;
-      },
-      set(val) {
-        this[_name].value = val;
-      },
-    });
-    return;
-  }
-  for (const [key, value] of Object.entries(name)) {
-    this.binderSet(key, value);
-  }
-}
-
-/**
  * Creates a objects that holds several binders.
  */
-class BinderSet {
-  /**
-   * Creates a BinderSet instance
-   */
-  constructor(...args) {
-    this.binderSet(...args);
+class State {
+  constructor(values = {}) {
+    Binder.set(this, values);
   }
-  /**
-   * Creates a binding object inside a model to be set() applying one of multiple binders in the set. Expected to be called followed by a "as()" call: myBinderSet.with("binderName").as(func).
-   * @param {args} array - binders to consides in the binding.
-   */
-  with(...args) {
-    if (Array.isArray(args[0])) return this.with(...args[0]).as(args[1]);
-    return DOM.bind(...BinderSet.validate(args));
-  }
-  /**
-   * Binds binders in the set to an element's property.
-   * @param {binders} array - binders to bind
-   * @param {target} element - element to bind
-   * @param {station} string - station (prop) to bind
-   * @param {listeners} number - any other binders of the same prop
-   * @param {values} array - value to select based on numeric result ot the bind
-   * @param {map} object - value to select based on key result ot the bind
-   * @param {as} function - logic to be applied to the value in the binder
-   */
-  bind(...args) {
-    let argsType = DOM.typify(...args);
-    if (argsType.element) return {
-      with: (...binders) => ({
-        as: func => argsType.element.set({
-          [argsType.string]: DOM.bind(BinderSet.validate(binders), func),
-        })
-      })
-    }
-    if (args[0].target) return args[0].target.set({
-      [args[0].station]: DOM.bind(BinderSet.validate(args[0].with), args[0].as),
-    });
-    if (args[0].with) return this.with(args[0].with, args[0].as);
-    return this.with(...args);
-  }
-  /**
-   * Given a string name returnd the appropriate binder in the set.
-   * @param {args} array - binders to be returned.
-   */
-  static validate(...args) {
-    if (Array.isArray(args[0])) return BinderSet.validate(...args[0]);
-    return args.map(a => typeof a === 'string' ? this["_" + a] : a);
+  with(...names) {
+    // allow arrays
+    if (Array.isArray(names[0])) names = names[0];
+    return DOM.bind(
+      ...names.map(name =>
+        typeof name === "string" ? this["_" + name] : name
+      )
+    );
   }
 }
 
