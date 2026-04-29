@@ -602,27 +602,60 @@ class Binder {
 
   static map = {};
 
+  static prepare(target) {
+    if (!target.with) {
+      Object.defineProperty(target, "with", {
+        value: (...args) => {
+          if (Array.isArray(args[0])) args = args[0];
+          const binders = args.map(arg => {
+            if (arg instanceof Binder) return arg;
+            if (typeof arg === "string") {
+              const binderName = "_" + arg;
+
+              if (!(binderName in target)) {
+                throw new Error(
+                  `Binder "${arg}" has not been set on this object.`
+                );
+              }
+              return target[binderName];
+            }
+            return arg;
+          });
+          return DOM.bind(...binders);
+        },
+        enumerable: false,
+        configurable: false,
+        writable: false,
+      });
+    }
+    return target;
+  }
+
   // Main setter
   static set(target, name, value) {
-    // Binder.set("count", 5)
-    // Binder.set({ count: 5 })
-    // both default to Binder.map
     if (typeof target === "string" || (typeof target === "object" && target !== null && name === undefined)) {
       value = name;
       name = target;
       target = Binder.map;
     }
-    // Binder.set(obj, { count: 5, name: "Lenin" })
+    Binder.prepare(target);
     if (typeof name === "object" && name !== null) {
       for (const [key, val] of Object.entries(name)) {
         Binder.set(target, key, val);
       }
       return target;
     }
+
     if (typeof name !== "string") {
       throw new TypeError("Binder.set requires a property name or object map.");
     }
     const binderName = "_" + name;
+    // If binder already exists, update it instead of recreating it
+    if (target[binderName] instanceof Binder) {
+      target[name] = value;
+      return target;
+    }
+
     const binder = new Binder(value);
     Object.defineProperty(target, binderName, {
       get() {
@@ -649,6 +682,13 @@ class Binder {
     return target;
   }
 
+  // Creates a fresh binder object and returns it
+  static let(name, value) {
+    const target = {};
+    if (typeof name === "object" && name !== null) return Binder.set(target, name);
+    return Binder.set(target, name, value);
+  }
+
   static get(name) {
     const binderName = "_" + name;
     if (!(binderName in Binder.map)) throw new Error(`Binder "${name}" has not been set. Use Binder.set("${name}", value) first.`);
@@ -661,12 +701,6 @@ class Binder {
     const binder = Binder.map[binderName];
     if (!args.length) return binder;
     return binder.bind(...args);
-  }
-
-  static let(name, value) {
-    const root = typeof window !== "undefined" ? window : globalThis;
-    if (typeof name === "object" && name !== null) return Binder.set(root, name);
-    return Binder.set(root, name, value);
   }
 
   static with(...args) {
