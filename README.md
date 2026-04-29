@@ -1,31 +1,75 @@
-# DOM.js
+# BareDOM  
+### The DOM, unbound.
+
+```js
+document.body.set({
+  h1: "Hello world"
+});
+```
+
+BareDOM is a minimalist JavaScript approach to building interfaces directly on the DOM—without frameworks, virtual DOMs, or template languages.
+
+It extends native DOM elements with a small set of methods to **declare structure, behavior, and bindings in plain JavaScript**.
+
+No JSX. No template languages. No framework components.
 
 by Lenin Comprés
 
 P5 editor examples by John Henry Thompson
 
-DOM.js is a lightweight JavaScript library for creating and manipulating DOM elements using JavaScript objects or JSON models. It simplifies DOM interactions, enabling dynamic and efficient web development. With DOM.js, you can effortlessly create elements, manage attributes and styles, bind properties, and handle events.
-
 Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
 
-Features:
-* Create and manage DOM elements using JavaScript objects or JSON.
-* Bind properties to elements for dynamic updates.
-* Extend HTML elements with custom methods.
-* Integrate seamlessly with libraries like P5.js.
+## Mental Model
 
-### Why use DOM.js?
-**Performance Benefits**
+BareDOM is built on four simple ideas:
 
-DOM.js is lightweight and focused on the front-end, making it ideal for smaller projects where the overhead of a larger library like React might not be necessary. By avoiding server-side dependencies and additional languages like JSX, DOM.js can result in faster load times and more direct control over the DOM. This makes it particularly effective for applications with simpler state management or minimal reactivity needs.
+- **Binder** → one reactive value  
+- **element.set()** → declares structure, behavior, and bindings  
+- **DOM.set()** → initializes the document (head + body)
 
-### DOM.js vs. React
+### Element extensions
 
-DOM.js offers a simpler, front-end-focused alternative to React, working with the virtual DOM and allowing component architecture by extending the HTMLElement class. Unlike React, DOM.js doesn't require server-side code, installations, or learning additional languages like JSX. It's ideal for lightweight applications where direct control over the DOM is needed, providing a more streamlined, vanilla JavaScript approach. React, on the other hand, excels in large-scale applications with complex state management and a vast ecosystem.
+- `element.get()` → read from the DOM  
+- `element.set()` → declare/update  
+- `element.let()` → create and return elements  
+- `element.css()` → scoped styling  
+- `element.bind()` → direct binding  
+
+BareDOM is not a framework. It is a thin layer over the DOM that makes it more expressive without adding abstraction.
+
+## Why BareDOM?
+
+BareDOM is for when you want:
+
+- Direct control over the DOM
+- No virtual DOM or diffing
+- No template languages (JSX, HTML-in-JS)
+- Minimal abstraction
+- A small, readable mental model
+
+Instead of learning a framework, you extend what already exists.
+
+BareDOM does not replace the DOM.  
+It makes it more expressive.
+
+## Example
+A reactive value:
+
+```js
+const _count = new Binder(0);
+
+document.body.set({
+  h1: _count.as(c => `Count: ${c}`),
+  button: {
+    text: "Increment",
+    onclick: () => _count.value++
+  }
+});
+```
 
 ## Setup
 
-The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in javaScript (_main.js_). We will not need CSS either.
+The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in JavaScript (_main.js_). We will not need CSS either.
 
 ```html
 <!DOCTYPE html>
@@ -41,24 +85,21 @@ The following is all the HTML we are going to need for the entirety of this docu
 
 For server-side usage, see [DOM.js-server](https://github.com/lenincompres/DOM.js-server)
 
-##  Basic Usage
+## DOM.set()
 
-Use the DOM.set method to create and append elements. You may use the tags as key properties and values as their innerHTML.
+`DOM.set()` initializes and renders the document.
 
-```javascript
+It:
+- renders elements
+- configures `<head>` and `<body>`
+- applies the BareDOM reset
+
+```js
 DOM.set({
-  header: {
-    h1: 'Page built with DOM.set',
-  },
+  title: "My App",
   main: {
-    article: {
-      h2: 'Basic DOM element',
-      p: '<b>This</b> is a paragraph.',
-    },
-  },
-  footer: {
-    p: 'Made with DOM.js',
-  },
+    h1: "Hello"
+  }
 });
 ```
 
@@ -272,7 +313,7 @@ document.head.set({
   charset: 'UTF-8',
   icon: 'icon.ico',
   keywords: 'website,multiple,keywords',
-  description: 'Website created with DOM.js',
+  description: 'Website created with BareDOM',
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -341,7 +382,7 @@ const myMain = DOM.let(
 const myFooter = DOM.let(
   'footer',
   {
-    p: 'Made with DOM.js',
+    p: 'Made with BareDOM',
   },
 );
 
@@ -350,7 +391,7 @@ DOM.set({
   charset: 'UTF-8',
   icon: 'icon.ico',
   keywords: 'website,multiple,keywords',
-  description: 'Website created with DOM.set',
+  description: 'Website created with BareDOM',
   header: myHeader,
   main: myMain,
   footer: myFooter,
@@ -439,7 +480,7 @@ DOM.set([
 ```
 ## Usage Examples and Component Architecture
 
-DOM.js allows you to build modular, reusable components by expanding the HTMLElement class. Here's an example:
+BareDOM allows you to build modular, reusable components by expanding the HTMLElement class. Here's an example:
 
 ```javascript
 class CustomElement extends HTMLElement {
@@ -463,11 +504,10 @@ class CustomElement extends HTMLElement {
 customElements.define('custom-element', CustomElement);
 ```
 
-This allows you to use **<custom-button></custom-button>** in your HTML. DOM.js enables simple, modular component design that can be extended further with [Binds](https://github.com/lenincompres/DOM.js/blob/main/README.md#extending-the-htmlelement-class) for more advanced functionality.
-
+This allows you to use **<custom-button></custom-button>** in your HTML. BareDOM enables simple, modular structures by extending native elements.
 ---
 
-## Styling Elements with DOM.js
+## Styling Elements with BareDOM
 
 ### Style Attribute
 
@@ -545,7 +585,7 @@ DOM.set({
 });
 ```
 
-The _style_, _attribute_, and _content_ properties are useful for organizing the model structure, and to clarify what kind of property you are trying to set. If DOM.js is not setting a value in the right property you intended to (style, attributes, events, etc.), you should put this key/value pair inside one of these wrapping or organizing properties.
+The _style_, _attribute_, and _content_ properties are useful for organizing the model structure, and to clarify what kind of property you are trying to set. If BareDOM is not setting a value in the right property you intended to (style, attributes, events, etc.), you should put this key/value pair inside one of these wrapping or organizing properties.
 Yet, **DOM.set** interprets structural properties to match attributes, styles, event handlers and element tags.
 
 ### Style Element
@@ -801,7 +841,7 @@ Note that if the value is a boolean, _false_ would be position 0, and _true_ is 
 
 ## Extending the HTMLElement class
 
-To create custom HTML elements using the DOM.js approach, we can extend Javascript's HTMLElement class.
+To create custom HTML elements using the BareDOM approach, we can extend Javascript's HTMLElement class.
 
 ```javascript
 // declares the class
@@ -859,9 +899,13 @@ DOM.set({
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
 
-### BinderSet: create binders and their setters and getters with one method
+### Binder.set(): create binders and their setters and getters with one method
 
-The method _binderSet_ creates binders, plus the setters and betters for them in my element objects. Same as in the previous example, the names for the binders will be preceded by an underscore (_) once created, while the properties that get and set their values will be accessible with the plain names (or keys) given to the method.
+The method `Binder.set` creates binders, plus the setters and getters for them in your element objects. The names for the binders will be preceded by an underscore (_) once created, while the properties that get and set their values are accessible with the plain names (or keys) given to the method.
+
+This allows you to treat binders like regular properties, while keeping their reactive behavior.
+
+Attach binders to an object or class:
 
 ```javascript
 // declares the class
@@ -869,7 +913,7 @@ class MyElement extends HTMLElement {
   constructor() {
     super();
 
-    this.binderSet({
+    Binder.set(this, {
       active: false,
       otherProp: "initial other value",
     });
@@ -880,7 +924,7 @@ class MyElement extends HTMLElement {
       p: "This button toggles the active state of the element",
       button: {
         text: this._active.as('activate', 'deactivate'),
-        onclick: (e) => this.active = !this.active;,
+        onclick: (e) => this.active = !this.active,
       },
     });
   }
@@ -889,9 +933,12 @@ customElements.define('my-element', MyElement);
 ```
 
 NOTE:
-The method _binderSet_ can also create binders individually using _this.binderSet(name, initVal, ...bindArguments)_, like so:
-```javascript
-this.binderSet("myProp", 0, val => console.log(`myProp was changed to ${val}`));
+`Binder.set` can also create binders globally:
+
+```js
+Binder.set(window, {
+  myProp: 0
+});
 ```
 
 ## DOM.get() and element.get()
@@ -918,7 +965,9 @@ myElement.get('.nice'); // similar to querySelectorAll, but returns an array of 
 
 ## More DOM.let() and element.let()
 
-This method allows you to set the value of an elements property. And it allows you to set this value based on the current value of the property.
+DOM.let() creates elements without attaching them to the DOM.
+
+This method allows you to set the value of an element's property. And it allows you to set this value based on the current value of the property.
 
 ```javascript
 document.body.let('backgroundColor', 'red');
@@ -954,18 +1003,18 @@ myElement.let(
 
 ## Server-Side Usage
 
-If you want to use DOM.js on the server (Node.js environment), check out the dedicated repository:
+If you want to use BareDOM on the server (Node.js environment), check out the dedicated repository:
 
 [DOM.js Server-Side](https://github.com/lenincompres/DOM.js-server)
 
 It includes:
 - `server.js` to serve `.dom.js` and `.dom.json` pages
 - `build.js` to generate HTML from source files
-- Instructions and dependencies for running DOM.js in a Node.js environment
+- Instructions and dependencies for running BareDOM in a Node.js environment
 
 ---
 
-## DOM.js and P5.js
+## BareDOM and P5.js
 
 Yes, DOM.set works for P5.js elements. If you are not familiar with P5.js, please [remedy that](https://p5js.org/).
 
@@ -1003,3 +1052,7 @@ MIT License
 
 
 ## Have fun!
+
+BareDOM is not a framework.
+
+It is the DOM, made usable.
