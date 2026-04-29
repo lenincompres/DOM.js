@@ -1,5 +1,5 @@
 # BareDOM  
-### The DOM, unbound.
+## The DOM, unbound.
 
 ```js
 document.body.set({
@@ -21,7 +21,7 @@ Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/W
 
 ## Mental Model
 
-BareDOM is built on four simple ideas:
+BareDOM is built on three simple ideas:
 
 - **Binder** → one reactive value  
 - **element.set()** → declares structure, behavior, and bindings  
