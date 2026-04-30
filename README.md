@@ -975,7 +975,7 @@ myElement.get('article'); // returns the array of article tag elements within so
 myElement.get('.nice'); // similar to querySelectorAll, but returns an array of elements
 ```
 
-## More DOM.let() and element.let()
+## DOM.let() and element.let()
 
 DOM.let() creates elements without attaching them to the DOM.
 
