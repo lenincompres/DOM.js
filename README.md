@@ -9,7 +9,8 @@ BareDOM is a minimalist JavaScript approach to building interfaces directly on t
 
 It extends native DOM elements with a small set of methods to **declare structure, behavior, and bindings in plain JavaScript**.
 
-No JSX. No template languages. No framework components.
+No JSX. No template languages. No framework components. No code switching.  
+No separate HTML or CSS—unless you want them.
 
 ## Mental Model
 
