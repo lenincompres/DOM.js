@@ -295,13 +295,11 @@ myElement.set({
 DOM.let() creates elements without attaching them to the DOM.
 
 ```javascript
-const myParagraph = DOM.let('p',
-  {
-    padding: '0.5em 2em',
-    backgroundColor: 'lavender',
-    text: 'Some text',
-  },
-);
+const myParagraph = DOM.let('p', {
+  padding: '0.5em 2em',
+  backgroundColor: 'lavender',
+  text: 'Some text',
+});
 
 document.body.set({
   header: {
@@ -375,26 +373,20 @@ Note how **set** recognizes common head information (icon, charset, keywords, de
 In fact, the **DOM.set** method recognizes these as well, and adds them on the _document.head_ instead of the _body_.
 
 ```javascript
-const myHeader = DOM.let('header',
-  {
-    h1: 'Page built with DOM.set',
-  },
-);
+const myHeader = DOM.let('header', {
+  h1: 'Page built with DOM.set',
+});
 
-const myMain = DOM.let('main',
-  {
-    article: {
-      h2: 'Basic DOM element',
-      p: '<b>This</b> is a paragraph.',
-    },
+const myMain = DOM.let('main', {
+  article: {
+    h2: 'Basic DOM element',
+    p: '<b>This</b> is a paragraph.',
   },
-);
+});
 
-const myFooter = DOM.let('footer',
-  {
-    p: 'Made with BareDOM',
-  },
-);
+const myFooter = DOM.let('footer', {
+  p: 'Made with BareDOM',
+});
 
 DOM.set({
   title: 'Title of the webpage',
@@ -525,12 +517,10 @@ This allows you to use **<custom-button></custom-button>** in your HTML. BareDOM
 Assign a string to the _style_ property to update the inline style of the element—replacing any previous value.
 
 ```javascript
-const myMain = DOM.let('main',
-  {
-    style: 'margin: 20px; font-family: Tahoma; background-color: gray;',
-    content: 'The style is in the style attribute of the main element.',
-  },
-);
+const myMain = DOM.let('main', {
+  style: 'margin: 20px; font-family: Tahoma; background-color: gray;',
+  content: 'The style is in the style attribute of the main element.',
+});
 
 DOM.set({
   header: {
@@ -574,15 +564,13 @@ This is equivalent to using the [style property of DOM elements](https://www.w3s
 Styles may be assigned without an encompassing _style_ property. The previous code could be written as follows.
 
 ```javascript
-const myMain = DOM.let('main',
-  {
-    margin: '20px',
-    fontFamily: 'Tahoma',
-    backgroundColor: 'gray',
-    h1: 'Styled Main Element',
-    p: 'This manages the style values individually.',
-  },
-);
+const myMain = DOM.let('main', {
+  margin: '20px',
+  fontFamily: 'Tahoma',
+  backgroundColor: 'gray',
+  h1: 'Styled Main Element',
+  p: 'This manages the style values individually.',
+});
 
 document.body.set({
   header: {
@@ -601,15 +589,13 @@ Yet, **DOM.set** interprets structural properties to match attributes, styles, e
 If _style_ has a _content_ property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
 
 ```javascript
-const myMain = DOM.let('main',
-  {
-    style: {
-      lang: 'scss',
-      content: 'main { margin: 20px; font-family: Tahoma; color: gray; }',
-    },
-    content: 'This style is applied to all MAIN elements in the page.',
+const myMain = DOM.let('main', {
+  style: {
+    lang: 'scss',
+    content: 'main { margin: 20px; font-family: Tahoma; color: gray; }',
   },
-);
+  content: 'This style is applied to all MAIN elements in the page.',
+});
 
 document.body.set({
   header: {
@@ -627,35 +613,33 @@ This method is discouraged, since it will affect all elements in the DOM not jus
 Use _css:_ in your model structure to create styling rules that apply **only** to the current element and its children.
 
 ```javascript
-const myMain = DOM.let('main',
-  {
-    css: {
-      margin: '20px',
-      fontFamily: 'Tahoma',
-      backgroundColor: 'gray',
-      nav: {
-        a: {
-          backgroundColor: 'silver',
-          hover: {
-            backgroundColor: 'gold',
-          },
+const myMain = DOM.let('main', {
+  css: {
+    margin: '20px',
+    fontFamily: 'Tahoma',
+    backgroundColor: 'gray',
+    nav: {
+      a: {
+        backgroundColor: 'silver',
+        hover: {
+          backgroundColor: 'gold',
         },
       },
     },
-    nav: {
-      a: [
-        {
-          href: 'home.html',
-          content: 'HOME',
-        },
-        {
-          href: 'gallery.html',
-          content: 'GALLERY',
-        },
-      ],
-    },
   },
-);
+  nav: {
+    a: [
+      {
+        href: 'home.html',
+        content: 'HOME',
+      },
+      {
+        href: 'gallery.html',
+        content: 'GALLERY',
+      },
+    ],
+  },
+});
 
 DOM.set({
   header: {
@@ -720,20 +704,18 @@ When the _value_ property of this object changes, it automatically updates all e
 ```javascript
 const _myBinder = new Binder('Default value');
 
-const myMain = DOM.let('main',
-  {
-    input: {
-      value: _myBinder,
-    },
-    p: {
-      text: _myBinder,
-    },
-    button: {
-      text: 'Go',
-      onclick: (event) => (_myBinder.value = 'Go was clicked.'),
-    },
+const myMain = DOM.let('main', {
+  input: {
+    value: _myBinder,
   },
-);
+  p: {
+    text: _myBinder,
+  },
+  button: {
+    text: 'Go',
+    onclick: (event) => (_myBinder.value = 'Go was clicked.'),
+  },
+});
 
 DOM.set({
   header: {
@@ -755,29 +737,27 @@ Using the **.as()** method of the binders, you may provide a function that retur
 ```javascript
 const _fieldEnabled = new Binder(false);
 
-const myMain = DOM.let('main',
-  {
-    div: {
-      style: {
-        background: _fieldEnabled.as({
-          true: 'green',
-          false: 'gray',
-        }),
+const myMain = DOM.let('main', {
+  div: {
+    style: {
+      background: _fieldEnabled.as({
+        true: 'green',
+        false: 'gray',
+      }),
+    },
+    input: {
+      enabled: _fieldEnabled,
+      value: _fieldEnabled.as((value) => `The field is: ${value}.`),
+    },
+    button: {
+      class: {
+        enablebutton: _fieldEnabled, // classes passed as object keys can be bound as well.
       },
-      input: {
-        enabled: _fieldEnabled,
-        value: _fieldEnabled.as((value) => `The field is: ${value}.`),
-      },
-      button: {
-        class: {
-          enablebutton: _fieldEnabled, // classes passed as object keys can be bound as well.
-        },
-        text: 'toggle',
-        onclick: () => (_fieldEnabled.value = !_fieldEnabled.value),
-      },
+      text: 'toggle',
+      onclick: () => (_fieldEnabled.value = !_fieldEnabled.value),
     },
   },
-);
+});
 
 DOM.set({
   header: {
@@ -982,16 +962,14 @@ myElement.let('color', cVal => cVal === 'red' ? 'blue' : 'green');  // It will a
 When using the *DOM.let* and a tag name to create new elements, you add a boolean value as a third parameter. You may preppend (*true*) or not-append (*false*) the new element.
 
 ```
-let myElement = DOM.let('section',
-  {
+let myElement = DOM.let('section', {
     background: 'silver',
     h1: 'Heading of a new section',
   },
   false,
 );
 
-myElement.let('p',
-  {
+myElement.let('p', {
     margin: '2em',
     text: 'This is a new paragraph.',
   },
