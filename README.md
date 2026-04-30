@@ -29,7 +29,6 @@ BareDOM is built on three simple ideas:
 
 ### Element extensions
 
-- `element.get()` → read from the DOM  
 - `element.set()` → declare/update  
 - `element.let()` → create and return elements  
 - `element.css()` → scoped styling  
@@ -98,7 +97,8 @@ It:
 DOM.set({
   title: "My App",
   main: {
-    h1: "Hello"
+    h1: "Hello World",
+    p: "Lorem ipsum…"
   }
 });
 ```
@@ -191,7 +191,8 @@ const model = {
     }
   ]
 };
-DOM.set(model);
+
+document.body.set(model);
 ```
 
 </details>
@@ -200,10 +201,10 @@ DOM.set(model);
 
 ### Properties: Attributes, Events and listeners
 
-DOM.set recognizes **properties** in the model structure, such as attributes or event handlers. You may use a unique name that will become the element's id, and indicate the tag as a key property. Or, use a selector style name, which may even include classes separated by periods.
+The `set` method recognizes **properties** in the model structure, such as attributes or event handlers. You may use a unique name that will become the element's id, and indicate the tag as a key property. Or, use a selector style name, which may even include classes separated by periods.
 
 ```javascript
-DOM.set({
+document.body.set({
   input: {
     id: 'myInput',
     placeholder: 'Type value here',
@@ -290,7 +291,7 @@ const myParagraph = DOM.let(
   },
 );
 
-DOM.set({
+document.body.set({
   header: {
     h1: 'loading an element',
     p: 'The element was create before the DOM is set.',
@@ -403,7 +404,7 @@ DOM.set({
 Use arrays to create multiple consecutive elements of the same kind.
 
 ```javascript
-DOM.set({
+myElement.set({
   ul: {
     li: ['First item', 'Second item', 'A third one, for good measure'],
   },
@@ -413,7 +414,7 @@ DOM.set({
 Declaring the array inside a _content_ property allows you to set other properties for all the elements in the array.
 
 ```javascript
-DOM.set({
+myElement.set({
   ul: {
     li: {
       id: 'listedThings',
@@ -436,7 +437,7 @@ If you give several elements the same _id_, DOM.set will group them in one globa
 Arrays can create consecutive elements of different types; just indicate their _tag_ as a property.
 
 ```javascript
-DOM.set({
+document.body.set({
   main: {
     elements: [
       {
@@ -462,7 +463,7 @@ You can name these elements anything—in this case, they were named _elements_�
 Similarly, if you give DOM.set an array, it assumes it is an array of elements, and will create them as *div*s, or any tag property they possess.
 
 ```javascript
-DOM.set([
+document.body.set([
   {
     tag: 'p',
     text: 'this one is a paragraph.',
@@ -552,7 +553,7 @@ const myMain = DOM.let(
   },
 );
 
-DOM.set({
+document.body.set({
   header: {
     h1: 'Example of styling',
   },
@@ -577,7 +578,7 @@ const myMain = DOM.let(
   },
 );
 
-DOM.set({
+document.body.set({
   header: {
     h1: 'Example of styling',
   },
@@ -605,7 +606,7 @@ const myMain = DOM.let(
   },
 );
 
-DOM.set({
+document.body.set({
   header: {
     h1: 'Example of styling',
   },
