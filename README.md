@@ -1,10 +1,8 @@
 # BareDOM `{DOM}`
-## The DOM, unbound.
+The DOM, unbound.
 
 ```js
-document.body.set({
-  h1: "Hello world"
-});
+document.body.set({ h1: "Hello world" });
 ```
 
 BareDOM is a minimalist JavaScript approach to building interfaces directly on the DOM—without frameworks, virtual DOMs, or template languages.
@@ -13,15 +11,9 @@ It extends native DOM elements with a small set of methods to **declare structur
 
 No JSX. No template languages. No framework components.
 
-by Lenin Comprés
-
-P5 editor examples by John Henry Thompson
-
-Click here to learn [what is the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
-
 ## Mental Model
 
-BareDOM is built on three simple ideas:
+BareDOM is built on three ideas:
 
 - **Binder** → one reactive value  
 - **element.set()** → declares structure, behavior, and bindings  
@@ -29,7 +21,7 @@ BareDOM is built on three simple ideas:
 
 ### Element extensions
 
-- `element.set()` → declare/update  
+- `element.get()` → read from the DOM  
 - `element.let()` → create and return elements  
 - `element.css()` → scoped styling  
 - `element.bind()` → direct binding  
@@ -52,6 +44,7 @@ BareDOM does not replace the DOM.
 It makes it more expressive.
 
 ## Example
+
 A reactive value:
 
 ```js
@@ -65,6 +58,14 @@ document.body.set({
   }
 });
 ```
+
+---
+
+by Lenin Comprés
+
+P5 editor examples by John Henry Thompson
+
+---
 
 ## Setup
 
@@ -91,7 +92,7 @@ For server-side usage, see [DOM.js-server](https://github.com/lenincompres/DOM.j
 It:
 - renders elements
 - configures `<head>` and `<body>`
-- applies the BareDOM reset
+- applies the BareDOM CSS reset
 
 ```js
 DOM.set({
@@ -103,14 +104,23 @@ DOM.set({
 });
 ```
 
-You may also invoke the **set** method directly on an element to model it.
+DOM.set() is intended as a document-level initializer.
+
+You may also invoke the `set` method directly on an element to model it:
 
 ```javascript
 someElement.set({
   h3: 'Hello world',
-  p: 'This is a <b>paragraph</b>.',
+  p: 'Lorem  ipsum…',
+});
+
+document.body.set({
+  main: someElement,
+  footer: 'This is Baredom.',
 });
 ```
+
+In this case, no CSS reset is applied.
 
 The new **h1** and **p** elements will be appended to the element.
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
@@ -118,7 +128,7 @@ The new **h1** and **p** elements will be appended to the element.
 ---
 
 <details>
-  <summary>Other ways to invoke DOM.set</summary>
+  <summary>Other ways to use DOM.set</summary>
   
   You may provide DOM.set with an element where the model structure should be created.
 
