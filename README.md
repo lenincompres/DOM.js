@@ -1,4 +1,4 @@
-# BareDOM  
+# BareDOM `{DOM}`
 ## The DOM, unbound.
 
 ```js
