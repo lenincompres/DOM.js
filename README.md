@@ -52,7 +52,9 @@ A reactive value:
 const _count = new Binder(0);
 
 document.body.set({
-  h1: _count.as(c => `Count: ${c}`),
+  h1: {
+    text: _count.as(c => `Count: ${c}`),
+  },
   button: {
     text: "Increment",
     onclick: () => _count.value++
