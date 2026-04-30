@@ -917,12 +917,22 @@ customElements.define('my-element', MyElement);
 ```
 
 NOTE:
-`Binder.set` can also create binders globally:
+`Binder.set` can also create binders with their setters and getters globally or in any object:
 
 ```js
 Binder.set(window, {
   myProp: 0
 });
+
+myProp++;
+
+cosnt state = {};
+
+Binder.set(state, {
+  myProp: false
+});
+
+state.myProp = false;
 ```
 
 ## DOM.get() and element.get()
