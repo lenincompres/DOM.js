@@ -290,7 +290,7 @@ myElement.set({
 
 ### Creating an element
 
-DOM.let() returns a new element without appending it to the DOM. Just provide a tag as the first parameter.
+DOM.let() creates elements without attaching them to the DOM.
 
 ```javascript
 const myParagraph = DOM.let(
@@ -971,14 +971,12 @@ myElement.get(); // returns the value (in the case of inputs) or the innerHTML
 
 myElement.get('text'); // returns the innerText
 
-myElement.get('article'); // returns the array of article tag elements within someElement's scope
+myElement.get('article'); // returns the array of article tag elements within myElement's scope
 
 myElement.get('.nice'); // similar to querySelectorAll, but returns an array of elements
 ```
 
-## DOM.let() and element.let()
-
-DOM.let() creates elements without attaching them to the DOM.
+## More uses of DOM.let() and element.let()
 
 This method allows you to set the value of an element's property. And it allows you to set this value based on the current value of the property.
 
