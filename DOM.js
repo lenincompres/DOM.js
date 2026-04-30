@@ -1,8 +1,8 @@
 /**
- * BareDOM
+ * BareDOM {DOM}
  * The DOM, unbound.
  * @author Lenin Compres <lenincompres@gmail.com>
- * @version 1.3.0
+ * @version 1.3.1
  *
  * Changes:
  * - Replaced Object.prototype.binderSet with Binder.set
@@ -15,7 +15,7 @@
  * Gets the value of an element's property.
  * @param {station} string - The style|attribute|(element)tag|innerText/innetHTML|on(event)|name of an element.
  */
- Element.prototype.get = function (station) {
+Element.prototype.get = function (station) {
   let output;
   if (!station && this.tagName.toLocaleLowerCase() === "input") output = this.value;
   else if (!station || ["content", "inner", "innerhtml", "html"].includes(station)) output = this.innerHTML;
@@ -104,10 +104,10 @@ Element.prototype.set = function (model, ...args) {
   }
   // deletes related transition/animation intervals
   if (IS_CONTENT && argsType.boolean === true) {
-    try{
+    try {
       while (this.firstChild) this.removeChild(parentElement.firstChild);
       this.innerHTML = "";
-    } catch(e) {}
+    } catch (e) {}
   }
   if (argsType.boolean === true && this.intervals && this.intervals[STATION]) {
     clearInterval(this.intervals[station]);
@@ -138,7 +138,7 @@ Element.prototype.set = function (model, ...args) {
         if (i === 0 && !isNaN(model.repeat)) model.repeat -= 1;
       }, model.interval, model.while, STATION, () => {
         this.set(model.loop[model.loop.length - 1], STATION);
-        if(model.callBack) model.callBack();
+        if (model.callBack) model.callBack();
       });
     }, model.delay);
     return this;
@@ -187,7 +187,7 @@ Element.prototype.set = function (model, ...args) {
   const handleProps = (fallBack = () => null) => {
     Object.entries(model).map(([key, value]) => {
       if (value instanceof Binder) {
-        if(station === "class") value = value.as();
+        if (station === "class") value = value.as();
         else return value.bind(this, key, value.as, station);
       }
       if (value && value.binders) return value.binders.forEach(binder => binder.bind(this, key, value.as, value.listener, station));
@@ -329,7 +329,7 @@ Element.prototype.set = function (model, ...args) {
     }
     let done = DOM.isStyle(STATION, this) ? this.style[STATION] = model : undefined;
     if (DOM.typify(STATION).attribute || STATION.startsWith("aria") || STATION.startsWith("data")) {
-      if(typeof this[station] === "boolean") done = model ? !this.setAttribute(station, "") : !this.removeAttribute(station);
+      if (typeof this[station] === "boolean") done = model ? !this.setAttribute(station, "") : !this.removeAttribute(station);
       else done = !this.setAttribute(DOM.unCamelize(STATION), model);
     }
     if (station === "id") DOM.addID(model, this);
@@ -344,7 +344,7 @@ Element.prototype.set = function (model, ...args) {
   elt = p5Elem ? elem.elt : elem;
   if (cls.length) elt.classList.add(...cls);
   if (id) elt.setAttribute("id", id);
-  if(argsType.boolean !== false) argsType.boolean === true ? this.prepend(elt) : this.append(elt);
+  if (argsType.boolean !== false) argsType.boolean === true ? this.prepend(elt) : this.append(elt);
   ["ready", "onready", "done", "ondone"].forEach(f => {
     if (!model[f]) return this;
     model[f](elem);
@@ -368,7 +368,15 @@ Element.prototype.set = function (model, ...args) {
  * @param {station} string - The station of an element.
  * @param {be} - the values to be set, or function to modify its given the currentvalue 
  */
-Element.prototype.let = function (station, be = () => undefined, ...args) {
+Element.prototype.let = function (station, be, ...args) {
+  if (be === undefined) {
+    be = station;
+    station = "section";
+    if (!!be.tag) {
+      station = be.tag;
+      delete be.tag;
+    }
+  }
   return this.set(typeof be === "function" ? be(this.get(station)) : be, station, ...args);
 }
 
@@ -452,7 +460,7 @@ class Binder {
    */
   as(...args) {
     //if(!this.bind) return;
-    if(args.length === 0) args.push(val => val);
+    if (args.length === 0) args.push(val => val);
     if (args.length === 1) return this.bind(args[0]);
     if (typeof args[0] === "function") {
       if (args.length === 2) return this.bind(...args);
@@ -504,7 +512,7 @@ class Binder {
     let as = argsType.function ? argsType.function : val => val;
     if (values && values.length) as = this.getAs(values, as);
     else if (map && map !== target) as = this.getAs(map, as);
-    if (!target) return DOM.bind([this], as,  this.onChange(as)); // binding in a model
+    if (!target) return DOM.bind([this], as, this.onChange(as)); // binding in a model
     if (listener) this.removeListener(listener); // if in a model, removes the listener
     let bond = {
       binder: this,
@@ -602,60 +610,27 @@ class Binder {
 
   static map = {};
 
-  static prepare(target) {
-    if (!target.with) {
-      Object.defineProperty(target, "with", {
-        value: (...args) => {
-          if (Array.isArray(args[0])) args = args[0];
-          const binders = args.map(arg => {
-            if (arg instanceof Binder) return arg;
-            if (typeof arg === "string") {
-              const binderName = "_" + arg;
-
-              if (!(binderName in target)) {
-                throw new Error(
-                  `Binder "${arg}" has not been set on this object.`
-                );
-              }
-              return target[binderName];
-            }
-            return arg;
-          });
-          return DOM.bind(...binders);
-        },
-        enumerable: false,
-        configurable: false,
-        writable: false,
-      });
-    }
-    return target;
-  }
-
   // Main setter
   static set(target, name, value) {
+    // Binder.set("count", 5)
+    // Binder.set({ count: 5 })
+    // both default to Binder.map
     if (typeof target === "string" || (typeof target === "object" && target !== null && name === undefined)) {
       value = name;
       name = target;
       target = Binder.map;
     }
-    Binder.prepare(target);
+    // Binder.set(obj, { count: 5, name: "Lenin" })
     if (typeof name === "object" && name !== null) {
       for (const [key, val] of Object.entries(name)) {
         Binder.set(target, key, val);
       }
       return target;
     }
-
     if (typeof name !== "string") {
       throw new TypeError("Binder.set requires a property name or object map.");
     }
     const binderName = "_" + name;
-    // If binder already exists, update it instead of recreating it
-    if (target[binderName] instanceof Binder) {
-      target[name] = value;
-      return target;
-    }
-
     const binder = new Binder(value);
     Object.defineProperty(target, binderName, {
       get() {
@@ -682,13 +657,6 @@ class Binder {
     return target;
   }
 
-  // Creates a fresh binder object and returns it
-  static let(name, value) {
-    const target = {};
-    if (typeof name === "object" && name !== null) return Binder.set(target, name);
-    return Binder.set(target, name, value);
-  }
-
   static get(name) {
     const binderName = "_" + name;
     if (!(binderName in Binder.map)) throw new Error(`Binder "${name}" has not been set. Use Binder.set("${name}", value) first.`);
@@ -703,6 +671,13 @@ class Binder {
     return binder.bind(...args);
   }
 
+  static
+  let (name, value) {
+    const root = typeof window !== "undefined" ? window : globalThis;
+    if (typeof name === "object" && name !== null) return Binder.set(root, name);
+    return Binder.set(root, name, value);
+  }
+
   static with(...args) {
     const binders = args.map(arg => {
       if (typeof arg !== "string") return arg;
@@ -712,7 +687,7 @@ class Binder {
     });
     return DOM.bind(...args);
   }
-  
+
 }
 
 /**
@@ -754,7 +729,8 @@ class DOM {
    * @param {station} station - propety to get.
    * @param {be} func - logic to be applied based on the current value of the station.
    */
-  static let (station, ...args) {
+  static
+  let (station, ...args) {
     return DOM.headTags.includes(station.toLowerCase()) ? document.head.let(station, ...args) : document.body.let(station, ...args);
   }
   /**
@@ -777,7 +753,7 @@ class DOM {
     }, true);
     // checks if the model is meant for an element
     let argsType = DOM.typify(...args);
-    if(Array.isArray(model) && !argsType.string) return DOM.set(model, 'section', ...args);
+    if (Array.isArray(model) && !argsType.string) return DOM.set(model, 'section', ...args);
     let elt = argsType.element ? argsType.element : argsType.p5Element;
     if (elt) return elt.set(model, ...args);
     // hidden models with css for a split second 
@@ -1166,7 +1142,7 @@ class DOM {
       borderCollapse: "collapse",
       borderSpacing: 0,
     },
-    h: { 
+    h: {
       fontFamily: "Georgia, serif",
       fontWeight: "bold",
       fontSize: "1em",
