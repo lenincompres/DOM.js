@@ -838,7 +838,7 @@ Note that if the value is a boolean, _false_ would be position 0, and _true_ is 
 
 ---
 
-## Extending the HTMLElement class
+### Extending the HTMLElement Class
 
 To create custom HTML elements using the BareDOM approach, we can extend Javascript's HTMLElement class.
 
@@ -950,7 +950,9 @@ Binder.set(state, {
 state.myProp = false;
 ```
 
-## DOM.get() and element.get()
+## More BareDOM Uses and Method
+
+### DOM.get() and element.get()
 
 This method returns an element's property value based on a _string_ provided. It matches it to an attribute, style property, element tag (in the scope), or query selector. If no _string_ is provided, it returns the value property or the innerHTML.
 
@@ -972,7 +974,7 @@ myElement.get('article'); // returns the array of article tag elements within my
 myElement.get('.nice'); // similar to querySelectorAll, but returns an array of elements
 ```
 
-## More uses of DOM.let() and element.let()
+### More uses of DOM.let() and element.let()
 
 This method allows you to set the value of an element's property. And it allows you to set this value based on the current value of the property.
 
@@ -1004,7 +1006,7 @@ myElement.let('p', {
 
 ---
 
-## Server-Side Usage
+### Server-Side Usage
 
 If you want to use BareDOM on the server (Node.js environment), check out the dedicated repository:
 
@@ -1017,7 +1019,7 @@ It includes:
 
 ---
 
-## BareDOM and P5.js
+### BareDOM and P5.js
 
 Yes, DOM.set works for P5.js elements. If you are not familiar with P5.js, please [remedy that](https://p5js.org/).
 
