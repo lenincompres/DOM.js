@@ -94,7 +94,7 @@ The following is all the HTML we are going to need for the entirety of this docu
 
 For server-side usage, see [BareDOM-server](https://github.com/lenincompres/DOM.js-server)
 
-## DOM.set()
+## Setting the DOM
 
 `DOM.set()` initializes and renders the document.
 
