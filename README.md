@@ -514,7 +514,7 @@ customElements.define('custom-element', CustomElement);
 
 This allows you to use **<custom-button></custom-button>** in your HTML. BareDOM enables simple, modular structures by extending native elements.
 
-Enhance your custom Elements with BareDOM by [binding their properties]().
+Enhance your custom Elements with BareDOM by [binding their properties](#extending-the-htmlelement-class).
 
 ---
 
