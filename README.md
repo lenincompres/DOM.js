@@ -90,7 +90,7 @@ document.body.set({
 
 ## Setting the DOM
 
-DOM.set() initializes and renders the document.
+`DOM.set()` initializes and renders the document.
 
 It:
 - renders elements
@@ -107,7 +107,7 @@ DOM.set({
 });
 ```
 
-DOM.set() is intended as a document-level initializer.
+`DOM.set()` is intended as a document-level initializer.
 
 You may also invoke the `set` method directly on an element to model it:
 
@@ -133,7 +133,7 @@ The new **h3** and **p** elements will be appended to the element.
 <details>
   <summary>Other ways to use DOM.set</summary>
   
-  You may provide DOM.set with an element where the model structure should be created.
+  You may provide `DOM.set()` with an element where the model structure should be created.
 
 ```javascript
 DOM.set(
@@ -155,7 +155,7 @@ DOM.set({
 }, 'main', someElement);
 ```
 
-DOM.set is agnostic about the order of the arguments that follow the first (model structure):
+`DOM.set()` is agnostic about the order of the arguments that follow the first (model structure):
 
 - An **element** is where the model should be created instead of _document.body_.
 - A **string** is a tag for a new element to be created.
@@ -185,7 +185,7 @@ let mainImage = DOM.set(
 );
 ```
 
-For DOM.set, a boolean argument with a *false* value indicates that this element should not be appended to the document body. A value of *true* would mean that the element (and/or model) will replace all the current content in the DOM (or in the element invoking the **set** method).
+For `DOM.set()`, a boolean argument with a *false* value indicates that this element should not be appended to the document body. A value of *true* would mean that the element (and/or model) will replace all the current content in the DOM (or in the element invoking the **set** method).
 
 Models may contain properties for tags and ids, and a children or element array of similar or different elements.
 
@@ -214,7 +214,7 @@ document.body.set(model);
 
 ### Properties: Attributes, Events and listeners
 
-The `set` method recognizes **properties** in the model structure, such as attributes or event handlers. You may use a unique name that will become the element's id, and indicate the tag as a key property. Or, use a selector style name, which may even include classes separated by periods.
+The **set** method recognizes **properties** in the model structure, such as attributes or event handlers. You may use a unique name that will become the element's id, and indicate the tag as a key property. Or, use a selector style name, which may even include classes separated by periods.
 
 ```javascript
 document.body.set({
@@ -292,7 +292,7 @@ myElement.set({
 
 ### Creating an Element
 
-DOM.let() creates elements without attaching them to the DOM.
+`DOM.let()` creates elements without attaching them to the DOM.
 
 ```javascript
 const myParagraph = DOM.let('p', {
@@ -352,7 +352,7 @@ document.head.set({
 });
 ```
 
-The method also understands default values for properties like _link_, _style_, _font_, or _script_ elements; and accepts arrays of elements for them.
+The **set** method also understands default values for properties like _link_, _style_, _font_, or _script_ elements; and accepts arrays of elements for them.
 
 ```javascript
 document.head.set({
@@ -370,7 +370,7 @@ document.head.set({
 ```
 
 Note how **set** recognizes common head information (icon, charset, keywords, description, etc).
-In fact, the **DOM.set** method recognizes these as well, and adds them on the _document.head_ instead of the _body_.
+In fact, the `DOM.set()` method recognizes these as well, and adds them on the _document.head_ instead of the _body_.
 
 ```javascript
 const myHeader = DOM.let('header', {
@@ -433,7 +433,7 @@ listedThings[1].set({
 ```
 
 When an _id_ is provided, a global variable holding the array of elements is created.
-If you give several elements the same _id_, DOM.set will group them in one global array.
+If you give several elements the same _id_, `set()` will group them in one global array.
 
 Arrays can create consecutive elements of different types; just indicate their _tag_ as a property.
 
@@ -737,7 +737,7 @@ The convention of declaring binders as a constant and naming them in all-caps, o
 
 ### Binding Functions
 
-Using the **.as()** method of the binders, you may provide a function that returns the correct value to assign to the element's property based on the value of the binder, or provide an object model to map the values to.
+Using the `.as()` method of the binders, you may provide a function that returns the correct value to assign to the element's property based on the value of the binder, or provide an object model to map the values to.
 
 ```javascript
 const _fieldEnabled = new Binder(false);
@@ -792,7 +792,7 @@ _myBinder.bind(someElement, 'text', (value) => `The field is: ${value}.`);
 The _bind_ method is agnostic about the order of the arguments provided.
 An _element_ is the target, a _string_ the property to bind, and a _function_ will return the appropriate value to update the element.
 
-The DOM.binder function may also be called with initial binding settings. The first argument will be the value of the binder.
+The `DOM.binder()` method may also be called with initial binding settings. The first argument will be the value of the binder.
 
 ```javascript
 let _myBinder = DOM.binder(true, someElement, 'text', (value) => `The field is: ${value}.`);
