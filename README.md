@@ -48,6 +48,24 @@ Instead of learning a framework, you extend what already exists.
 
 BareDOM does not replace the DOM. It makes it more expressive.
 
+### Setup
+
+The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in JavaScript (_main.js_). We will not need CSS either.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdn.jsdelivr.net/gh/lenincompres/daredom@latest/DOM.min.js"></script>
+  </head>
+  <body>
+    <script src="main.js"></script>
+  </body>
+</html>
+```
+
+For server-side usage, see [BareDOM-server](https://github.com/lenincompres/DOM.js-server)
+
 ## Example
 
 A reactive value:
@@ -69,24 +87,6 @@ document.body.set({
 > Not simply vanilla. Bare.
 
 ---
-
-## Setup
-
-The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in JavaScript (_main.js_). We will not need CSS either.
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <script src="https://cdn.jsdelivr.net/gh/lenincompres/daredom@latest/DOM.min.js"></script>
-  </head>
-  <body>
-    <script src="main.js"></script>
-  </body>
-</html>
-```
-
-For server-side usage, see [BareDOM-server](https://github.com/lenincompres/DOM.js-server)
 
 ## Setting the DOM
 
