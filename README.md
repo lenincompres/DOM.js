@@ -23,9 +23,7 @@ BareDOM is built on four ideas:
 - **element.set()** → declares structure, behavior, and bindings  
 - **DOM.set()** → initializes the document (head + body)
 
-BareDOM does not introduce components.
-
-Instead, elements grow into reusable, stateful patterns through extension and binding.
+BareDOM does not introduce components. Instead, elements grow into reusable, stateful patterns through extension and binding.
 
 ### Element extensions
 
@@ -48,8 +46,7 @@ BareDOM is for when you want:
 
 Instead of learning a framework, you extend what already exists.
 
-BareDOM does not replace the DOM.  
-It makes it more expressive.
+BareDOM does not replace the DOM. It makes it more expressive.
 
 ## Example
 
@@ -68,6 +65,8 @@ document.body.set({
   }
 });
 ```
+
+> Not simply vanilla. Bare.
 
 ---
 
