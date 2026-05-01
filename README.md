@@ -750,9 +750,12 @@ const myMain = DOM.let('main', {
   div: {
     style: {
       background: _fieldEnabled.as({
-        true: 'green',
         false: 'gray',
+        true: 'green',
       }),
+      // the key 'default' can be used for multiple values of the binder
+      color: _fieldEnabled.as('silver', 'lightgreen'),
+      // with primitive arguments (or an array) the method returns one based on the integer value of the binder (false = 0, true = 1)
     },
     input: {
       enabled: _fieldEnabled,
@@ -760,7 +763,8 @@ const myMain = DOM.let('main', {
     },
     button: {
       class: {
-        enablebutton: _fieldEnabled, // classes passed as object keys can be bound as well.
+        enabled: _fieldEnabled,
+        // classes passed as object keys can be bound as well.
       },
       text: 'toggle',
       onclick: () => (_fieldEnabled.value = !_fieldEnabled.value),
