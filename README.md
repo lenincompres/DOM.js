@@ -228,7 +228,7 @@ document.body.set({
     id: 'myInput',
     placeholder: 'Type value here',
     onchange: (event) => alert(myInput.value),
-    click: (event) => alert('It recognized event types to add listeners; as well as event methods.'),
+    click: (event) => alert('It recognizes event types to add listeners; as well as event methods.'),
   },
   goBtn: {
     tag: 'button',
