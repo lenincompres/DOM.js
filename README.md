@@ -70,12 +70,6 @@ document.body.set({
 
 ---
 
-by Lenin Comprés
-
-P5 editor examples by John Henry Thompson
-
----
-
 ## Setup
 
 The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in JavaScript (_main.js_). We will not need CSS either.
@@ -1054,6 +1048,12 @@ goBtn.addClass('nice-button');
 ## License
 
 MIT License
+
+---
+
+by Lenin Comprés
+
+P5 editor examples by John Henry Thompson
 
 
 ## Have fun!
