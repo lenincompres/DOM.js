@@ -950,7 +950,7 @@ Binder.set(state, {
 state.myProp = false;
 ```
 
-## More BareDOM Uses and Method
+## More BareDOM Uses and Methods
 
 ### DOM.get() and element.get()
 
