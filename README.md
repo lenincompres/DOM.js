@@ -131,7 +131,7 @@ document.body.set({
 
 In this case, no CSS reset is applied.
 
-The new **h1** and **p** elements will be appended to the element.
+The new **h3** and **p** elements will be appended to the element.
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Bv2yPxl9Y)
 
 ---
