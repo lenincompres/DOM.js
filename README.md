@@ -735,6 +735,23 @@ The convention of declaring binders as a constant and naming them in all-caps, o
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/DNCSUTBnq)
 
+It is recommended to bind properties rather than element declarations. Structure should remain stable, while values change through bindings.
+
+If the entire content of an element depends on a binding, use the _content_ property instead of binding the element itself.
+
+```javascript
+myElement.set({
+  h3: {
+    content: _myBinder.as(v => ({
+      text: v ? 'Cool beans.' : 'No way, Jose.',
+      color: v ? 'green' : 'gray',
+    })),
+  }
+});
+```
+
+Bindings can return full property objects, not just primitive values. This allows you to update multiple aspects of an element—such as text and styling—while keeping its structure unchanged.
+
 ### Binding Functions
 
 Using the `.as()` method of the binders, you may provide a function that returns the correct value to assign to the element's property based on the value of the binder, or provide an object model to map the values to.
