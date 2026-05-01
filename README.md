@@ -693,6 +693,11 @@ mainArea.css({
     // #mainArea>a.primary
     backgroundColor: 'red',
   },
+  __disabled: {
+    // #mainArea.disabled
+    pointerEvents: 'none',
+    filter: 'blur(2px)',
+  }
 });
 ```
 
