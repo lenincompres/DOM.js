@@ -25,7 +25,7 @@ BareDOM is built on four ideas:
 
 BareDOM does not introduce components. Instead, elements grow into reusable, stateful patterns through extension and binding.
 
-### Element extensions
+### Other Element extensions
 
 - `element.get()` → read from the DOM  
 - `element.let()` → create and return elements  
