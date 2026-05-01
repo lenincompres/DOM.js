@@ -518,7 +518,7 @@ Enhance your custom Elements with BareDOM by [binding their properties](#extendi
 
 ---
 
-## Styling Elements with BareDOM
+## Styling Elements
 
 ### Style Attribute
 
