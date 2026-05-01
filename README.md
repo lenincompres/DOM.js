@@ -84,7 +84,7 @@ The following is all the HTML we are going to need for the entirety of this docu
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://cdn.jsdelivr.net/gh/lenincompres/DOM.js@latest/DOM.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/lenincompres/daredom@latest/DOM.min.js"></script>
   </head>
   <body>
     <script src="main.js"></script>
