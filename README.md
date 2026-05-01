@@ -974,7 +974,7 @@ myElement.get('article'); // returns the array of article tag elements within my
 myElement.get('.nice'); // similar to querySelectorAll, but returns an array of elements
 ```
 
-### More uses of DOM.let() and element.let()
+### DOM.let() and element.let()
 
 This method allows you to set the value of an element's property. And it allows you to set this value based on the current value of the property.
 
@@ -1006,7 +1006,7 @@ myElement.let('p', {
 
 ---
 
-### Server-Side Usage
+### Server-Side BareDOM
 
 If you want to use BareDOM on the server (Node.js environment), check out the dedicated repository:
 
