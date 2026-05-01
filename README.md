@@ -705,7 +705,7 @@ mainArea.css({
 
 ---
 
-## Binding
+## Binding Element Properties
 
 <!-- JHT: recommend Binding section move up before CSS  -->
 
