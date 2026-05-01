@@ -50,7 +50,7 @@ BareDOM does not replace the DOM. It makes it more expressive.
 
 ## Setup
 
-The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in JavaScript (_main.js_). We will not need CSS either.
+The following is all the HTML we are going to need for the entirety of this documentation. It is our `index.html` file. The rest of our code will be in JavaScript (`main.js`). We will not need CSS either.
 
 ```html
 <!DOCTYPE html>
@@ -145,8 +145,8 @@ DOM.set(
 );
 ```
 
-You may also provide a _string_ to indicate the tag for a new element where the DOM structure will be created.
-The following example creates a _main_ element inside the _someElement_. It returns this _main_ element.
+You may also provide a `string` to indicate the tag for a new element where the DOM structure will be created.
+The following example creates a `main` element inside the `someElement`. It returns this `main` element.
 
 ```javascript
 DOM.set({
@@ -157,7 +157,7 @@ DOM.set({
 
 `DOM.set()` is agnostic about the order of the arguments that follow the first (model structure):
 
-- An **element** is where the model should be created instead of _document.body_.
+- An **element** is where the model should be created instead of `document.body`.
 - A **string** is a tag for a new element to be created.
 
 The following code creates and returns a main element, and adds it to the document body.
@@ -246,9 +246,9 @@ goBtn.style.border = 'solid 2px lime';
 
 NOTE:
 
-- Providing an element with an _id_ will create a global variable (with that name) to hold that element.
-- Use _text_ or _innerText_, _html_ or _innerHTML_, or simply _content_ for the element's inner content.
-- Use _markdown_ or _md_ for HTML markdown inline notations (bold, italics, and links).
+- Providing an element with an `id` will create a global variable (with that name) to hold that element.
+- Use `text` or `innerText`, `html` or `innerHTML`, or simply `content` for the element's inner content.
+- Use `markdown` or `md` for HTML markdown inline notations (bold, italics, and links).
 
 The **set** method allows you to modify attributes, styles, event handlers, and content of existing elements with just one call.
 
@@ -352,7 +352,7 @@ document.head.set({
 });
 ```
 
-The **set** method also understands default values for properties like _link_, _style_, _font_, or _script_ elements; and accepts arrays of elements for them.
+The **set** method also understands default values for properties like `link`, `style`, `font`, or `script` elements; and accepts arrays of elements for them.
 
 ```javascript
 document.head.set({
@@ -370,7 +370,7 @@ document.head.set({
 ```
 
 Note how **set** recognizes common head information (icon, charset, keywords, description, etc).
-In fact, the `DOM.set()` method recognizes these as well, and adds them on the _document.head_ instead of the _body_.
+In fact, the `DOM.set()` method recognizes these as well, and adds them on the `document.head` instead of the `body`.
 
 ```javascript
 const myHeader = DOM.let('header', {
@@ -412,7 +412,7 @@ myElement.set({
 });
 ```
 
-Declaring the array inside a _content_ property allows you to set other properties for all the elements in the array.
+Declaring the array inside a `content` property allows you to set other properties for all the elements in the array.
 
 ```javascript
 myElement.set({
@@ -432,10 +432,10 @@ listedThings[1].set({
 });
 ```
 
-When an _id_ is provided, a global variable holding the array of elements is created.
-If you give several elements the same _id_, `set()` will group them in one global array.
+When an `id` is provided, a global variable holding the array of elements is created.
+If you give several elements the same `id`, `set()` will group them in one global array.
 
-Arrays can create consecutive elements of different types; just indicate their _tag_ as a property.
+Arrays can create consecutive elements of different types; just indicate their `tag` as a property.
 
 ```javascript
 document.body.set({
@@ -459,7 +459,7 @@ document.body.set({
 });
 ```
 
-You can name these elements anything—in this case, they were named _elements_—; another recommended name is _children_. Each will be assigned a specified tag. But, you must avoid using known property names like: _content_, _margin_, _text_, etc. Using a plural word for the property helps avoid this mistake.
+You can name these elements anything—in this case, they were named `elements`—; another recommended name is `children`. Each will be assigned a specified tag. But, you must avoid using known property names like: `content`, `margin`, `text`, etc. Using a plural word for the property helps avoid this mistake.
 
 Similarly, if you give DOM.set an array, it assumes it is an array of elements, and will create them as *div*s, or any tag property they possess.
 
@@ -516,7 +516,7 @@ Enhance your custom Elements with BareDOM by [binding their properties](#extendi
 
 ### Style Attribute
 
-Assign a string to the _style_ property to update the inline style of the element—replacing any previous value.
+Assign a string to the `style` property to update the inline style of the element—replacing any previous value.
 
 ```javascript
 const myMain = DOM.let('main', {
@@ -535,7 +535,7 @@ DOM.set({
 
 ### Style Properties
 
-Asign a structural object to the _style_ to update individual style properties—use names in camelCase.
+Asign a structural object to the `style` to update individual style properties—use names in camelCase.
 
 ```javascript
 const myMain = DOM.let('main', {
@@ -561,7 +561,7 @@ document.body.set({
 
 This is equivalent to using the [style property of DOM elements](https://www.w3schools.com/jsref/prop_html_style.asp).
 
-Styles may be assigned without an encompassing _style_ property. The previous code could be written as follows.
+Styles may be assigned without an encompassing `style` property. The previous code could be written as follows.
 
 ```javascript
 const myMain = DOM.let('main', {
@@ -581,12 +581,12 @@ document.body.set({
 });
 ```
 
-The _style_, _attribute_, and _content_ properties are useful for organizing the model structure, and to clarify what kind of property you are trying to set. If BareDOM is not setting a value in the right property you intended to (style, attributes, events, etc.), you should put this key/value pair inside one of these wrapping or organizing properties.
+The `style`, `attribute`, and `content` properties are useful for organizing the model structure, and to clarify what kind of property you are trying to set. If BareDOM is not setting a value in the right property you intended to (style, attributes, events, etc.), you should put this key/value pair inside one of these wrapping or organizing properties.
 Yet, **DOM.set** interprets structural properties to match attributes, styles, event handlers and element tags.
 
 ### Style Element
 
-If _style_ has a _content_ property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
+If `style` has a `content` property, an element with a style tag and CSS content is created. Click here to [learn about CSS](https://www.w3schools.com/css/css_intro.asp).
 
 ```javascript
 const myMain = DOM.let('main', {
@@ -610,7 +610,7 @@ This method is discouraged, since it will affect all elements in the DOM not jus
 
 ### CSS Property
 
-Use _css:_ in your model structure to create styling rules that apply **only** to the current element and its children.
+Use `css:` in your model structure to create styling rules that apply **only** to the current element and its children.
 
 ```javascript
 const myMain = DOM.let('main', {
@@ -650,14 +650,14 @@ DOM.set({
 });
 ```
 
-The CSS is added to the document.head's style element under the _id_ of the element where it is created.
-If the element doesn't have an _id_, a unique one is provided for it.
+The CSS is added to the document.head's style element under the `id` of the element where it is created.
+If the element doesn't have an `id`, a unique one is provided for it.
 
 Nested selectors affect all children in the hierarchy of the DOM.
 
-- **tag\_**: Use a trailing underscore (\_) to affect only immediate children of the element.
-- **_class, tag_class**: Leading underscores and any other in the selector are turned into (.) to indicate classes.
-- **\_\_class**: Two leading underscores mean the class is applied to the parent selector.
+- `tag\_`: Use a trailing underscore (\_) to affect only immediate children of the element.
+- `_class, tag_class`: Leading underscores and any other in the selector are turned into (.) to indicate classes.
+- `\_\_class`: Two leading underscores mean the class is applied to the parent selector.
 
 ```javascript
 mainArea.css({
@@ -703,8 +703,8 @@ mainArea.css({
 
 <!-- JHT: recommend Binding section move up before CSS  -->
 
-Any element's property (attribute, content, style, content or event handler) can be **bound** to a _Binder_ object.
-When the _value_ property of this object changes, it automatically updates all element properties' bound to it.
+Any element's property (attribute, content, style, content or event handler) can be **bound** to a `Binder` object.
+When the `value` property of this object changes, it automatically updates all element properties' bound to it.
 
 ```javascript
 const _myBinder = new Binder('Default value');
@@ -737,7 +737,7 @@ The convention of declaring binders as a constant and naming them in all-caps, o
 
 It is recommended to bind properties rather than element declarations. Structure should remain stable, while values change through bindings.
 
-If the entire content of an element depends on a binding, use the _content_ property instead of binding the element itself.
+If the entire content of an element depends on a binding, use the `content` property instead of binding the element itself.
 
 ```javascript
 myElement.set({
@@ -796,18 +796,18 @@ DOM.set({
 
 [p5jsj](https://editor.p5js.org/jht9629-nyu/sketches/66VL3dHNk)
 
-Classes in the classList can be bound to a binder as well. They changing value of _true_ or _false_ will determine if a class is added or removed.
+Classes in the classList can be bound to a binder as well. They changing value of `true` or `false` will determine if a class is added or removed.
 
 ### Binding outside the set method
 
-You may call the _bind_ method of a binder and provide the element and property to be bound to it.
+You may call the `bind` method of a binder and provide the element and property to be bound to it.
 
 ```javascript
 _myBinder.bind(someElement, 'text', (value) => `The field is: ${value}.`);
 ```
 
-The _bind_ method is agnostic about the order of the arguments provided.
-An _element_ is the target, a _string_ the property to bind, and a _function_ will return the appropriate value to update the element.
+The `bind` method is agnostic about the order of the arguments provided.
+An `element` is the target, a `string` the property to bind, and a `function` will return the appropriate value to update the element.
 
 The `DOM.binder()` method may also be called with initial binding settings. The first argument will be the value of the binder.
 
@@ -845,7 +845,7 @@ _myBinder.bind(someElement, 'text', ['field is disabled', 'field is enabled']);
 _myBinder.bind(_anotherBinder, ['blue', 'red']);
 ```
 
-Note that if the value is a boolean, _false_ would be position 0, and _true_ is position 1.
+Note that if the value is a boolean, `false` would be position 0, and `true` is position 1.
 
 ---
 
@@ -965,7 +965,7 @@ state.myProp = false;
 
 ### DOM.get() and element.get()
 
-This method returns an element's property value based on a _string_ provided. It matches it to an attribute, style property, element tag (in the scope), or query selector. If no _string_ is provided, it returns the value property or the innerHTML.
+This method returns an element's property value based on a `string` provided. It matches it to an attribute, style property, element tag (in the scope), or query selector. If no `string` is provided, it returns the value property or the innerHTML.
 
 ```javascript
 DOM.get('backgroundColor'); // returns the body's background color
