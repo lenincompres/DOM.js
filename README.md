@@ -90,7 +90,7 @@ document.body.set({
 
 ## Setting the DOM
 
-`DOM.set()` initializes and renders the document.
+DOM.set() initializes and renders the document.
 
 It:
 - renders elements
