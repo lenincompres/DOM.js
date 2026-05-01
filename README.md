@@ -125,7 +125,7 @@ someElement.set({
 
 document.body.set({
   main: someElement,
-  footer: 'This is Baredom.',
+  footer: 'This is BareDOM.',
 });
 ```
 
