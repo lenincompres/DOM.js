@@ -320,7 +320,7 @@ document.body.set({
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/Hl1Tu1U1U)
 
-### Set the Head
+### Setting the Head
 
 Just as with any element, you may invoke the **set** method on the head element. Many of its properties can be set directly. It will even link fonts and make them available as font-family styles.
 
@@ -406,7 +406,7 @@ DOM.set({
 });
 ```
 
-### Set an Array of Elements
+### Setting an Array of Elements
 
 Use arrays to create multiple consecutive elements of the same kind.
 
@@ -486,7 +486,7 @@ document.body.set([
   },
 ]);
 ```
-## Usage Examples and Component Architecture
+## Element Class and Component Architecture
 
 BareDOM allows you to build modular, reusable components by expanding the HTMLElement class. Here's an example:
 
