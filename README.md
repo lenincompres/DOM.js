@@ -48,7 +48,7 @@ Instead of learning a framework, you extend what already exists.
 
 BareDOM does not replace the DOM. It makes it more expressive.
 
-### Setup
+## Setup
 
 The following is all the HTML we are going to need for the entirety of this documentation. It is our _index.html_ file. The rest of our code will be in JavaScript (_main.js_). We will not need CSS either.
 
