@@ -542,19 +542,17 @@ DOM.set({
 Asign a structural object to the _style_ to update individual style properties—use names in camelCase.
 
 ```javascript
-const myMain = DOM.let('main',
-  {
-    style: {
-      margin: '20px',
-      fontFamily: 'Tahoma',
-      backgroundColor: 'gray',
-    },
-    content: {
-      h1: 'Styled Main Element',
-      p: 'This manages the style values individually.',
-    },
+const myMain = DOM.let('main', {
+  style: {
+    margin: '20px',
+    fontFamily: 'Tahoma',
+    backgroundColor: 'gray',
   },
-);
+  content: {
+    h1: 'Styled Main Element',
+    p: 'This manages the style values individually.',
+  },
+});
 
 document.body.set({
   header: {
