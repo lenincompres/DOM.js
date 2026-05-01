@@ -735,7 +735,7 @@ DOM.set({
 });
 ```
 
-The convention of declaring binders as a constant and naming them in all-caps preceded by an underscore character can be helpful.
+The convention of declaring binders as a constant and naming them in all-caps, or preceded by an underscore character, can be helpful.
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/DNCSUTBnq)
 
