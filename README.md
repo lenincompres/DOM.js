@@ -898,7 +898,7 @@ DOM.set({
 
 [See live code sample](https://editor.p5js.org/jht9629-nyu/sketches/X1REi2O0H)
 
-### Binder.set(): create binders and their setters and getters with one method
+#### Binder.set(): create binders and their setters and getters with one method
 
 The method `Binder.set` creates binders, plus the setters and getters for them in your element objects. The names for the binders will be preceded by an underscore (_) once created, while the properties that get and set their values are accessible with the plain names (or keys) given to the method.
 
