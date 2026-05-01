@@ -14,11 +14,18 @@ No separate HTML or CSS—unless you want them.
 
 ## Mental Model
 
-BareDOM is built on three ideas:
+Structure is declared. Behavior is bound. Reuse emerges.
 
-- **Binder** → one reactive value  
+BareDOM is built on four ideas:
+
+- **Binder** → one reactive value
+- **Elements** → extend into reusable, stateful patterns
 - **element.set()** → declares structure, behavior, and bindings  
 - **DOM.set()** → initializes the document (head + body)
+
+BareDOM does not introduce components.
+
+Instead, elements grow into reusable, stateful patterns through extension and binding.
 
 ### Element extensions
 
