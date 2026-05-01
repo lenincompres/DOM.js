@@ -486,7 +486,7 @@ document.body.set([
   },
 ]);
 ```
-## Element Class and Component Architecture
+### Element Class and Component Architecture
 
 BareDOM allows you to build modular, reusable components by expanding the HTMLElement class. Here's an example:
 
@@ -513,6 +513,8 @@ customElements.define('custom-element', CustomElement);
 ```
 
 This allows you to use **<custom-button></custom-button>** in your HTML. BareDOM enables simple, modular structures by extending native elements.
+
+Enhance your custom Elements with BareDOM by [binding their properties]().
 
 ---
 
