@@ -296,7 +296,7 @@ myElement.set({
 });
 ```
 
-### Creating an element
+### Creating an Element
 
 DOM.let() creates elements without attaching them to the DOM.
 
